@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — IELTS Sprint4</title>
+<style>
+  :root{
+    --accent:#0F5C6B; --accent-dark:#0c4a57; --accent-light:#e6eef0;
+    --bg:#f7f8fa; --card:#ffffff; --border:#e2e4e8;
+    --text:#1a1a1a; --muted:#6b7280;
+    --danger:#d23a3a; --danger-bg:#fbeaea;
+    --success:#1f9d55; --success-bg:#e6f6ec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:36px 32px; max-width:420px; width:100%; box-shadow:0 4px 24px rgba(0,0,0,.06);
+  }
+  .brand{ font-weight:800; font-size:20px; margin-bottom:4px; }
+  .brand span{ color:var(--accent); }
+  .sub{ color:var(--muted); font-size:14px; margin-bottom:26px; }
+  label{ display:block; font-size:13.5px; font-weight:700; margin-bottom:6px; color:var(--accent-dark); }
+  input, select{
+    width:100%; font:inherit; font-size:15px; padding:11px 13px; margin-bottom:18px;
+    border:1px solid #c7ccd2; border-radius:8px; background:#fff; color:var(--text);
+  }
+  input:focus, select:focus{ outline:2px solid var(--accent); border-color:var(--accent); }
+  button{
+    width:100%; background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:13px; font-size:15px; font-weight:700; cursor:pointer;
+  }
+  button:hover{ background:var(--accent-dark); }
+  button:disabled{ background:#cfd3d8; cursor:not-allowed; }
+  .msg{
+    margin-top:16px; padding:12px 14px; border-radius:8px; font-size:14px; display:none;
+  }
+  .msg.error{ display:block; background:var(--danger-bg); color:var(--danger); }
+  .msg.success{ display:block; background:var(--success-bg); color:var(--success); }
+  .login-link{ margin-top:20px; text-align:center; font-size:14px; color:var(--muted); }
+  .login-link a{ color:var(--accent); font-weight:700; text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="sub">Create your student account</div>
+
+  <form id="regForm">
+    <label for="fullName">Full name</label>
+    <input type="text" id="fullName" autocomplete="name" required>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" autocomplete="username" required>
+
+    <label for="passcode">Passcode</label>
+    <input type="text" id="passcode" autocomplete="off" required>
+
+    <label for="groupSelect">Group</label>
+    <select id="groupSelect" required>
+      <option value="">Select your group…</option>
+    </select>
+
+    <button type="submit" id="submitBtn">Register</button>
+  </form>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="login-link">Already registered? <a href="index.html">Log in</a></div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const form = document.getElementById('regForm');
+  const msgEl = document.getElementById('msg');
+  const submitBtn = document.getElementById('submitBtn');
+  const groupSelect = document.getElementById('groupSelect');
+
+  function showMsg(text, type){
+    msgEl.textContent = text;
+    msgEl.className = 'msg ' + type;
+  }
+
+  /* populate the group dropdown (1-15) */
+  (async function loadGroups(){
+    const { data, error } = await supabase.from('groups').select('id, name').order('id');
+    if(error || !data){
+      // fallback if the table hasn't loaded yet / network hiccup
+      for(let i=1;i<=15;i++){
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = 'Group ' + i;
+        groupSelect.appendChild(opt);
+      }
+      return;
+    }
+    data.forEach(function(g){
+      const opt = document.createElement('option');
+      opt.value = g.id; opt.textContent = g.name;
+      groupSelect.appendChild(opt);
+    });
+  })();
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    submitBtn.disabled = true;
+    showMsg('', '');
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const passcode = document.getElementById('passcode').value.trim();
+    const groupId = groupSelect.value;
+
+    if(!fullName || !username || !passcode || !groupId){
+      showMsg('Please fill in every field.', 'error');
+      submitBtn.disabled = false;
+      return;
+    }
+
+    try{
+      // 1. Check the passcode exists and hasn't been used yet
+      const { data: codeRow, error: codeErr } = await supabase
+        .from('student_passcodes')
+        .select('id, used')
+        .eq('passcode', passcode)
+        .maybeSingle();
+
+      if(codeErr || !codeRow){
+        showMsg('That passcode was not recognised. Check it and try again.', 'error');
+        submitBtn.disabled = false;
+        return;
+      }
+      if(codeRow.used){
+        showMsg('That passcode has already been used to register an account.', 'error');
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // 2. Check the username isn't already taken
+      const { data: existing } = await supabase
+        .from('students')
+        .select('id')
+        .eq('username', username)
+        .maybeSingle();
+
+      if(existing){
+        showMsg('That username is already taken. Please choose another.', 'error');
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // 3. Create the student
+      const { data: newStudent, error: insertErr } = await supabase
+        .from('students')
+        .insert({ full_name: fullName, username: username, password: passcode, group_id: groupId })
+        .select('id')
+        .single();
+
+      if(insertErr || !newStudent){
+        showMsg('Something went wrong creating your account. Please try again.', 'error');
+        submitBtn.disabled = false;
+        return;
+      }
+
+      // 4. Mark the passcode as used
+      await supabase
+        .from('student_passcodes')
+        .update({ used: true, used_by: newStudent.id })
+        .eq('id', codeRow.id);
+
+      showMsg('Account created! Redirecting to login…', 'success');
+      setTimeout(function(){ window.location.href = 'index.html'; }, 1200);
+
+    }catch(err){
+      showMsg('Unexpected error: ' + err.message, 'error');
+      submitBtn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
