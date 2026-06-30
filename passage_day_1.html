@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -239,6 +239,13 @@
   }
   .score-banner b{ font-size:calc(30px*var(--fontscale)); }
   .small-link{ display:inline-block; margin-top:10px; background:#0F5C6B; color:#fff; text-decoration:none; padding:10px 18px; border-radius:6px; font-size:calc(15px*var(--fontscale)); font-weight:700; }
+
+  /* ---------- WALKTHROUGH (revealed after submission) ---------- */
+  .video-wrap{
+    position:relative; width:100%; max-width:640px; aspect-ratio:16/9;
+    border-radius:8px; overflow:hidden; background:#000;
+  }
+  .video-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 </style>
 </head>
 <body>
@@ -323,6 +330,14 @@
             <li>Smith made speeches about how the country's <span data-gap="12"></span> benefited from geology.</li>
             <li>Nowadays, geological maps still have the <span data-gap="13"></span> that Smith believed they had.</li>
           </ul>
+        </div>
+      </div>
+
+      <div class="q-group" id="walkthroughBlock" style="display:none;">
+        <h3>Walkthrough</h3>
+        <p class="q-instr">Now that you've submitted your answers, watch this walkthrough of the passage and questions.</p>
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/o5mvD1HxpqE" title="Passage walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
     </section>
@@ -735,6 +750,7 @@
   }
 
   function gradeTest(){
+    if(submitted) return;
     submitted = true;
     var score = 0;
 
@@ -781,6 +797,13 @@
     hideAll();
     rightPane.scrollTop = 0;
     band.scrollIntoView({behavior:'smooth'});
+
+    var wt = document.getElementById('walkthroughBlock');
+    if(wt) wt.style.display = 'block';
+
+    if(window.parent && window.parent !== window){
+      window.parent.postMessage({ type:'sprint4-task-done', task:4, score:score, total:TOTAL }, '*');
+    }
   }
 
   refreshTiles();
