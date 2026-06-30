@@ -45,6 +45,7 @@
   @keyframes fade{ from{opacity:0;} to{opacity:1;} }
 
   .task-head{ margin-bottom:18px; }
+  #task4 .task-head{ margin-bottom:10px; }
   .task-eyebrow{ text-transform:uppercase; letter-spacing:1px; font-size:12px; font-weight:700; color:var(--accent); }
   .task-title{ font-size:24px; font-weight:800; margin:4px 0 0; }
   .task-sub{ color:var(--muted); font-size:14.5px; margin-top:4px; }
@@ -106,6 +107,20 @@
 
   .check-row{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
 
+  .answer-key{
+    margin-top:14px; border:1px solid var(--border); border-radius:10px; overflow:hidden; display:none;
+  }
+  .answer-key.show{ display:block; }
+  .answer-key summary{
+    cursor:pointer; list-style:none; padding:12px 16px; background:var(--accent-light);
+    color:var(--accent-dark); font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px;
+  }
+  .answer-key summary::-webkit-details-marker{ display:none; }
+  .answer-key summary::before{ content:"▸"; transition:transform .15s; }
+  .answer-key[open] summary::before{ transform:rotate(90deg); }
+  .answer-key-body{ padding:14px 18px; background:#fff; font-size:14px; line-height:1.7; }
+  .answer-key-body b{ color:var(--accent-dark); }
+
   .score-pill{
     display:inline-block; background:var(--accent-light); color:var(--accent-dark);
     font-weight:700; padding:6px 14px; border-radius:999px; font-size:14px; margin-bottom:14px;
@@ -119,7 +134,7 @@
   .video-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 
   .iframe-wrap{
-    width:100%; height:74vh; border:1px solid var(--border); border-radius:10px;
+    width:100%; height:88vh; border:1px solid var(--border); border-radius:10px;
     overflow:hidden; background:#fff;
   }
   .iframe-wrap iframe{ width:100%; height:100%; border:0; }
@@ -206,6 +221,10 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkVocab()">Check answers</button>
       </div>
+      <details class="answer-key" id="ansKey1">
+        <summary>Answer key</summary>
+        <div class="answer-key-body" id="ansKey1Body"></div>
+      </details>
     </section>
 
     <!-- ===================== TASK 2 — MINI READING ===================== -->
@@ -228,6 +247,10 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkMiniReading()">Check answers</button>
       </div>
+      <details class="answer-key" id="ansKey2">
+        <summary>Answer key</summary>
+        <div class="answer-key-body" id="ansKey2Body"></div>
+      </details>
     </section>
 
     <!-- ===================== TASK 3 — ARTICLE ===================== -->
@@ -332,6 +355,10 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkListeningMini()">Check answers</button>
       </div>
+      <details class="answer-key" id="ansKey6">
+        <summary>Answer key</summary>
+        <div class="answer-key-body" id="ansKey6Body"></div>
+      </details>
     </section>
 
     <!-- ===================== TASK 7 — VIDEO ===================== -->
@@ -371,6 +398,10 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkVideoTask()">Check answers</button>
       </div>
+      <details class="answer-key" id="ansKey7">
+        <summary>Answer key</summary>
+        <div class="answer-key-body" id="ansKey7Body"></div>
+      </details>
     </section>
 
     <!-- ===================== TASK 8 — PODCAST ===================== -->
@@ -398,6 +429,10 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkPodcast()">Check answers</button>
       </div>
+      <details class="answer-key" id="ansKey8">
+        <summary>Answer key</summary>
+        <div class="answer-key-body" id="ansKey8Body"></div>
+      </details>
     </section>
 
     <!-- ===================== TASK 9 — FULL LISTENING ===================== -->
@@ -632,6 +667,11 @@
     });
     alert('Exercise A: ' + rightA + '/' + totalA + '\nExercise B: ' + rightB + '/' + totalB);
     refreshDoneButton();
+
+    var bodyA = '<b>Exercise A:</b><br>' + Object.keys(vocabA_answers).map(function(n){ return n+'. '+vocabA_answers[n]; }).join(' &nbsp;•&nbsp; ');
+    var bodyB = '<br><br><b>Exercise B:</b><br>' + vocabB_sentences.map(function(s){ return (s.n==="10b"?'':s.n)+(s.n==="10b"?'':'. ')+s.ans; }).filter(Boolean).join(' &nbsp;•&nbsp; ');
+    document.getElementById('ansKey1Body').innerHTML = bodyA + bodyB;
+    document.getElementById('ansKey1').classList.add('show');
   }
   window.checkVocab = checkVocab;
 
@@ -672,6 +712,11 @@
     });
     alert('You got ' + right + '/5 correct (True/False + word).');
     refreshDoneButton();
+
+    document.getElementById('ansKey2Body').innerHTML = miniReading.map(function(q){
+      return q.n+'. '+q.tf+' — <b>'+q.word+'</b>';
+    }).join('<br>');
+    document.getElementById('ansKey2').classList.add('show');
   }
   window.checkMiniReading = checkMiniReading;
 
@@ -694,6 +739,13 @@
     });
     alert('You got ' + right + '/' + total + ' correct.');
     refreshDoneButton();
+
+    var sp = 'Speaker 1: <b>'+speakerAns.sp1+'</b> &nbsp;•&nbsp; Speaker 2: <b>'+speakerAns.sp2+'</b> &nbsp;•&nbsp; Speaker 3: <b>'+speakerAns.sp3+'</b>';
+    var ph = ['p1','p2','p3','p4','p5'].map(function(id,i){ return (i+1)+'. <b>'+phraseAns[id]+'</b>'; }).join('<br>')
+      + '<br>6. <b>'+phraseAns.p6a+'</b> / <b>'+phraseAns.p6b+'</b>'
+      + '<br>7. <b>'+phraseAns.p7+'</b><br>8. <b>'+phraseAns.p8+'</b>';
+    document.getElementById('ansKey6Body').innerHTML = sp + '<br><br>' + ph;
+    document.getElementById('ansKey6').classList.add('show');
   }
   window.checkListeningMini = checkListeningMini;
 
@@ -806,6 +858,12 @@
     });
     alert('MCQ: '+rightMcq+'/10\nGap fill: '+rightGap+'/15\nMatching: '+rightMatch+'/15');
     refreshDoneButton();
+
+    var mcqKey = '<b>Multiple choice:</b><br>' + mcqData.map(function(q){ return q.n+'. '+q.ans; }).join(' &nbsp;•&nbsp; ');
+    var gapKey = '<br><br><b>Gap fill:</b><br>' + gapData.map(function(g){ return g.n+'. '+g.ans; }).join(' &nbsp;•&nbsp; ');
+    var matchKey = '<br><br><b>Matching:</b><br>' + matchData.map(function(m){ return m.n+'. '+m.ans; }).join(' &nbsp;•&nbsp; ');
+    document.getElementById('ansKey7Body').innerHTML = mcqKey + gapKey + matchKey;
+    document.getElementById('ansKey7').classList.add('show');
   }
   window.checkVideoTask = checkVideoTask;
 
@@ -904,6 +962,11 @@
     });
     alert('Dictation: ' + rightDict + '/' + totalDict + '\nComprehension: ' + rightComp + '/5');
     refreshDoneButton();
+
+    var dictKey = '<b>Dictation:</b><br>' + Object.keys(dictAns).map(function(n){ return n+'. '+dictAns[n]; }).join(' &nbsp;•&nbsp; ');
+    var compKey = '<br><br><b>Comprehension:</b><br>' + compData.map(function(q){ return q.n+'. '+q.ans; }).join(' &nbsp;•&nbsp; ');
+    document.getElementById('ansKey8Body').innerHTML = dictKey + compKey;
+    document.getElementById('ansKey8').classList.add('show');
   }
   window.checkPodcast = checkPodcast;
 
