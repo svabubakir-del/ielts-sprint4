@@ -30,12 +30,12 @@
   body.theme-wob .topbar,body.theme-yob .topbar{ background:var(--bg); }
 
   *{ box-sizing:border-box; }
-  html,body{ margin:0; height:100%; }
+  html,body{ margin:0; }
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
     background:var(--bg); color:var(--fg);
     font-size:calc(16px * var(--fontscale));
-    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+    display:flex; flex-direction:column; min-height:100vh;
   }
 
   /* ---------- TOP BAR ---------- */
@@ -74,7 +74,7 @@
 
   /* ---------- SPLIT ---------- */
   .split{
-    flex:1 1 auto; display:flex; min-height:0; margin:12px 16px 0;
+    flex:0 0 auto; height:80vh; display:flex; min-height:0; margin:12px 16px 0;
     border-top:1px solid var(--line); position:relative;
   }
   .pane{ overflow-y:auto; padding:18px 26px 60px; min-width:160px; }
@@ -241,9 +241,15 @@
   .small-link{ display:inline-block; margin-top:10px; background:#0F5C6B; color:#fff; text-decoration:none; padding:10px 18px; border-radius:6px; font-size:calc(15px*var(--fontscale)); font-weight:700; }
 
   /* ---------- WALKTHROUGH (revealed after submission) ---------- */
+  #walkthroughSection{
+    border-top:1px solid var(--panel-line); background:var(--panel); padding:32px 24px 60px;
+  }
+  .walkthrough-inner{ max-width:900px; margin:0 auto; }
+  .walkthrough-inner h3{ font-size:calc(20px*var(--fontscale)); margin:0 0 6px; }
   .video-wrap{
-    position:relative; width:100%; max-width:640px; aspect-ratio:16/9;
-    border-radius:8px; overflow:hidden; background:#000;
+    position:relative; width:100%; aspect-ratio:16/9;
+    border-radius:10px; overflow:hidden; background:#000; margin-top:14px;
+    box-shadow:0 8px 28px rgba(0,0,0,.18);
   }
   .video-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
 </style>
@@ -333,15 +339,20 @@
         </div>
       </div>
 
-      <div class="q-group" id="walkthroughBlock" style="display:none;">
-        <h3>Walkthrough</h3>
-        <p class="q-instr">Now that you've submitted your answers, watch this walkthrough of the passage and questions.</p>
-        <div class="video-wrap">
-          <iframe src="https://www.youtube.com/embed/o5mvD1HxpqE" title="Passage walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
+      <div class="q-group" id="walkthroughPlaceholder"></div>
     </section>
   </div>
+
+  <!-- ===================== WALKTHROUGH (full width, below the whole passage) ===================== -->
+  <section id="walkthroughSection" style="display:none;">
+    <div class="walkthrough-inner">
+      <h3>Walkthrough</h3>
+      <p class="q-instr">Now that you've submitted your answers, watch this walkthrough of the passage and questions.</p>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/o5mvD1HxpqE" title="Passage walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
 
   <!-- ===================== BOTTOM BAR ===================== -->
   <footer class="bottombar">
@@ -798,8 +809,11 @@
     rightPane.scrollTop = 0;
     band.scrollIntoView({behavior:'smooth'});
 
-    var wt = document.getElementById('walkthroughBlock');
-    if(wt) wt.style.display = 'block';
+    var wt = document.getElementById('walkthroughSection');
+    if(wt){
+      wt.style.display = 'block';
+      setTimeout(function(){ wt.scrollIntoView({behavior:'smooth', block:'start'}); }, 600);
+    }
 
     if(window.parent && window.parent !== window){
       window.parent.postMessage({ type:'sprint4-task-done', task:4, score:score, total:TOTAL }, '*');
