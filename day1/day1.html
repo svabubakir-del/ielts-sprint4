@@ -487,6 +487,8 @@
 </div>
 <canvas id="confettiCanvas"></canvas>
 
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
   "use strict";
@@ -517,16 +519,132 @@
 
   if(teacherMode) document.getElementById('teacherBadge').style.display = 'inline-block';
 
-  /* ---------------- PROGRESS TRACKING (stub — wire to Supabase later) ---------------- */
+  /* ---------------- SUPABASE SETUP ---------------- */
+  var _supabase = null;
+  function getSupabase(){
+    if(!_supabase && window.supabase && typeof SUPABASE_URL !== 'undefined'){
+      _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    return _supabase;
+  }
+
+  /* ---- Get student session ---- */
+  var studentSession = null;
+  try{
+    var _raw = sessionStorage.getItem('sprint4_session');
+    if(_raw){
+      var _parsed = JSON.parse(_raw);
+      if(_parsed && _parsed.role === 'student') studentSession = _parsed;
+    }
+  }catch(e){}
+
+  /* ---------------- AUTOSAVE (per field, 600ms debounce) ---------------- */
+  var debounceTimers = {};
+  function autosaveField(fieldId, value){
+    if(!studentSession) return;
+    clearTimeout(debounceTimers[fieldId]);
+    debounceTimers[fieldId] = setTimeout(function(){
+      var db = getSupabase();
+      if(!db) return;
+      var taskNum = getTaskForField(fieldId);
+      db.from('answers').upsert({
+        student_id: studentSession.id,
+        day: DAY,
+        task: taskNum,
+        field_id: fieldId,
+        value: String(value),
+        saved_at: new Date().toISOString()
+      }, { onConflict: 'student_id,day,field_id' }).then(function(){});
+    }, 600);
+  }
+
+  function getTaskForField(fieldId){
+    if(/^va|^vb/.test(fieldId)) return 1;
+    if(/^mr/.test(fieldId)) return 2;
+    if(/^sp|^p[0-9]/.test(fieldId)) return 6;
+    if(/^mcq|^gap|^match/.test(fieldId)) return 7;
+    if(/^dict|^comp/.test(fieldId)) return 8;
+    return 1;
+  }
+
+  /* Hook all inputs to autosave after DOM is built */
+  function hookAutosave(){
+    document.querySelectorAll('input.fill, select.fill').forEach(function(el){
+      if(el.dataset.hooked) return;
+      el.dataset.hooked = '1';
+      el.addEventListener('input', function(){ autosaveField(el.id, el.value); });
+      el.addEventListener('change', function(){ autosaveField(el.id, el.value); });
+    });
+    document.querySelectorAll('input[type=radio]').forEach(function(el){
+      if(el.dataset.hooked) return;
+      el.dataset.hooked = '1';
+      el.addEventListener('change', function(){
+        if(el.checked) autosaveField('radio_'+el.name, el.value);
+      });
+    });
+    document.querySelectorAll('input[type=checkbox]').forEach(function(el){
+      if(el.dataset.hooked) return;
+      el.dataset.hooked = '1';
+      el.addEventListener('change', function(){
+        autosaveField('check_'+el.id, el.checked ? '1' : '0');
+      });
+    });
+  }
+
+  /* ---------------- RESTORE ANSWERS ON LOAD ---------------- */
+  async function restoreAnswers(){
+    if(!studentSession) return;
+    var db = getSupabase();
+    if(!db) return;
+    var result = await db.from('answers')
+      .select('field_id, value, task')
+      .eq('student_id', studentSession.id)
+      .eq('day', DAY);
+    var rows = (result.data || []);
+    rows.forEach(function(row){
+      var el = document.getElementById(row.field_id);
+      if(el){
+        if(el.type === 'checkbox'){
+          el.checked = row.value === '1';
+        } else {
+          el.value = row.value;
+        }
+        return;
+      }
+      // radio buttons
+      if(row.field_id.startsWith('radio_')){
+        var name = row.field_id.replace('radio_','');
+        var radio = document.querySelector('input[name="'+name+'"][value="'+row.value+'"]');
+        if(radio) radio.checked = true;
+      }
+    });
+    // Restore task completion from answers data
+    var tasksWithData = new Set(rows.map(function(r){ return r.task; }));
+    tasksWithData.forEach(function(t){
+      // Mark as at least started — full done state still comes from progress table
+    });
+  }
+
+  /* ---------------- PROGRESS TRACKING (real Supabase) ---------------- */
   function saveProgress(taskNum, complete){
-    // TODO: replace with real Supabase call once the Sprint4 project/table exists.
-    // Expected shape: { day: DAY, task: taskNum, complete: complete }
+    // localStorage fallback
     try{
       var key = 'sprint4_day' + DAY + '_progress';
       var data = JSON.parse(localStorage.getItem(key) || '{}');
       data[taskNum] = complete;
       localStorage.setItem(key, JSON.stringify(data));
     }catch(e){}
+    // Real Supabase save
+    if(!studentSession) return;
+    var db = getSupabase();
+    if(!db) return;
+    db.from('progress').upsert({
+      student_id: studentSession.id,
+      day: DAY,
+      task: taskNum,
+      completed: complete,
+      completed_at: complete ? new Date().toISOString() : null
+    }, { onConflict: 'student_id,day,task' }).then(function(){});
   }
 
   /* ---------------- DOTS / NAV ---------------- */
@@ -1079,6 +1197,19 @@
   var t4checkEl = document.getElementById('t4check');
   if(taskDone[4] && t4checkEl) t4checkEl.checked = true;
   if(taskDone[4]) task4MessageReceived = true;
+
+  /* Load Supabase SDK then restore answers and hook autosave */
+  (function waitForSdk(){
+    if(window.supabase){
+      restoreAnswers().then(function(){
+        hookAutosave();
+        refreshDoneButton();
+      });
+    } else {
+      setTimeout(waitForSdk, 100);
+    }
+  })();
+
   showTask(current);
 })();
 </script>
