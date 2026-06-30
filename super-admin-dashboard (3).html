@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Admin — IELTS Sprint4</title>
+<style>
+  :root{
+    --accent:#0F5C6B; --accent-dark:#0c4a57; --accent-light:#e6eef0;
+    --bg:#f7f8fa; --card:#ffffff; --border:#e2e4e8;
+    --text:#1a1a1a; --muted:#6b7280;
+    --success:#1f9d55; --success-bg:#e6f6ec;
+    --danger:#d23a3a; --danger-bg:#fbeaea;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  }
+  .topbar{
+    display:flex; align-items:center; gap:16px; padding:14px 28px;
+    background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:5;
+  }
+  .brand{ font-weight:800; font-size:19px; }
+  .brand span{ color:var(--accent); }
+  .badge{
+    background:#fef3c7; color:#92400e; font-size:12px; font-weight:700;
+    padding:4px 10px; border-radius:999px;
+  }
+  .logout-btn{
+    margin-left:auto; background:#fff; border:1px solid var(--border); border-radius:7px;
+    padding:8px 14px; font-size:13.5px; font-weight:700; color:var(--accent); cursor:pointer;
+  }
+  .logout-btn:hover{ background:var(--accent-light); }
+
+  .wrap{ max-width:1100px; margin:0 auto; padding:32px 28px; }
+  h2{ font-size:22px; font-weight:800; margin:0 0 16px; }
+  .section{ margin-bottom:40px; }
+
+  /* ---- STATS ROW ---- */
+  .stats-row{ display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; margin-bottom:32px; }
+  .stat-card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:18px 20px;
+  }
+  .stat-card .num{ font-size:32px; font-weight:800; color:var(--accent); }
+  .stat-card .lbl{ font-size:13px; color:var(--muted); font-weight:600; margin-top:2px; }
+
+  /* ---- DAY GRID ---- */
+  .day-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px;
+  }
+  .day-tile{
+    background:var(--card); border:1.5px solid var(--border); border-radius:8px;
+    padding:12px 14px; display:flex; flex-direction:column; gap:8px;
+  }
+  .day-tile.open{ border-color:var(--success); background:var(--success-bg); }
+  .day-tile .day-num{ font-weight:800; font-size:15px; }
+  .day-tile .day-num.relax{ color:var(--success); }
+  .toggle-btn{
+    font:inherit; font-size:12px; font-weight:700; padding:6px 10px; border-radius:6px;
+    border:none; cursor:pointer; transition:background .15s;
+  }
+  .toggle-btn.unlock{ background:var(--accent); color:#fff; }
+  .toggle-btn.unlock:hover{ background:var(--accent-dark); }
+  .toggle-btn.lock{ background:#fff; color:var(--danger); border:1px solid var(--danger); }
+  .toggle-btn.lock:hover{ background:var(--danger-bg); }
+  .toggle-btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .bulk-row{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .bulk-btn{
+    font:inherit; font-size:13px; font-weight:700; padding:9px 16px; border-radius:7px;
+    border:none; cursor:pointer;
+  }
+  .bulk-btn.open-all{ background:var(--success); color:#fff; }
+  .bulk-btn.open-all:hover{ background:#178a49; }
+  .bulk-btn.close-all{ background:#fff; color:var(--danger); border:1px solid var(--danger); }
+  .bulk-btn.close-all:hover{ background:var(--danger-bg); }
+
+  /* ---- GROUP TABLE ---- */
+  table{ width:100%; border-collapse:collapse; font-size:14px; }
+  th,td{ text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); }
+  th{ font-weight:700; color:var(--muted); font-size:12.5px; text-transform:uppercase; letter-spacing:.4px; background:var(--bg); }
+  tr:hover td{ background:#f0f2f5; }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--text); color:#fff; font-size:13.5px; font-weight:600;
+    padding:11px 20px; border-radius:8px; display:none; z-index:99;
+  }
+  .toast.show{ display:block; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <span class="badge">Super Admin</span>
+  <button class="logout-btn" onclick="logout()">Log out</button>
+</header>
+
+<div class="wrap">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="num" id="statStudents">—</div><div class="lbl">Students registered</div></div>
+    <div class="stat-card"><div class="num" id="statPasscodes">—</div><div class="lbl">Passcodes remaining</div></div>
+    <div class="stat-card"><div class="num" id="statDaysOpen">—</div><div class="lbl">Days currently open</div></div>
+    <div class="stat-card"><div class="num" id="statGroups">15</div><div class="lbl">Groups</div></div>
+  </div>
+
+  <!-- DAY UNLOCK -->
+  <div class="section">
+    <h2>Day availability</h2>
+    <div class="bulk-row">
+      <button class="bulk-btn open-all" onclick="bulkToggle(true)">Unlock all days</button>
+      <button class="bulk-btn close-all" onclick="bulkToggle(false)">Lock all days</button>
+    </div>
+    <div class="day-grid" id="dayGrid"></div>
+  </div>
+
+  <!-- GROUP OVERVIEW -->
+  <div class="section">
+    <h2>Students per group</h2>
+    <table id="groupTable">
+      <thead><tr><th>Group</th><th>Students</th></tr></thead>
+      <tbody id="groupBody"><tr><td colspan="2" style="color:var(--muted)">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const RELAX_DAYS = [7,14,21,28];
+  const TOTAL_DAYS = 30;
+
+  /* ---- SESSION ---- */
+  const raw = sessionStorage.getItem('sprint4_session');
+  if(!raw){ window.location.href='index.html'; throw new Error(); }
+  const session = JSON.parse(raw);
+  if(session.role !== 'admin'){ window.location.href='index.html'; throw new Error(); }
+
+  function logout(){ sessionStorage.removeItem('sprint4_session'); window.location.href='index.html'; }
+  window.logout = logout;
+
+  function toast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'), 2200);
+  }
+
+  /* ---- STATS ---- */
+  async function loadStats(){
+    const [stuRes, codeRes, dayRes] = await Promise.all([
+      supabase.from('students').select('id', {count:'exact', head:true}),
+      supabase.from('student_passcodes').select('id', {count:'exact', head:true}).eq('used', false),
+      supabase.from('day_availability').select('day').eq('is_open', true)
+    ]);
+    document.getElementById('statStudents').textContent = stuRes.count ?? '—';
+    document.getElementById('statPasscodes').textContent = codeRes.count ?? '—';
+    document.getElementById('statDaysOpen').textContent = (dayRes.data||[]).length;
+  }
+
+  /* ---- DAY GRID ---- */
+  let dayStates = {};
+
+  async function loadDays(){
+    const { data } = await supabase.from('day_availability').select('day, is_open').order('day');
+    dayStates = {};
+    (data||[]).forEach(r => dayStates[r.day] = r.is_open);
+    buildDayGrid();
+    document.getElementById('statDaysOpen').textContent = Object.values(dayStates).filter(Boolean).length;
+  }
+
+  function buildDayGrid(){
+    const grid = document.getElementById('dayGrid');
+    let html = '';
+    for(let d=1; d<=TOTAL_DAYS; d++){
+      const open = !!dayStates[d];
+      const isRelax = RELAX_DAYS.includes(d);
+      html += `<div class="day-tile${open?' open':''}" id="tile${d}">
+        <div class="day-num${isRelax?' relax':''}">Day ${d}${isRelax?' 🌿':''}</div>
+        <button class="toggle-btn ${open?'lock':'unlock'}" id="btn${d}" onclick="toggleDay(${d})">
+          ${open ? '🔒 Lock' : '🔓 Unlock'}
+        </button>
+      </div>`;
+    }
+    grid.innerHTML = html;
+  }
+
+  async function toggleDay(d){
+    const btn = document.getElementById('btn'+d);
+    btn.disabled = true;
+    const newState = !dayStates[d];
+    const { error } = await supabase.from('day_availability')
+      .update({ is_open: newState, opened_at: newState ? new Date().toISOString() : null })
+      .eq('day', d);
+    if(error){ toast('Error updating day '+d); btn.disabled=false; return; }
+    dayStates[d] = newState;
+    const tile = document.getElementById('tile'+d);
+    tile.classList.toggle('open', newState);
+    btn.className = 'toggle-btn ' + (newState?'lock':'unlock');
+    btn.textContent = newState ? '🔒 Lock' : '🔓 Unlock';
+    btn.disabled = false;
+    document.getElementById('statDaysOpen').textContent = Object.values(dayStates).filter(Boolean).length;
+    toast('Day ' + d + (newState?' unlocked':' locked'));
+  }
+  window.toggleDay = toggleDay;
+
+  async function bulkToggle(open){
+    const updates = [];
+    for(let d=1;d<=TOTAL_DAYS;d++){
+      updates.push({ day:d, is_open:open, opened_at: open ? new Date().toISOString() : null });
+    }
+    for(const u of updates){
+      await supabase.from('day_availability').update({ is_open:u.is_open, opened_at:u.opened_at }).eq('day',u.day);
+      dayStates[u.day] = u.is_open;
+    }
+    buildDayGrid();
+    document.getElementById('statDaysOpen').textContent = open ? TOTAL_DAYS : 0;
+    toast(open ? 'All days unlocked' : 'All days locked');
+  }
+  window.bulkToggle = bulkToggle;
+
+  /* ---- GROUP TABLE ---- */
+  async function loadGroups(){
+    const { data: groups } = await supabase.from('groups').select('id, name').order('id');
+    const { data: students } = await supabase.from('students').select('group_id');
+    const counts = {};
+    (students||[]).forEach(s => { counts[s.group_id] = (counts[s.group_id]||0)+1; });
+    const tbody = document.getElementById('groupBody');
+    tbody.innerHTML = (groups||[]).map(g =>
+      `<tr><td>${g.name}</td><td>${counts[g.id]||0}</td></tr>`
+    ).join('');
+  }
+
+  /* ---- INIT ---- */
+  Promise.all([loadStats(), loadDays(), loadGroups()]);
+})();
+</script>
+</body>
+</html>
