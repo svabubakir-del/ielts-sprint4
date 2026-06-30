@@ -298,6 +298,16 @@
         <input type="checkbox" id="t4check">
         <label for="t4check">I have completed the main reading passage</label>
       </div>
+
+      <div class="card" style="margin-top:14px;">
+        <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
+        <p class="instr">Once you've submitted the test in the other tab, come back and enter your score here so your teacher can see your result.</p>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="font-weight:700;font-size:14px;">My score:</label>
+          <input class="fill short" id="t4score" placeholder="e.g. 9"> 
+          <span style="font-size:14px;color:var(--muted);">/ 13 questions</span>
+        </div>
+      </div>
     </section>
 
     <!-- ===================== TASK 5 — FULL READING PASSAGE ===================== -->
@@ -309,12 +319,22 @@
       </div>
 
       <div class="card">
-        <a class="btn link-out" href="Reading (1).html" target="_blank" rel="noopener">📘 Open full reading test</a>
+        <a class="btn link-out" href="../Reading (1).html" target="_blank" rel="noopener">📘 Open full reading test</a>
       </div>
 
       <div class="confirm-row">
         <input type="checkbox" id="t5check">
         <label for="t5check">I have completed the full reading test</label>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
+        <p class="instr">After finishing the full reading test, come back and record your score here.</p>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="font-weight:700;font-size:14px;">My score:</label>
+          <input class="fill short" id="t5score" placeholder="e.g. 28">
+          <span style="font-size:14px;color:var(--muted);">/ 40 questions</span>
+        </div>
       </div>
     </section>
 
@@ -457,12 +477,22 @@
       </div>
 
       <div class="card">
-        <a class="btn link-out" href="Listening (1).html" target="_blank" rel="noopener">🎧 Open full listening test</a>
+        <a class="btn link-out" href="../Listening (1).html" target="_blank" rel="noopener">🎧 Open full listening test</a>
       </div>
 
       <div class="confirm-row">
         <input type="checkbox" id="t9check">
         <label for="t9check">I have completed the full listening test</label>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
+        <p class="instr">After finishing the full listening test, come back and record your score here.</p>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <label style="font-weight:700;font-size:14px;">My score:</label>
+          <input class="fill short" id="t9score" placeholder="e.g. 30">
+          <span style="font-size:14px;color:var(--muted);">/ 40 questions</span>
+        </div>
       </div>
     </section>
 
@@ -561,9 +591,12 @@
   function getTaskForField(fieldId){
     if(/^va|^vb/.test(fieldId)) return 1;
     if(/^mr/.test(fieldId)) return 2;
+    if(fieldId === 't4score' || fieldId === 't4check') return 4;
+    if(fieldId === 't5score' || fieldId === 't5check') return 5;
     if(/^sp|^p[0-9]/.test(fieldId)) return 6;
     if(/^mcq|^gap|^match/.test(fieldId)) return 7;
     if(/^dict|^comp/.test(fieldId)) return 8;
+    if(fieldId === 't9score' || fieldId === 't9check') return 9;
     return 1;
   }
 
