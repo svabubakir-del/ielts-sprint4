@@ -128,7 +128,7 @@
 
   audio{ width:100%; max-width:480px; }
   .video-wrap{
-    position:relative; width:100%; max-width:640px; aspect-ratio:16/9;
+    position:relative; width:100%; aspect-ratio:16/9;
     border-radius:8px; overflow:hidden; background:#000; margin-bottom:18px;
   }
   .video-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
@@ -162,14 +162,22 @@
   .completion-screen{
     position:fixed; inset:0; background:var(--bg); display:none;
     align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:30px;
+    z-index:50;
   }
   .completion-screen.show{ display:flex; }
-  .completion-screen h1{ font-size:32px; margin-bottom:10px; }
-  .completion-screen p{ color:var(--muted); font-size:16px; max-width:420px; }
-  .big-check{
-    width:72px; height:72px; border-radius:50%; background:var(--success-bg); color:var(--success);
-    display:flex; align-items:center; justify-content:center; font-size:36px; margin-bottom:18px;
+  .completion-screen .eyebrow{
+    font-size:13px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--accent);
+    margin-bottom:10px;
   }
+  .completion-screen h1{ font-size:44px; margin:0 0 12px; font-weight:800; }
+  .completion-screen p{ color:var(--muted); font-size:16.5px; max-width:440px; margin:0 0 28px; }
+  .big-check{
+    width:88px; height:88px; border-radius:50%; background:var(--success-bg); color:var(--success);
+    display:flex; align-items:center; justify-content:center; font-size:44px; margin-bottom:22px;
+  }
+  .completion-actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  .completion-actions .btn{ padding:13px 26px; font-size:15px; }
+  #confettiCanvas{ position:fixed; inset:0; pointer-events:none; z-index:51; }
 </style>
 </head>
 <body>
@@ -469,9 +477,15 @@
 
 <div class="completion-screen" id="completionScreen">
   <div class="big-check">✓</div>
-  <h1>Day 1 complete!</h1>
-  <p>Nice work — all 9 tasks for Day 1 are done. Your progress has been saved.</p>
+  <div class="eyebrow">Day 1 of 30</div>
+  <h1>Congratulations — Day 1 complete! 🎉</h1>
+  <p>All 9 tasks are done and your progress has been saved. Take a breather, then come back tomorrow for Day 2.</p>
+  <div class="completion-actions">
+    <a href="student-dashboard.html" class="btn">← Back to dashboard</a>
+    <button class="btn secondary" onclick="reviewDay()">Review my work</button>
+  </div>
 </div>
+<canvas id="confettiCanvas"></canvas>
 
 <script>
 (function(){
@@ -554,9 +568,63 @@
       showTask(current);
     } else {
       document.getElementById('completionScreen').classList.add('show');
+      fireConfetti();
     }
   }
   window.goDone = goDone;
+
+  function reviewDay(){
+    document.getElementById('completionScreen').classList.remove('show');
+    current = 1;
+    saveState();
+    showTask(1);
+  }
+  window.reviewDay = reviewDay;
+
+  /* ---------------- CONFETTI ---------------- */
+  function fireConfetti(){
+    var canvas = document.getElementById('confettiCanvas');
+    var ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var colors = ['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];
+    var pieces = [];
+    for(var i=0;i<140;i++){
+      pieces.push({
+        x: Math.random()*canvas.width,
+        y: -20 - Math.random()*canvas.height*0.5,
+        w: 6+Math.random()*6,
+        h: 8+Math.random()*8,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        speed: 2+Math.random()*3,
+        drift: -1.5+Math.random()*3,
+        rotation: Math.random()*360,
+        spin: -6+Math.random()*12
+      });
+    }
+    var start = Date.now();
+    function frame(){
+      var elapsed = Date.now() - start;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(function(p){
+        p.y += p.speed;
+        p.x += p.drift;
+        p.rotation += p.spin;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation*Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      if(elapsed < 3200){
+        requestAnimationFrame(frame);
+      } else {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
 
   function refreshDoneButton(){
     document.getElementById('doneBtn').disabled = !(teacherMode || isTaskComplete(current));
