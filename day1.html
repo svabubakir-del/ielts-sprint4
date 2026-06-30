@@ -285,6 +285,11 @@
         <a class="btn link-out" href="passage_day_1.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a>
       </div>
       <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+
+      <div class="confirm-row" style="margin-top:14px;">
+        <input type="checkbox" id="t4check">
+        <label for="t4check">I have completed the main reading passage</label>
+      </div>
     </section>
 
     <!-- ===================== TASK 5 — FULL READING PASSAGE ===================== -->
@@ -478,6 +483,24 @@
   var teacherMode = new URLSearchParams(window.location.search).get('teacher') === 'true';
   var taskDone = {1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false,9:false};
 
+  /* ---------------- SESSION STATE (so navigating away and back doesn't reset progress) ---------------- */
+  var STATE_KEY = 'sprint4_day' + DAY + '_state';
+  function saveState(){
+    try{
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({ current: current, taskDone: taskDone }));
+    }catch(e){}
+  }
+  function restoreState(){
+    try{
+      var raw = sessionStorage.getItem(STATE_KEY);
+      if(!raw) return;
+      var saved = JSON.parse(raw);
+      if(saved && saved.taskDone) taskDone = saved.taskDone;
+      if(saved && saved.current) current = saved.current;
+    }catch(e){}
+  }
+  restoreState();
+
   if(teacherMode) document.getElementById('teacherBadge').style.display = 'inline-block';
 
   /* ---------------- PROGRESS TRACKING (stub — wire to Supabase later) ---------------- */
@@ -517,15 +540,17 @@
     window.scrollTo(0,0);
   }
 
-  function goPrev(){ if(current>1){ current--; showTask(current); } }
+  function goPrev(){ if(current>1){ current--; saveState(); showTask(current); } }
   window.goPrev = goPrev;
 
   function goDone(){
     taskDone[current] = true;
     saveProgress(current, true);
+    saveState();
     refreshDots();
     if(current < TOTAL_TASKS){
       current++;
+      saveState();
       showTask(current);
     } else {
       document.getElementById('completionScreen').classList.add('show');
@@ -540,7 +565,10 @@
   /* ---------------- GENERIC COMPLETION CHECK ---------------- */
   function isTaskComplete(n){
     if(teacherMode) return true;
-    if(n===4) return taskDone[4] === true || task4MessageReceived;
+    if(n===4){
+      var t4box = document.getElementById('t4check');
+      return taskDone[4] === true || task4MessageReceived || (t4box && t4box.checked);
+    }
 
     var container = document.getElementById('task'+n);
 
@@ -580,6 +608,7 @@
     if(e.data && e.data.type === 'sprint4-task-done' && e.data.task === 4){
       task4MessageReceived = true;
       taskDone[4] = true;
+      saveState();
       var statusEl = document.getElementById('task4Status');
       statusEl.textContent = '✅ Passage submitted — score ' + e.data.score + ' / ' + e.data.total + '. Walkthrough video is now showing below the questions.';
       statusEl.classList.add('complete');
@@ -979,7 +1008,10 @@
   window.checkPodcast = checkPodcast;
 
   /* ---------------- INIT ---------------- */
-  showTask(1);
+  var t4checkEl = document.getElementById('t4check');
+  if(taskDone[4] && t4checkEl) t4checkEl.checked = true;
+  if(taskDone[4]) task4MessageReceived = true;
+  showTask(current);
 })();
 </script>
 </body>
