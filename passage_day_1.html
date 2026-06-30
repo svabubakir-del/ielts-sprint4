@@ -52,6 +52,10 @@
   .ielts-logo sup{ font-size:.4em; font-style:normal; top:-1.4em; }
   .test-id{ font-weight:700; font-size:calc(17px * var(--fontscale)); color:var(--fg); }
   .topbar-right{ margin-left:auto; display:flex; align-items:center; gap:20px; }
+  .back-to-day{
+    font-weight:700; font-size:calc(14px*var(--fontscale)); color:#0F5C6B; text-decoration:none;
+  }
+  .back-to-day:hover{ text-decoration:underline; }
   .icon-btn{
     background:none; border:none; cursor:pointer; color:var(--fg);
     display:flex; align-items:center; padding:4px;
@@ -258,6 +262,7 @@
 
   <!-- ===================== TOP BAR ===================== -->
   <header class="topbar">
+    <a href="day1.html" class="back-to-day" title="Back to Day 1">← Day 1</a>
     <div class="topbar-right">
       <button class="icon-btn" title="Connection">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 18a2 2 0 110 4 2 2 0 010-4zm0-5c1.7 0 3.2.7 4.3 1.8l-1.5 1.5A4 4 0 0012 16a4 4 0 00-2.8 1.1L7.7 15.6A6 6 0 0112 13zm0-5c3 0 5.8 1.2 7.8 3.2l-1.5 1.5A8.5 8.5 0 0012 11a8.5 8.5 0 00-6.3 2.7L4.2 12.2A11 11 0 0112 8z"/></svg>
