@@ -102,7 +102,13 @@
   .task-row .task-status.done{ background:var(--success-bg); color:var(--success); }
   .task-row .task-status.pending{ background:var(--border); color:var(--muted); }
 
-  .note{ color:var(--muted); font-size:13px; font-style:italic; margin-top:12px; }
+  .task-block{ margin-bottom:12px; }
+  .answer-table{ background:var(--bg); border:1px solid var(--border); border-radius:8px; margin-top:6px; overflow:hidden; }
+  .answer-row{ display:flex; gap:12px; padding:8px 12px; border-bottom:1px solid var(--border); font-size:13px; }
+  .answer-row:last-child{ border-bottom:none; }
+  .ans-label{ color:var(--muted); font-weight:600; min-width:220px; flex-shrink:0; }
+  .ans-val{ color:var(--text); font-weight:500; word-break:break-word; }
+  .no-answers{ font-size:12.5px; color:var(--muted); font-style:italic; padding:6px 0 2px; }
 </style>
 </head>
 <body>
@@ -154,7 +160,7 @@
     <div class="task-breakdown" id="taskBreakdown" style="display:none;">
       <h4 id="breakdownTitle">—</h4>
       <div id="breakdownRows"></div>
-      <p class="note">Individual written answers will be available once answer storage is enabled.</p>
+    </div>
     </div>
   </div>
 </div>
@@ -312,24 +318,88 @@
     document.getElementById('modalDayGrid').innerHTML = html;
   }
 
+  /* ---- LOAD ANSWERS FOR A STUDENT/DAY ---- */
+  async function loadAnswers(studentId, day){
+    const { data } = await supabase
+      .from('answers')
+      .select('field_id, value, task')
+      .eq('student_id', studentId)
+      .eq('day', day);
+    return data || [];
+  }
+
   function showTaskBreakdown(day, studentId){
     const prog = allProgress[studentId] || {};
     const dayProg = prog[day] || {};
     const total = RELAX_DAYS.includes(day) ? 1 : TASKS_PER_DAY;
     document.getElementById('breakdownTitle').textContent = 'Day ' + day + ' — Task breakdown';
-
-    let rows = '';
-    for(let t=1; t<=total; t++){
-      const done = !!dayProg[t];
-      rows += `<div class="task-row">
-        <span class="task-name">Task ${t} — ${taskNames[t]||'Task '+t}</span>
-        <span class="task-status ${done?'done':'pending'}">${done?'✓ Done':'Not done'}</span>
-      </div>`;
-    }
-    document.getElementById('breakdownRows').innerHTML = rows;
+    document.getElementById('breakdownRows').innerHTML = '<div style="color:var(--muted);font-size:13px;">Loading answers…</div>';
     document.getElementById('taskBreakdown').style.display = 'block';
+
+    loadAnswers(studentId, day).then(function(answers){
+      // Group answers by task
+      var byTask = {};
+      answers.forEach(function(a){
+        if(!byTask[a.task]) byTask[a.task] = [];
+        byTask[a.task].push(a);
+      });
+
+      var html = '';
+      for(var t=1; t<=total; t++){
+        var done = !!dayProg[t];
+        var taskAnswers = byTask[t] || [];
+
+        html += '<div class="task-block">';
+        html += '<div class="task-row">';
+        html += '<span class="task-name">Task ' + t + ' — ' + (taskNames[t]||'Task '+t) + '</span>';
+        html += '<span class="task-status ' + (done?'done':'pending') + '">' + (done?'✓ Done':'Not done') + '</span>';
+        html += '</div>';
+
+        if(taskAnswers.length > 0){
+          html += '<div class="answer-table">';
+          taskAnswers.forEach(function(a){
+            var label = formatFieldLabel(a.field_id);
+            var val = a.value === '1' ? '✓ Checked' : a.value === '0' ? '✗ Unchecked' : a.value;
+            if(!val || val.trim() === '') return;
+            html += '<div class="answer-row"><span class="ans-label">' + label + '</span><span class="ans-val">' + escHtml(val) + '</span></div>';
+          });
+          html += '</div>';
+        } else {
+          html += '<div class="no-answers">No answers saved yet</div>';
+        }
+
+        html += '</div>';
+      }
+      document.getElementById('breakdownRows').innerHTML = html;
+    });
   }
   window.showTaskBreakdown = showTaskBreakdown;
+
+  function formatFieldLabel(fieldId){
+    if(fieldId.startsWith('va')) return 'Vocab A — gap ' + fieldId.replace('va','');
+    if(fieldId.startsWith('vb')) return 'Vocab B — gap ' + fieldId.replace('vb','');
+    if(fieldId.startsWith('mrw')) return 'Mini reading — word ' + fieldId.replace('mrw','');
+    if(fieldId.startsWith('radio_mr')) return 'Mini reading — T/F ' + fieldId.replace('radio_mr','');
+    if(fieldId === 't4score') return 'Main reading — self-reported score';
+    if(fieldId === 'check_t4check') return 'Main reading — confirmed complete';
+    if(fieldId === 't5score') return 'Full reading — self-reported score';
+    if(fieldId === 'check_t5check') return 'Full reading — confirmed complete';
+    if(fieldId.startsWith('sp')) return 'Mini listening — Speaker ' + fieldId.replace('sp','');
+    if(fieldId.startsWith('p6')) return 'Mini listening — phrase 6' + fieldId.replace('p6','');
+    if(fieldId.startsWith('p')) return 'Mini listening — phrase ' + fieldId.replace('p','');
+    if(fieldId.startsWith('radio_mcq')) return 'Video MCQ — Q' + fieldId.replace('radio_mcq','');
+    if(fieldId.startsWith('gap')) return 'Video gap fill — ' + fieldId.replace('gap','');
+    if(fieldId.startsWith('match')) return 'Video matching — ' + fieldId.replace('match','');
+    if(fieldId.startsWith('dict')) return 'Podcast dictation — gap ' + fieldId.replace('dict','');
+    if(fieldId.startsWith('radio_comp')) return 'Podcast MCQ — Q' + fieldId.replace('radio_comp','');
+    if(fieldId === 't9score') return 'Full listening — self-reported score';
+    if(fieldId === 'check_t9check') return 'Full listening — confirmed complete';
+    return fieldId;
+  }
+
+  function escHtml(str){
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
 
   function closeModal(e){
     if(e.target === document.getElementById('modalOverlay')) closeModalDirect();
