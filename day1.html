@@ -281,10 +281,10 @@
         <p class="task-sub">Complete the full IELTS-style test below. A walkthrough video will appear once you submit.</p>
       </div>
 
-      <div class="iframe-wrap">
-        <iframe src="passage_day_1.html" id="task4Iframe" title="Main reading passage"></iframe>
+      <div class="card">
+        <a class="btn link-out" href="passage_day_1.html" target="_blank" rel="noopener" onclick="openTask4()">📖 Open main reading passage</a>
       </div>
-      <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test above…</div>
+      <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
     </section>
 
     <!-- ===================== TASK 5 — FULL READING PASSAGE ===================== -->
@@ -566,7 +566,15 @@
   document.addEventListener('input', refreshDoneButton);
   document.addEventListener('change', refreshDoneButton);
 
-  /* ---------------- TASK 4 — IFRAME MESSAGE LISTENER ---------------- */
+  function openTask4(){
+    var statusEl = document.getElementById('task4Status');
+    if(!task4MessageReceived){
+      statusEl.textContent = '📖 Passage opened in a new tab — submit your answers there, then come back to this tab.';
+    }
+  }
+  window.openTask4 = openTask4;
+
+  /* ---------------- TASK 4 — MESSAGE LISTENER (works for iframe OR new-tab) ---------------- */
   var task4MessageReceived = false;
   window.addEventListener('message', function(e){
     if(e.data && e.data.type === 'sprint4-task-done' && e.data.task === 4){
