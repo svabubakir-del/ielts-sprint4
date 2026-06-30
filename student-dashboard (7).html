@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — IELTS Sprint4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1A2238; --ink-soft:#4A5170;
+    --paper:#FBF7F0; --card:#FFFFFF; --border:#E8E1D4;
+    --accent:#E8542D; --accent-dark:#C73F1B; --accent-soft:#FCE3D6;
+    --success:#1F9D55; --success-soft:#DFF3E6;
+    --locked-bg:#F1EEE6; --locked-line:#DFD9C9; --locked-text:#A9A395;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--paper); color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  }
+  .topbar{
+    display:flex; align-items:center; gap:16px; padding:16px 28px;
+    background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:5;
+  }
+  .brand{ font-family:'Archivo Black',sans-serif; font-size:18px; letter-spacing:.5px; }
+  .brand span{ color:var(--accent); }
+  .who{ margin-left:auto; display:flex; align-items:center; gap:14px; }
+  .who .name{ font-weight:700; font-size:14px; }
+  .who .group{ color:var(--ink-soft); font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
+  .logout-btn{
+    background:transparent; border:1.5px solid var(--ink); border-radius:999px; padding:8px 16px;
+    font-size:13px; font-weight:700; color:var(--ink); cursor:pointer;
+  }
+  .logout-btn:hover{ background:var(--ink); color:#fff; }
+
+  .hero{ max-width:1120px; margin:0 auto; padding:40px 28px 6px; }
+  .hero .eyebrow{
+    font-size:12px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--accent);
+    margin-bottom:8px;
+  }
+  .hero h1{
+    font-family:'Archivo Black',sans-serif; font-size:34px; line-height:1.05; margin:0 0 8px; letter-spacing:-.5px;
+  }
+  .hero p{ color:var(--ink-soft); font-size:15px; margin:0; max-width:520px; }
+
+  .progress-summary{ max-width:1120px; margin:24px auto 0; padding:0 28px; }
+  .summary-bar{
+    background:var(--ink); border-radius:14px; padding:18px 24px;
+    display:flex; align-items:center; gap:18px; color:#fff;
+  }
+  .summary-track{ flex:1; height:8px; background:rgba(255,255,255,.18); border-radius:999px; overflow:hidden; }
+  .summary-fill{ height:100%; background:var(--accent); border-radius:999px; transition:width .4s; }
+  .summary-text{ font-family:'Archivo Black',sans-serif; font-size:13px; white-space:nowrap; letter-spacing:.3px; }
+
+  .grid-wrap{ max-width:1120px; margin:0 auto; padding:28px; }
+  .day-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(168px, 1fr)); gap:16px;
+  }
+
+  .day-card{
+    display:block; background:var(--card); border:1.5px solid var(--border); border-radius:10px;
+    text-decoration:none; color:var(--ink); position:relative; overflow:hidden;
+    transition:transform .15s, box-shadow .15s; min-height:128px;
+  }
+  .day-card:hover{ transform:translateY(-3px); box-shadow:0 10px 22px rgba(26,34,56,.12); border-color:var(--accent); }
+  .bib-stripe{ height:6px; background:var(--accent); }
+  .day-card.relax .bib-stripe{ background:var(--success); }
+  .day-card.locked .bib-stripe{ background:var(--locked-line); }
+
+  .bib-body{ padding:14px 16px 16px; }
+  .bib-number{
+    font-family:'Archivo Black',sans-serif; font-size:30px; line-height:1; color:var(--ink); margin-bottom:2px;
+  }
+  .day-card.locked .bib-number{ color:var(--locked-text); }
+  .bib-label{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .day-card.relax .bib-label{ color:var(--success); }
+  .day-card.locked .bib-label{ color:var(--locked-text); }
+
+  .day-progress-track{ height:5px; background:var(--locked-bg); border-radius:999px; overflow:hidden; margin-bottom:7px; }
+  .day-card.locked .day-progress-track{ background:var(--locked-bg); }
+  .day-progress-fill{ height:100%; background:var(--accent); border-radius:999px; }
+  .day-card.relax .day-progress-fill{ background:var(--success); }
+  .day-progress-label{ font-size:11px; color:var(--ink-soft); font-weight:600; }
+  .day-card.locked .day-progress-label{ color:var(--locked-text); }
+
+  .lock-icon{
+    position:absolute; top:14px; right:14px; width:24px; height:24px; border-radius:50%;
+    background:var(--locked-bg); display:flex; align-items:center; justify-content:center; font-size:11px;
+  }
+  .complete-badge{
+    position:absolute; top:13px; right:13px; background:var(--success-soft); color:var(--success);
+    font-size:10px; font-weight:800; padding:4px 8px; border-radius:999px; letter-spacing:.3px;
+  }
+  .relax-tag{
+    position:absolute; top:13px; right:13px; font-size:16px;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">IELTS <span>SPRINT4</span></div>
+  <div class="who">
+    <div>
+      <div class="name" id="studentName">—</div>
+      <div class="group" id="studentGroup">—</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log out</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="eyebrow">30-Day Training Block</div>
+  <h1>Your Sprint Board</h1>
+  <p>Nine tasks a day, four checkpoints for recovery. Run the full distance, one bib at a time.</p>
+</div>
+
+<div class="progress-summary">
+  <div class="summary-bar">
+    <div class="summary-text" id="summaryText">0 / 30 DAYS COMPLETE</div>
+    <div class="summary-track"><div class="summary-fill" id="summaryFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="grid-wrap">
+  <div class="day-grid" id="dayGrid"></div>
+</div>
+
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const RELAX_DAYS = [7, 14, 21, 28];
+  const TASKS_PER_DAY = 9;
+  const TOTAL_DAYS = 30;
+
+  /* ---------------- SESSION CHECK ---------------- */
+  const sessionRaw = sessionStorage.getItem('sprint4_session');
+  if(!sessionRaw){
+    window.location.href = 'index.html';
+    throw new Error('no session');
+  }
+  const session = JSON.parse(sessionRaw);
+  if(session.role !== 'student'){
+    window.location.href = 'index.html';
+    throw new Error('wrong role');
+  }
+
+  document.getElementById('studentName').textContent = session.name || 'Student';
+
+  function logout(){
+    sessionStorage.removeItem('sprint4_session');
+    window.location.href = 'index.html';
+  }
+  window.logout = logout;
+
+  /* ---------------- LOAD GROUP NAME ---------------- */
+  (async function loadGroup(){
+    if(!session.groupId) return;
+    const { data } = await supabase.from('groups').select('name').eq('id', session.groupId).maybeSingle();
+    if(data) document.getElementById('studentGroup').textContent = data.name;
+  })();
+
+  /* ---------------- BUILD DAY GRID ---------------- */
+  const grid = document.getElementById('dayGrid');
+
+  function taskCountForDay(day){
+    return RELAX_DAYS.includes(day) ? 1 : TASKS_PER_DAY;
+  }
+
+  function buildSkeleton(){
+    let html = '';
+    for(let d=1; d<=TOTAL_DAYS; d++){
+      const isRelax = RELAX_DAYS.includes(d);
+      const padded = String(d).padStart(2,'0');
+      html += `<a href="#" class="day-card locked ${isRelax?'relax':''}" id="dayCard${d}">
+        <div class="bib-stripe"></div>
+        <div class="bib-body">
+          <div class="lock-icon" id="dayLock${d}">🔒</div>
+          <div class="bib-number">${padded}</div>
+          <div class="bib-label">${isRelax ? 'Recovery' : 'Day ' + d}</div>
+          <div class="day-progress-track"><div class="day-progress-fill" id="dayFill${d}" style="width:0%"></div></div>
+          <div class="day-progress-label" id="dayLabel${d}">0 / ${taskCountForDay(d)}</div>
+        </div>
+      </a>`;
+    }
+    grid.innerHTML = html;
+  }
+  buildSkeleton();
+
+  /* ---------------- LOAD AVAILABILITY + PROGRESS ---------------- */
+  async function loadDashboard(){
+    const { data: availability } = await supabase.from('day_availability').select('day, is_open');
+    const openDays = new Set((availability || []).filter(r => r.is_open).map(r => r.day));
+
+    const { data: progressRows } = await supabase
+      .from('progress')
+      .select('day, task, completed')
+      .eq('student_id', session.id)
+      .eq('completed', true);
+
+    const completedByDay = {};
+    (progressRows || []).forEach(r => {
+      completedByDay[r.day] = (completedByDay[r.day] || 0) + 1;
+    });
+
+    let daysFullyComplete = 0;
+
+    for(let d=1; d<=TOTAL_DAYS; d++){
+      const isOpen = openDays.has(d);
+      const total = taskCountForDay(d);
+      const done = Math.min(completedByDay[d] || 0, total);
+      const pct = Math.round((done/total)*100);
+
+      const cardEl = document.getElementById('dayCard'+d);
+      const lockEl = document.getElementById('dayLock'+d);
+      const fillEl = document.getElementById('dayFill'+d);
+      const labelEl = document.getElementById('dayLabel'+d);
+
+      fillEl.style.width = pct + '%';
+      labelEl.textContent = done + ' / ' + total;
+
+      if(isOpen){
+        cardEl.classList.remove('locked');
+        cardEl.href = 'day' + d + '.html';
+        lockEl.remove();
+        if(done >= total){
+          daysFullyComplete++;
+          const badge = document.createElement('div');
+          badge.className = 'complete-badge';
+          badge.textContent = 'DONE';
+          cardEl.querySelector('.bib-body').appendChild(badge);
+        } else if(RELAX_DAYS.includes(d)){
+          const tag = document.createElement('div');
+          tag.className = 'relax-tag';
+          tag.textContent = '🌿';
+          cardEl.querySelector('.bib-body').appendChild(tag);
+        }
+      }
+    }
+
+    document.getElementById('summaryText').textContent = daysFullyComplete + ' / ' + TOTAL_DAYS + ' DAYS COMPLETE';
+    document.getElementById('summaryFill').style.width = Math.round((daysFullyComplete/TOTAL_DAYS)*100) + '%';
+  }
+
+  loadDashboard().catch(function(err){
+    console.error(err);
+  });
+})();
+</script>
+</body>
+</html>
