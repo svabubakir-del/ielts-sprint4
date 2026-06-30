@@ -815,7 +815,9 @@
       setTimeout(function(){ wt.scrollIntoView({behavior:'smooth', block:'start'}); }, 600);
     }
 
-    if(window.parent && window.parent !== window){
+    if(window.opener){
+      window.opener.postMessage({ type:'sprint4-task-done', task:4, score:score, total:TOTAL }, '*');
+    } else if(window.parent && window.parent !== window){
       window.parent.postMessage({ type:'sprint4-task-done', task:4, score:score, total:TOTAL }, '*');
     }
   }
