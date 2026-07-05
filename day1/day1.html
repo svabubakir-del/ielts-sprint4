@@ -196,7 +196,7 @@
     <!-- ===================== TASK 1 — VOCABULARY ===================== -->
     <section class="task" id="task1" data-task="1">
       <div class="task-head">
-        <div class="task-eyebrow">Task 1 of 9</div>
+        <div class="task-eyebrow">Task 1 of 8</div>
         <h2 class="task-title">Vocabulary</h2>
         <p class="task-sub">Learn the 20 words below, then complete both exercises.</p>
       </div>
@@ -238,7 +238,7 @@
     <!-- ===================== TASK 2 — MINI READING ===================== -->
     <section class="task" id="task2" data-task="2">
       <div class="task-head">
-        <div class="task-eyebrow">Task 2 of 9</div>
+        <div class="task-eyebrow">Task 2 of 8</div>
         <h2 class="task-title">Mini reading</h2>
         <p class="task-sub">Read the text, then decide True/False and find the matching word.</p>
       </div>
@@ -264,9 +264,9 @@
     <!-- ===================== TASK 3 — ARTICLE ===================== -->
     <section class="task" id="task3" data-task="3">
       <div class="task-head">
-        <div class="task-eyebrow">Task 3 of 9</div>
+        <div class="task-eyebrow">Task 3 of 8</div>
         <h2 class="task-title">Article</h2>
-        <p class="task-sub">Read the article, then confirm below.</p>
+        <p class="task-sub">Read the article, tick the box, then answer the comprehension questions below.</p>
       </div>
 
       <div class="card">
@@ -276,15 +276,100 @@
       </div>
 
       <div class="confirm-row">
-        <input type="checkbox" id="t3check">
+        <input type="checkbox" id="t3check" onchange="revealArticleQs()">
         <label for="t3check">I have read the article</label>
+      </div>
+
+      <!-- Comprehension questions — hidden until checkbox ticked -->
+      <div id="articleQs" style="display:none; margin-top:18px;">
+
+        <div class="card">
+          <h4>Comprehension — True / False / Not Given</h4>
+          <p class="instr">Decide whether each statement is True, False, or Not Given according to the article.</p>
+
+          <div class="q-block">
+            <div class="q-text">1. Modern geologists rely entirely on visual observations, just as early surveyors did.</div>
+            <div class="tf-toggle">
+              <label><input type="radio" name="aq1" id="aq1T" value="True"> True</label>
+              <label><input type="radio" name="aq1" id="aq1F" value="False"> False</label>
+              <label><input type="radio" name="aq1" id="aq1N" value="Not Given"> Not Given</label>
+            </div>
+          </div>
+
+          <div class="q-block">
+            <div class="q-text">2. Tectonic shifts and landslides can disrupt the expected order of rock layers in a locality.</div>
+            <div class="tf-toggle">
+              <label><input type="radio" name="aq2" id="aq2T" value="True"> True</label>
+              <label><input type="radio" name="aq2" id="aq2F" value="False"> False</label>
+              <label><input type="radio" name="aq2" id="aq2N" value="Not Given"> Not Given</label>
+            </div>
+          </div>
+
+          <div class="q-block">
+            <div class="q-text">3. William Smith originally developed his geological mapping methods to help military engineers.</div>
+            <div class="tf-toggle">
+              <label><input type="radio" name="aq3" id="aq3T" value="True"> True</label>
+              <label><input type="radio" name="aq3" id="aq3F" value="False"> False</label>
+              <label><input type="radio" name="aq3" id="aq3N" value="Not Given"> Not Given</label>
+            </div>
+          </div>
+
+          <div class="q-block">
+            <div class="q-text">4. The geological column allows scientists to correlate rock layers across different continents.</div>
+            <div class="tf-toggle">
+              <label><input type="radio" name="aq4" id="aq4T" value="True"> True</label>
+              <label><input type="radio" name="aq4" id="aq4F" value="False"> False</label>
+              <label><input type="radio" name="aq4" id="aq4N" value="Not Given"> Not Given</label>
+            </div>
+          </div>
+
+          <div class="q-block">
+            <div class="q-text">5. Dr. Helena Vance conducted her fieldwork exclusively in Southeast Asia.</div>
+            <div class="tf-toggle">
+              <label><input type="radio" name="aq5" id="aq5T" value="True"> True</label>
+              <label><input type="radio" name="aq5" id="aq5F" value="False"> False</label>
+              <label><input type="radio" name="aq5" id="aq5N" value="Not Given"> Not Given</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Comprehension — Multiple choice</h4>
+          <div class="q-block" id="aqMcq1Block">
+            <div class="q-text">6. What does the article say about elusive marker beds?</div>
+            <div class="opts">
+              <label class="opt-row" data-val="A"><input type="radio" name="aq6" value="A"> A) They are found only near quarry walls</label>
+              <label class="opt-row" data-val="B"><input type="radio" name="aq6" value="B"> B) They help identify identical time horizons across separated geographic zones</label>
+              <label class="opt-row" data-val="C"><input type="radio" name="aq6" value="C"> C) They were first described by William Smith in 1799</label>
+              <label class="opt-row" data-val="D"><input type="radio" name="aq6" value="D"> D) They can only be found using satellite imaging</label>
+            </div>
+          </div>
+
+          <div class="q-block" id="aqMcq2Block">
+            <div class="q-text">7. According to the article, what drives the meticulous attention to detail in stratigraphic research?</div>
+            <div class="opts">
+              <label class="opt-row" data-val="A"><input type="radio" name="aq7" value="A"> A) Government regulations requiring detailed reports</label>
+              <label class="opt-row" data-val="B"><input type="radio" name="aq7" value="B"> B) Competition between rival research teams</label>
+              <label class="opt-row" data-val="C"><input type="radio" name="aq7" value="C"> C) A conviction that even the smallest rock formation holds vital clues about Earth's history</label>
+              <label class="opt-row" data-val="D"><input type="radio" name="aq7" value="D"> D) The high commercial value of fossils found during surveys</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="check-row">
+          <button class="btn secondary" onclick="checkArticleQs()">Check answers</button>
+        </div>
+        <details class="answer-key" id="ansKey3">
+          <summary>Answer key</summary>
+          <div class="answer-key-body" id="ansKey3Body"></div>
+        </details>
       </div>
     </section>
 
     <!-- ===================== TASK 4 — MAIN READING PASSAGE ===================== -->
     <section class="task" id="task4" data-task="4">
       <div class="task-head">
-        <div class="task-eyebrow">Task 4 of 9</div>
+        <div class="task-eyebrow">Task 4 of 8</div>
         <h2 class="task-title">Main reading passage</h2>
         <p class="task-sub">Complete the full IELTS-style test below. A walkthrough video will appear once you submit.</p>
       </div>
@@ -310,38 +395,10 @@
       </div>
     </section>
 
-    <!-- ===================== TASK 5 — FULL READING PASSAGE ===================== -->
+    <!-- ===================== TASK 5 — LISTENING MINI TASK ===================== -->
     <section class="task" id="task5" data-task="5">
       <div class="task-head">
-        <div class="task-eyebrow">Task 5 of 9</div>
-        <h2 class="task-title">Full reading passage</h2>
-        <p class="task-sub">This opens separately and isn't tracked here — just confirm once you're done.</p>
-      </div>
-
-      <div class="card">
-        <a class="btn link-out" href="../Reading (1).html" target="_blank" rel="noopener">📘 Open full reading test</a>
-      </div>
-
-      <div class="confirm-row">
-        <input type="checkbox" id="t5check">
-        <label for="t5check">I have completed the full reading test</label>
-      </div>
-
-      <div class="card" style="margin-top:14px;">
-        <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
-        <p class="instr">After finishing the full reading test, come back and record your score here.</p>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <label style="font-weight:700;font-size:14px;">My score:</label>
-          <input class="fill short" id="t5score" placeholder="e.g. 28">
-          <span style="font-size:14px;color:var(--muted);">/ 40 questions</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== TASK 6 — LISTENING MINI TASK ===================== -->
-    <section class="task" id="task6" data-task="6">
-      <div class="task-head">
-        <div class="task-eyebrow">Task 6 of 9</div>
+        <div class="task-eyebrow">Task 5 of 8</div>
         <h2 class="task-title">Listening mini task</h2>
       </div>
 
@@ -388,16 +445,16 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkListeningMini()">Check answers</button>
       </div>
-      <details class="answer-key" id="ansKey6">
+      <details class="answer-key" id="ansKey5">
         <summary>Answer key</summary>
-        <div class="answer-key-body" id="ansKey6Body"></div>
+        <div class="answer-key-body" id="ansKey5Body"></div>
       </details>
     </section>
 
-    <!-- ===================== TASK 7 — VIDEO ===================== -->
-    <section class="task" id="task7" data-task="7">
+    <!-- ===================== TASK 6 — VIDEO ===================== -->
+    <section class="task" id="task6" data-task="6">
       <div class="task-head">
-        <div class="task-eyebrow">Task 7 of 9</div>
+        <div class="task-eyebrow">Task 6 of 8</div>
         <h2 class="task-title">Video — If Everyone Planted a Tree</h2>
       </div>
 
@@ -431,16 +488,16 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkVideoTask()">Check answers</button>
       </div>
-      <details class="answer-key" id="ansKey7">
+      <details class="answer-key" id="ansKey6">
         <summary>Answer key</summary>
-        <div class="answer-key-body" id="ansKey7Body"></div>
+        <div class="answer-key-body" id="ansKey6Body"></div>
       </details>
     </section>
 
-    <!-- ===================== TASK 8 — PODCAST ===================== -->
-    <section class="task" id="task8" data-task="8">
+    <!-- ===================== TASK 7 — PODCAST ===================== -->
+    <section class="task" id="task7" data-task="7">
       <div class="task-head">
-        <div class="task-eyebrow">Task 8 of 9</div>
+        <div class="task-eyebrow">Task 7 of 8</div>
         <h2 class="task-title">Podcast — Can trees remember?</h2>
       </div>
 
@@ -462,36 +519,46 @@
       <div class="check-row">
         <button class="btn secondary" onclick="checkPodcast()">Check answers</button>
       </div>
-      <details class="answer-key" id="ansKey8">
+      <details class="answer-key" id="ansKey7">
         <summary>Answer key</summary>
-        <div class="answer-key-body" id="ansKey8Body"></div>
+        <div class="answer-key-body" id="ansKey7Body"></div>
       </details>
     </section>
 
-    <!-- ===================== TASK 9 — FULL LISTENING ===================== -->
-    <section class="task" id="task9" data-task="9">
+    <!-- ===================== TASK 8 — FULL LISTENING ===================== -->
+    <section class="task" id="task8" data-task="8">
       <div class="task-head">
-        <div class="task-eyebrow">Task 9 of 9</div>
+        <div class="task-eyebrow">Task 8 of 8</div>
         <h2 class="task-title">Full listening test</h2>
-        <p class="task-sub">This opens separately and isn't tracked here — just confirm once you're done.</p>
+        <p class="task-sub">Open the test in a new tab, complete it, then come back and enter your score. The walkthrough video will appear below.</p>
       </div>
 
       <div class="card">
         <a class="btn link-out" href="../Listening (1).html" target="_blank" rel="noopener">🎧 Open full listening test</a>
       </div>
 
-      <div class="confirm-row">
-        <input type="checkbox" id="t9check">
+      <div class="confirm-row" style="margin-top:14px;">
+        <input type="checkbox" id="t9check" onchange="revealListeningWalkthrough()">
         <label for="t9check">I have completed the full listening test</label>
       </div>
 
       <div class="card" style="margin-top:14px;">
         <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
-        <p class="instr">After finishing the full listening test, come back and record your score here.</p>
+        <p class="instr">After finishing, come back and record your score here.</p>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <label style="font-weight:700;font-size:14px;">My score:</label>
           <input class="fill short" id="t9score" placeholder="e.g. 30">
           <span style="font-size:14px;color:var(--muted);">/ 40 questions</span>
+        </div>
+      </div>
+
+      <div id="listeningWalkthrough" style="display:none; margin-top:18px;">
+        <div class="card">
+          <h3 style="margin:0 0 10px;">Walkthrough</h3>
+          <p class="instr">Watch this walkthrough of the listening test and answers.</p>
+          <div class="video-wrap">
+            <iframe src="https://www.youtube.com/embed/DNRAmF4O3nU" title="Full listening walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
         </div>
       </div>
     </section>
@@ -501,7 +568,7 @@
 
 <footer class="navbar">
   <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
-  <span class="nav-info" id="navInfo">Task 1 of 9</span>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
   <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
 </footer>
 
@@ -509,7 +576,7 @@
   <div class="big-check">✓</div>
   <div class="eyebrow">Day 1 of 30</div>
   <h1>Congratulations — Day 1 complete! 🎉</h1>
-  <p>All 9 tasks are done and your progress has been saved. Take a breather, then come back tomorrow for Day 2.</p>
+  <p>All 8 tasks are done and your progress has been saved. Take a breather, then come back tomorrow for Day 2.</p>
   <div class="completion-actions">
     <a href="../student-dashboard.html" class="btn">← Back to dashboard</a>
     <button class="btn secondary" onclick="reviewDay()">Review my work</button>
@@ -524,10 +591,10 @@
   "use strict";
 
   var DAY = 1;
-  var TOTAL_TASKS = 9;
+  var TOTAL_TASKS = 8;
   var current = 1;
   var teacherMode = new URLSearchParams(window.location.search).get('teacher') === 'true';
-  var taskDone = {1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false,9:false};
+  var taskDone = {1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
 
   /* ---------------- SESSION STATE (so navigating away and back doesn't reset progress) ---------------- */
   var STATE_KEY = 'sprint4_day' + DAY + '_state';
@@ -590,13 +657,13 @@
 
   function getTaskForField(fieldId){
     if(/^va|^vb/.test(fieldId)) return 1;
-    if(/^mr/.test(fieldId)) return 2;
+    if(/^mr|^radio_mr/.test(fieldId)) return 2;
+    if(/^aq|^radio_aq/.test(fieldId)) return 3;
     if(fieldId === 't4score' || fieldId === 't4check') return 4;
-    if(fieldId === 't5score' || fieldId === 't5check') return 5;
-    if(/^sp|^p[0-9]/.test(fieldId)) return 6;
-    if(/^mcq|^gap|^match/.test(fieldId)) return 7;
-    if(/^dict|^comp/.test(fieldId)) return 8;
-    if(fieldId === 't9score' || fieldId === 't9check') return 9;
+    if(/^sp|^p[0-9]/.test(fieldId)) return 5;
+    if(/^mcq|^gap|^match|^radio_mcq/.test(fieldId)) return 6;
+    if(/^dict|^comp|^radio_comp/.test(fieldId)) return 7;
+    if(fieldId === 't9score' || fieldId === 't9check') return 8;
     return 1;
   }
 
@@ -976,7 +1043,53 @@
   }
   window.checkMiniReading = checkMiniReading;
 
-  /* ================= TASK 6 — LISTENING MINI ================= */
+  /* ================= TASK 3 — ARTICLE COMPREHENSION ================= */
+  function revealArticleQs(){
+    var cb = document.getElementById('t3check');
+    var qs = document.getElementById('articleQs');
+    if(cb && cb.checked && qs) qs.style.display = 'block';
+    refreshDoneButton();
+  }
+  window.revealArticleQs = revealArticleQs;
+
+  var articleTFAns = {aq1:'False', aq2:'True', aq3:'Not Given', aq4:'True', aq5:'Not Given'};
+  var articleMcqAns = {aq6:'B', aq7:'C'};
+
+  function checkArticleQs(){
+    var right = 0, total = 7;
+    Object.keys(articleTFAns).forEach(function(name){
+      var chosen = document.querySelector('input[name="'+name+'"]:checked');
+      if(chosen && chosen.value === articleTFAns[name]) right++;
+    });
+    Object.keys(articleMcqAns).forEach(function(name){
+      var chosen = document.querySelector('input[name="'+name+'"]:checked');
+      if(chosen && chosen.value === articleMcqAns[name]) right++;
+    });
+    alert('Article comprehension: ' + right + '/' + total + ' correct.');
+
+    var keyLines = [
+      '1. False — Modern geologists use chemical analysis and high-resolution structural mapping, not just visual observations.',
+      '2. True — The article states tectonic shifts can tilt and flip massive stone blocks.',
+      '3. Not Given — Smith developed methods to help canal engineers and agriculturists, not military engineers.',
+      '4. True — The geological column is described as "the baseline framework for all exploration efforts".',
+      '5. Not Given — The article does not mention where Dr. Vance conducted her research.',
+      '6. B — Elusive marker beds "indicate identical time horizons across vastly separated geographic zones."',
+      '7. C — "This meticulous attention to detail is driven by a deep conviction that even the smallest localized rock formation holds vital clues."'
+    ];
+    document.getElementById('ansKey3Body').innerHTML = keyLines.join('<br>');
+    document.getElementById('ansKey3').classList.add('show');
+    refreshDoneButton();
+  }
+  window.checkArticleQs = checkArticleQs;
+
+  /* ================= TASK 8 — LISTENING WALKTHROUGH REVEAL ================= */
+  function revealListeningWalkthrough(){
+    var cb = document.getElementById('t9check');
+    var wt = document.getElementById('listeningWalkthrough');
+    if(cb && cb.checked && wt) wt.style.display = 'block';
+    refreshDoneButton();
+  }
+  window.revealListeningWalkthrough = revealListeningWalkthrough;
   var speakerAns = {sp1:"C", sp2:"B", sp3:"A"};
   var phraseAns = {p1:"lose track of time", p2:"save time", p3:"spend time", p4:"time-consuming", p5:"took so long", p6a:"the right time", p6b:"on time", p7:"in time", p8:"take my time"};
 
@@ -1000,8 +1113,8 @@
     var ph = ['p1','p2','p3','p4','p5'].map(function(id,i){ return (i+1)+'. <b>'+phraseAns[id]+'</b>'; }).join('<br>')
       + '<br>6. <b>'+phraseAns.p6a+'</b> / <b>'+phraseAns.p6b+'</b>'
       + '<br>7. <b>'+phraseAns.p7+'</b><br>8. <b>'+phraseAns.p8+'</b>';
-    document.getElementById('ansKey6Body').innerHTML = sp + '<br><br>' + ph;
-    document.getElementById('ansKey6').classList.add('show');
+    document.getElementById('ansKey5Body').innerHTML = sp + '<br><br>' + ph;
+    document.getElementById('ansKey5').classList.add('show');
   }
   window.checkListeningMini = checkListeningMini;
 
@@ -1118,8 +1231,8 @@
     var mcqKey = '<b>Multiple choice:</b><br>' + mcqData.map(function(q){ return q.n+'. '+q.ans; }).join(' &nbsp;•&nbsp; ');
     var gapKey = '<br><br><b>Gap fill:</b><br>' + gapData.map(function(g){ return g.n+'. '+g.ans; }).join(' &nbsp;•&nbsp; ');
     var matchKey = '<br><br><b>Matching:</b><br>' + matchData.map(function(m){ return m.n+'. '+m.ans; }).join(' &nbsp;•&nbsp; ');
-    document.getElementById('ansKey7Body').innerHTML = mcqKey + gapKey + matchKey;
-    document.getElementById('ansKey7').classList.add('show');
+    document.getElementById('ansKey6Body').innerHTML = mcqKey + gapKey + matchKey;
+    document.getElementById('ansKey6').classList.add('show');
   }
   window.checkVideoTask = checkVideoTask;
 
@@ -1221,8 +1334,8 @@
 
     var dictKey = '<b>Dictation:</b><br>' + Object.keys(dictAns).map(function(n){ return n+'. '+dictAns[n]; }).join(' &nbsp;•&nbsp; ');
     var compKey = '<br><br><b>Comprehension:</b><br>' + compData.map(function(q){ return q.n+'. '+q.ans; }).join(' &nbsp;•&nbsp; ');
-    document.getElementById('ansKey8Body').innerHTML = dictKey + compKey;
-    document.getElementById('ansKey8').classList.add('show');
+    document.getElementById('ansKey7Body').innerHTML = dictKey + compKey;
+    document.getElementById('ansKey7').classList.add('show');
   }
   window.checkPodcast = checkPodcast;
 
