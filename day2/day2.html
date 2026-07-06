@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 2</title>
+<style>
+  :root{
+    --accent:#0F5C6B; --accent-dark:#0c4a57; --accent-light:#e6eef0;
+    --bg:#f7f8fa; --card:#ffffff; --border:#e2e4e8;
+    --text:#1a1a1a; --muted:#6b7280;
+    --success:#1f9d55; --success-bg:#e6f6ec;
+    --danger:#d23a3a; --danger-bg:#fbeaea;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    display:flex;flex-direction:column;height:100vh;overflow:hidden;
+  }
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}
+  .brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}
+  .dot.done{background:var(--success);}
+  .dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}
+  .wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}
+  .task.active{display:block;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}
+  .task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}
+  .task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}
+  .card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+  .chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}
+  input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}
+  .opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}
+  .opt-row input{width:16px;height:16px;}
+  .opt-row.correct{color:var(--success);font-weight:700;}
+  .opt-row.wrong{color:var(--danger);}
+  .tf-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+  .tf-toggle{display:flex;gap:10px;}
+  .tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}
+  .btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  .btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}
+  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}
+  .status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}
+  .confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}
+  .speaker{font-weight:800;display:block;margin-top:10px;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}
+  .answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}
+  .answer-key summary::before{content:"▸";transition:transform .15s;}
+  .answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}
+  .navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}
+  .completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}
+  .completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 2</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+
+<main class="content">
+<div class="wrap">
+
+<!-- TASK 1 — VOCABULARY -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 1 of 8</div>
+    <h2 class="task-title">Vocabulary</h2>
+    <p class="task-sub">Learn the 20 words below, then complete both exercises.</p>
+  </div>
+  <div class="card">
+    <h3>Word list</h3>
+    <div class="wordbank">
+      <span class="chip">intensive farming</span><span class="chip">nutrient</span><span class="chip">notable</span>
+      <span class="chip">absorb</span><span class="chip">diluted</span><span class="chip">controversial</span>
+      <span class="chip">yield</span><span class="chip">trace elements</span><span class="chip">deficiency</span>
+      <span class="chip">susceptibility</span><span class="chip">deteriorate</span><span class="chip">minimise</span>
+      <span class="chip">harvested</span><span class="chip">bruising</span><span class="chip">deplete</span>
+      <span class="chip">preservative</span><span class="chip">maligned</span><span class="chip">readily</span>
+      <span class="chip">degradation</span><span class="chip">refined</span>
+    </div>
+  </div>
+  <div class="card">
+    <h4>Exercise A — Complete the text (longer, easier)</h4>
+    <p class="instr">Complete the text with words from the box above.</p>
+    <div class="passage-text" id="vocabA-text"></div>
+  </div>
+  <div class="card">
+    <h4>Exercise B — Complete each sentence (medium, harder)</h4>
+    <p class="instr">Complete each sentence with ONE word or phrase from the box. Each is used only once.</p>
+    <div id="vocabB-list"></div>
+  </div>
+  <div class="check-row">
+    <button class="btn secondary" onclick="checkVocab()">Check answers</button>
+  </div>
+  <details class="answer-key" id="ansKey1">
+    <summary>Answer key</summary>
+    <div class="answer-key-body" id="ansKey1Body"></div>
+  </details>
+</section>
+
+<!-- TASK 2 — MINI READING -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 2 of 8</div>
+    <h2 class="task-title">Mini reading</h2>
+    <p class="task-sub">Read the text, then decide True/False and find the matching word.</p>
+  </div>
+  <div class="card">
+    <h3>Intensive farming and nutritional decline</h3>
+    <p class="passage-text">Modern intensive farming methods have dramatically increased the volume of food available to consumers worldwide. However, scientists have found that crops grown using these methods often contain fewer nutrients than those produced a generation ago. One notable reason for this is that plants grown too rapidly are unable to absorb essential minerals, including vital trace elements, before they are harvested. The resulting food may appear healthy but has been significantly diluted in terms of its true nutritional value. To minimise the damage caused by soil degradation, some farmers are returning to traditional crop rotation techniques. These methods help replenish depleted soils naturally, without the need for synthetic preservatives or artificial inputs. Despite being maligned by large agricultural corporations for many years, organic farming is now recognised as a sustainable alternative capable of restoring yields without further depleting essential minerals from the earth.</p>
+  </div>
+  <div class="card" id="mini-reading-qs">
+    <p class="instr">Decide True or False. Then write the word in the text that means the same (statements 1–3) or the opposite (statements 4–5) of the bold word.</p>
+  </div>
+  <div class="check-row">
+    <button class="btn secondary" onclick="checkMiniReading()">Check answers</button>
+  </div>
+  <details class="answer-key" id="ansKey2">
+    <summary>Answer key</summary>
+    <div class="answer-key-body" id="ansKey2Body"></div>
+  </details>
+</section>
+
+<!-- TASK 3 — ARTICLE -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 3 of 8</div>
+    <h2 class="task-title">Article</h2>
+    <p class="task-sub">Read the article, tick the box, then answer the comprehension questions below.</p>
+  </div>
+  <div class="card">
+    <h3>The Changing Anatomy of Agriculture</h3>
+    <p class="instr">A research feature on nutritional decline in modern food systems, with a full vocabulary glossary at the end.</p>
+    <a class="btn link-out" href="article-day-2.html" target="_blank" rel="noopener">📄 Open article</a>
+  </div>
+  <div class="confirm-row">
+    <input type="checkbox" id="t3check" onchange="revealArticleQs()">
+    <label for="t3check">I have read the article</label>
+  </div>
+  <div id="articleQs" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h4>Section 1 — Multiple choice</h4>
+      <div class="q-block" id="aqMcq1Block">
+        <div class="q-text">1. What is the main paradox discussed in the article?</div>
+        <div class="opts">
+          <label class="opt-row" data-val="A"><input type="radio" name="aq1" value="A"> A) Modern agricultural output has declined while population demand has risen.</label>
+          <label class="opt-row" data-val="B"><input type="radio" name="aq1" value="B"> B) Technological advancements have made food more colourful but completely tasteless.</label>
+          <label class="opt-row" data-val="C"><input type="radio" name="aq1" value="C"> C) Increased crop yields have occurred alongside a decrease in nutritional density.</label>
+          <label class="opt-row" data-val="D"><input type="radio" name="aq1" value="D"> D) Synthetic fertilizers are more expensive than traditional farming methods.</label>
+        </div>
+      </div>
+      <div class="q-block" id="aqMcq2Block">
+        <div class="q-text">2. According to the writer, high-yielding cultivars compromise food quality because...</div>
+        <div class="opts">
+          <label class="opt-row" data-val="A"><input type="radio" name="aq2" value="A"> A) they are highly susceptible to global pests.</label>
+          <label class="opt-row" data-val="B"><input type="radio" name="aq2" value="B"> B) they grow too rapidly to absorb sufficient minerals from the soil.</label>
+          <label class="opt-row" data-val="C"><input type="radio" name="aq2" value="C"> C) they require advanced digital monitoring that alters their structure.</label>
+          <label class="opt-row" data-val="D"><input type="radio" name="aq2" value="D"> D) their seeds are engineered using harmful chemical profiling.</label>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Section 2 — Matching information</h4>
+      <p class="instr">Which paragraph (A–D) contains the following information? A = Introduction, B = The Mechanization of Yield, C = How Historical Baselines Guide, D = The Scientific Treatise</p>
+      <div class="passage-text">
+        <p>3. A reference to a historical method that treated farming as a balanced ecosystem rather than an extractive industry.
+        <select class="fill" id="aq3"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option></select></p>
+        <p>4. Mention of specific scientific technology used to identify mineral deficiencies in heavily farmed regions.
+        <select class="fill" id="aq4"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option></select></p>
+        <p>5. The assertion that a food item today holds fewer essential nutrients than it did half a century ago.
+        <select class="fill" id="aq5"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option></select></p>
+        <p>6. An explanation of the strict academic requirements necessary when a research group is contracted to audit a supply chain.
+        <select class="fill" id="aq6"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option></select></p>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Section 3 — Summary completion (no more than two words)</h4>
+      <p class="instr">Complete the summary using NO MORE THAN TWO WORDS from the article for each answer.</p>
+      <div class="passage-text">
+        <p>Modern sustainable farming is connected to early agricultural principles. Historically, the <input class="fill" id="aq7"> of various plant species was used to naturally maintain humus levels. Today, this traditional approach serves as a crucial <input class="fill short" id="aq8"> for restoring depleted soils globally. When scientists receive a formal <input class="fill short" id="aq9"> to analyse commercial farms, they must produce a comprehensive <input class="fill short" id="aq10"> ensuring every nutrient metric features a precise <input class="fill short" id="aq11"> to prove its scientific validity.</p>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="btn secondary" onclick="checkArticleQs()">Check answers</button>
+    </div>
+    <details class="answer-key" id="ansKey3">
+      <summary>Answer key</summary>
+      <div class="answer-key-body" id="ansKey3Body"></div>
+    </details>
+  </div>
+</section>
+
+<!-- TASK 4 — MAIN READING PASSAGE -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 4 of 8</div>
+    <h2 class="task-title">Main reading passage</h2>
+    <p class="task-sub">Open the test in a new tab, complete it, then come back here.</p>
+  </div>
+  <div class="card">
+    <a class="btn link-out" href="passage_day_2.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a>
+  </div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;">
+    <input type="checkbox" id="t4check">
+    <label for="t4check">I have completed the main reading passage</label>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
+    <p class="instr">After submitting, come back and record your score here.</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <label style="font-weight:700;font-size:14px;">My score:</label>
+      <input class="fill short" id="t4score" placeholder="e.g. 9">
+      <span style="font-size:14px;color:var(--muted);">/ 13 questions</span>
+    </div>
+  </div>
+</section>
+
+<!-- TASK 5 — LISTENING MINI TASK -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 5 of 8</div>
+    <h2 class="task-title">Listening mini task</h2>
+    <p class="task-sub">Listen to the audio, then complete all three exercises.</p>
+  </div>
+  <div class="card">
+    <h3>Audio</h3>
+    <audio controls src="minilis.mp3"></audio>
+  </div>
+
+  <!-- Part 1: MCQ -->
+  <div class="card">
+    <h4>Part 1 — Multiple choice (10 questions)</h4>
+    <div id="miniMcqList"></div>
+  </div>
+
+  <!-- Part 2: Gap Fill -->
+  <div class="card">
+    <h4>Part 2 — Gap fill</h4>
+    <div class="wordbank">
+      <span class="chip">portfolio</span><span class="chip">proposition</span><span class="chip">startups</span>
+      <span class="chip">values</span><span class="chip">mockups</span><span class="chip">screenshots</span>
+      <span class="chip">repetitive</span><span class="chip">perspectives</span><span class="chip">shine</span>
+      <span class="chip">credibility</span><span class="chip">testimonials</span><span class="chip">recognition</span>
+      <span class="chip">awards</span><span class="chip">clients</span><span class="chip">featured</span>
+    </div>
+    <div class="passage-text" id="miniGapList" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Part 3: Vocabulary Matching -->
+  <div class="card">
+    <h4>Part 3 — Vocabulary matching</h4>
+    <p class="instr">Match each word to its correct definition.</p>
+    <div id="miniMatchList"></div>
+  </div>
+
+  <div class="check-row">
+    <button class="btn secondary" onclick="checkListeningMini()">Check answers</button>
+  </div>
+  <details class="answer-key" id="ansKey5">
+    <summary>Answer key</summary>
+    <div class="answer-key-body" id="ansKey5Body"></div>
+  </details>
+</section>
+
+<!-- TASK 6 — VIDEO -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 6 of 8</div>
+    <h2 class="task-title">Video</h2>
+    <p class="task-sub">Watch the video, then complete all three exercises below.</p>
+  </div>
+  <div class="video-wrap">
+    <iframe src="https://www.youtube.com/embed/0VGc7jrD9zo" title="Day 2 Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <!-- Part 1: MCQ -->
+  <div class="card">
+    <h4>Part 1 — Multiple choice (10 questions)</h4>
+    <div id="vidMcqList"></div>
+  </div>
+
+  <!-- Part 2: Gap Fill -->
+  <div class="card">
+    <h4>Part 2 — Gap fill</h4>
+    <div class="wordbank">
+      <span class="chip">portfolio</span><span class="chip">proposition</span><span class="chip">startups</span>
+      <span class="chip">values</span><span class="chip">mockups</span><span class="chip">screenshots</span>
+      <span class="chip">repetitive</span><span class="chip">perspectives</span><span class="chip">shine</span>
+      <span class="chip">credibility</span><span class="chip">testimonials</span><span class="chip">recognition</span>
+      <span class="chip">awards</span><span class="chip">clients</span><span class="chip">featured</span>
+    </div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Part 3: Vocabulary Matching -->
+  <div class="card">
+    <h4>Part 3 — Vocabulary matching</h4>
+    <p class="instr">Match each word to its correct definition.</p>
+    <div id="vidMatchList"></div>
+  </div>
+
+  <div class="check-row">
+    <button class="btn secondary" onclick="checkVideoTask()">Check answers</button>
+  </div>
+  <details class="answer-key" id="ansKey6">
+    <summary>Answer key</summary>
+    <div class="answer-key-body" id="ansKey6Body"></div>
+  </details>
+</section>
+
+<!-- TASK 7 — PODCAST -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 7 of 8</div>
+    <h2 class="task-title">Podcast — Snail Racing</h2>
+    <p class="task-sub">Listen to the BBC 6 Minute English podcast and complete the exercises.</p>
+  </div>
+  <div class="card">
+    <h3>Audio</h3>
+    <audio controls src="snails.mp3"></audio>
+  </div>
+  <div class="card dictation">
+    <h4>Dictation — complete the gaps with the exact word(s) you hear</h4>
+    <div id="dictation-text"></div>
+  </div>
+  <div class="card">
+    <h4>Comprehension questions</h4>
+    <div id="comp-list"></div>
+  </div>
+  <div class="check-row">
+    <button class="btn secondary" onclick="checkPodcast()">Check answers</button>
+  </div>
+  <details class="answer-key" id="ansKey7">
+    <summary>Answer key</summary>
+    <div class="answer-key-body" id="ansKey7Body"></div>
+  </details>
+</section>
+
+<!-- TASK 8 — FULL LISTENING -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head">
+    <div class="task-eyebrow">Task 8 of 8</div>
+    <h2 class="task-title">Full listening test</h2>
+    <p class="task-sub">Open the test in a new tab, complete it, then come back and enter your score. The walkthrough video will appear below.</p>
+  </div>
+  <div class="card">
+    <a class="btn link-out" href="Listening-2.html" target="_blank" rel="noopener">🎧 Open full listening test</a>
+  </div>
+  <div class="confirm-row" style="margin-top:14px;">
+    <input type="checkbox" id="t9check" onchange="revealListeningWalkthrough()">
+    <label for="t9check">I have completed the full listening test</label>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3>
+    <p class="instr">After finishing, come back and record your score here.</p>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <label style="font-weight:700;font-size:14px;">My score:</label>
+      <input class="fill short" id="t9score" placeholder="e.g. 30">
+      <span style="font-size:14px;color:var(--muted);">/ 40 questions</span>
+    </div>
+  </div>
+  <div id="listeningWalkthrough" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h3 style="margin:0 0 10px;">Walkthrough</h3>
+      <p class="instr">Watch this walkthrough of the listening test and answers.</p>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/sKRUa9Xn8eI" title="Full listening walkthrough" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div>
+  <div class="eyebrow">Day 2 of 30</div>
+  <h1>Congratulations — Day 2 complete! 🎉</h1>
+  <p>All 8 tasks are done and your progress has been saved. Take a breather, then come back tomorrow for Day 3.</p>
+  <div class="completion-actions">
+    <a href="../student-dashboard.html" class="btn">← Back to dashboard</a>
+    <button class="btn secondary" onclick="reviewDay()">Review my work</button>
+  </div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=2,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+
+var STATE_KEY='sprint4_day'+DAY+'_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+
+/* SUPABASE */
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+
+/* AUTOSAVE */
+var debTimers={};
+function autosaveField(id,val){
+  if(!studentSession)return;
+  clearTimeout(debTimers[id]);
+  debTimers[id]=setTimeout(function(){
+    var db=getSB();if(!db)return;
+    db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});
+  },600);
+}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;
+  if(/^mr|^radio_mr/.test(id))return 2;
+  if(/^aq|^radio_aq/.test(id))return 3;
+  if(id==='t4score'||id==='t4check')return 4;
+  if(/^mq|^mg|^mm/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;
+  if(/^dict|^comp|^radio_comp/.test(id))return 7;
+  if(id==='t9score'||id==='t9check')return 8;
+  return 1;
+}
+function hookAutosave(){
+  document.querySelectorAll('input.fill,select.fill').forEach(function(el){
+    if(el.dataset.hooked)return;el.dataset.hooked='1';
+    el.addEventListener('input',function(){autosaveField(el.id,el.value);});
+    el.addEventListener('change',function(){autosaveField(el.id,el.value);});
+  });
+  document.querySelectorAll('input[type=radio]').forEach(function(el){
+    if(el.dataset.hooked)return;el.dataset.hooked='1';
+    el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});
+  });
+  document.querySelectorAll('input[type=checkbox]').forEach(function(el){
+    if(el.dataset.hooked)return;el.dataset.hooked='1';
+    el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});
+  });
+}
+async function restoreAnswers(){
+  if(!studentSession)return;
+  var db=getSB();if(!db)return;
+  var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);
+  (res.data||[]).forEach(function(row){
+    var el=document.getElementById(row.field_id);
+    if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}
+    if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}
+  });
+}
+
+/* PROGRESS */
+function saveProgress(t,c){
+  try{var k='sprint4_day'+DAY+'_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}
+  if(!studentSession)return;
+  var db=getSB();if(!db)return;
+  db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});
+}
+
+/* DOTS */
+var dotsWrap=document.getElementById('dots');
+for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+
+function showTask(n){
+  document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('task'+n).classList.add('active');
+  document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;
+  document.getElementById('prevBtn').disabled=(n===1);
+  refreshDots();refreshDoneButton();window.scrollTo(0,0);
+}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}
+window.goPrev=goPrev;
+function goDone(){
+  taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();
+  if(current<TOTAL_TASKS){current++;saveState();showTask(current);}
+  else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}
+}
+window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}
+window.reviewDay=reviewDay;
+
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+
+function isTaskComplete(n){
+  if(teacherMode)return true;
+  if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);
+  var container=document.getElementById('task'+n);
+  var texts=container.querySelectorAll('input.fill');
+  for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}
+  var selects=container.querySelectorAll('select');
+  for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}
+  var radioNames={};
+  container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});
+  for(var g in radioNames){if(!radioNames[g])return false;}
+  var checks=container.querySelectorAll('input[type=checkbox]');
+  for(var c=0;c<checks.length;c++){if(!checks[c].checked)return false;}
+  return true;
+}
+document.addEventListener('input',refreshDoneButton);
+document.addEventListener('change',refreshDoneButton);
+
+/* TASK 4 POSTMESSAGE */
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){
+    task4MessageReceived=true;taskDone[4]=true;saveState();
+    var s=document.getElementById('task4Status');
+    s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'. Walkthrough video is showing below the questions.';
+    s.classList.add('complete');refreshDoneButton();refreshDots();
+  }
+});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened in a new tab — submit your answers there, then come back here.';}
+window.openTask4=openTask4;
+
+/* CONFETTI */
+function fireConfetti(){
+  var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];
+  for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});
+  var start=Date.now();
+  function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}
+  requestAnimationFrame(frame);
+}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segments=[
+  "Modern food production relies heavily on","/* 1 */",", which uses large amounts of chemicals to maximise crop","/* 2 */",
+  ". However, many scientists warn that this approach can cause soil quality to","/* 3 */",
+  ", as it tends to","/* 4 */","key minerals from the ground. Foods grown this way may still contain some","/* 5 */",
+  "value, but in a far more","/* 6 */","form compared to organic alternatives. One","/* 7 */",
+  "concern is the loss of","/* 8 */",", such as iron and zinc, which the body needs to","/* 9 */",
+  "properly. A","/* 10 */","of these minerals can increase a person's","/* 11 */",
+  "to illness. To","/* 12 */","this risk, some producers add a","/* 13 */",
+  "to extend shelf life, though this practice remains","/* 14 */",
+  ". Once crops are","/* 15 */",", careful handling is needed to prevent","/* 16 */",
+  ". Many highly","/* 17 */","foods are","/* 18 */",
+  "available in shops but have long been","/* 19 */","by health experts. The overall","/* 20 */","of food quality is a growing concern worldwide."
+];
+var vocabA_answers={1:"intensive farming",2:"yield",3:"deteriorate",4:"deplete",5:"nutrient",6:"diluted",7:"notable",8:"trace elements",9:"absorb",10:"deficiency",11:"susceptibility",12:"minimise",13:"preservative",14:"controversial",15:"harvested",16:"bruising",17:"refined",18:"readily",19:"maligned",20:"degradation"};
+
+(function buildVocabA(){
+  var el=document.getElementById('vocabA-text');var html='<p>';
+  var gapNum=1;
+  vocabA_segments.forEach(function(seg){
+    if(seg.startsWith('/*')){
+      html+=' <input class="fill short" id="va'+gapNum+'" data-num="'+gapNum+'"> ';gapNum++;
+    }else{html+=seg;}
+  });
+  html+='</p>';el.innerHTML=html;
+})();
+
+var vocabB=[
+  {n:1,t:"The government introduced strict controls to ___ the environmental damage caused by large-scale agriculture.",ans:"minimise"},
+  {n:2,t:"Excessive use of chemicals can ___ the natural minerals in soil within just a few growing seasons.",ans:"deplete"},
+  {n:3,t:"The new variety of wheat produced an impressive ___ even in dry conditions.",ans:"yield"},
+  {n:4,t:"Without enough iron in their diet, children may develop a ___ that affects their energy and concentration.",ans:"deficiency"},
+  {n:5,t:"Fresh fruit must be handled carefully to avoid ___ during transport to supermarkets.",ans:"bruising"},
+  {n:6,t:"The use of artificial colours in children's food remains deeply ___.",ans:"controversial"},
+  {n:7,t:"People who rely on a poor diet may notice their health beginning to ___ over time.",ans:"deteriorate"},
+  {n:8,t:"___ are minerals that the human body requires only in very small amounts but cannot function without.",ans:"trace elements"},
+  {n:9,t:"One ___ trend in recent years is the sharp rise in demand for locally grown produce.",ans:"notable"},
+  {n:10,t:"The body struggles to ___ fat-soluble vitamins without sufficient dietary fat.",ans:"absorb"},
+  {n:11,t:"A poor diet can increase a person's ___ to common infections and seasonal illness.",ans:"susceptibility"},
+  {n:12,t:"After being ___, the grain was stored in large temperature-controlled silos to prevent spoilage.",ans:"harvested"},
+  {n:13,t:"The juice had been so heavily ___ with water that it contained very little real fruit.",ans:"diluted"},
+  {n:14,t:"Despite being widely ___ in the press for decades, margarine has been shown to have some health benefits.",ans:"maligned"},
+  {n:15,t:"The ___ of natural habitats is one of the most serious long-term consequences of modern farming.",ans:"degradation"}
+];
+
+(function buildVocabB(){
+  var wrap=document.getElementById('vocabB-list');var html='';
+  vocabB.forEach(function(s){html+='<p>'+s.n+'. '+s.t.replace('___','<input class="fill short" id="vb'+s.n+'">')+'</p>';});
+  wrap.innerHTML=html;
+})();
+
+function checkVocab(){
+  var rA=0;
+  for(var i=1;i<=20;i++){
+    var inp=document.getElementById('va'+i);
+    var val=inp.value.trim().toLowerCase();
+    var ans=vocabA_answers[i].toLowerCase();
+    var ok=val===ans||(val.replace(/s$/,'')===(ans.replace(/s$/,'')));
+    if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');
+  }
+  var rB=0;
+  vocabB.forEach(function(s){
+    var inp=document.getElementById('vb'+s.n);if(!inp)return;
+    var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();
+    if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');
+  });
+  alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');
+  var bodyA='<b>Exercise A:</b><br>'+Object.keys(vocabA_answers).map(function(n){return n+'. '+vocabA_answers[n];}).join(' &nbsp;•&nbsp; ');
+  var bodyB='<br><br><b>Exercise B:</b><br>'+vocabB.map(function(s){return s.n+'. '+s.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey1Body').innerHTML=bodyA+bodyB;
+  document.getElementById('ansKey1').classList.add('show');
+  refreshDoneButton();
+}
+window.checkVocab=checkVocab;
+
+/* ===== TASK 2 MINI READING ===== */
+var miniReading=[
+  {n:1,bold:"reduced",tf:"False",word:"increased"},
+  {n:2,bold:"release",tf:"False",word:"absorb"},
+  {n:3,bold:"concentrated",tf:"False",word:"diluted"},
+  {n:4,bold:"praised",tf:"False",word:"maligned"},
+  {n:5,bold:"exhausted",tf:"True",word:"depleted"}
+];
+(function buildMR(){
+  var wrap=document.getElementById('mini-reading-qs');var html='';
+  miniReading.forEach(function(q){
+    html+='<div class="tf-row"><b>'+q.n+'.</b> Statement with bold word <b>'+q.bold+'</b> —'+
+    '<div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div>'+
+    'Word: <input class="fill short" id="mrw'+q.n+'"></div>';
+  });
+  wrap.innerHTML=html;
+})();
+function checkMiniReading(){
+  var right=0;
+  miniReading.forEach(function(q){
+    var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');
+    var wordInp=document.getElementById('mrw'+q.n);
+    var tfOk=chosen&&chosen.value===q.tf;
+    var wordOk=wordInp.value.trim().toLowerCase()===q.word.toLowerCase();
+    if(tfOk&&wordOk)right++;
+    wordInp.classList.toggle('ok',wordOk);wordInp.classList.toggle('no',!wordOk&&wordInp.value.trim()!=='');
+  });
+  alert('You got '+right+'/5 correct.');
+  document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. '+q.tf+' — <b>'+q.word+'</b>';}).join('<br>');
+  document.getElementById('ansKey2').classList.add('show');
+  refreshDoneButton();
+}
+window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 3 ARTICLE ===== */
+function revealArticleQs(){
+  var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');
+  if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();
+}
+window.revealArticleQs=revealArticleQs;
+
+var articleMcqAns={aq1:'C',aq2:'B'};
+var articleSelectAns={aq3:'C',aq4:'B',aq5:'B',aq6:'D'};
+var articleGapAns={aq7:'systematic rotation',aq8:'template',aq9:'commission',aq10:'treatise',aq11:'citation'};
+
+function checkArticleQs(){
+  var right=0,total=11;
+  Object.keys(articleMcqAns).forEach(function(name){
+    var chosen=document.querySelector('input[name="'+name+'"]:checked');
+    if(chosen&&chosen.value===articleMcqAns[name])right++;
+    var block=document.getElementById(name+'Mcq1Block')||document.getElementById(name.replace('aq','aqMcq')+'Block');
+    if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===articleMcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}
+  });
+  Object.keys(articleSelectAns).forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    var ok=el.value===articleSelectAns[id];if(ok)right++;
+    el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value!=='');
+  });
+  Object.keys(articleGapAns).forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    var ok=el.value.trim().toLowerCase()===articleGapAns[id].toLowerCase();if(ok)right++;
+    el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');
+  });
+  alert('Article comprehension: '+right+'/'+total+' correct.');
+  var key=[
+    '1. C — Increased crop yields have occurred alongside a decrease in nutritional density.',
+    '2. B — Crops grow too rapidly to absorb sufficient minerals from the soil.',
+    '3. C — Paragraph C: "This historical method transformed farming from a simple extractive industry into a balanced ecosystem."',
+    '4. B — Paragraph B: "By utilizing high-resolution mass spectrometry and precise chemical profiling..."',
+    '5. B — Paragraph B: "...a modern apple or tomato contains significantly fewer vital nutrients than one grown fifty years ago..."',
+    '6. D — Paragraph D: "When an independent research group receives a formal commission to audit..."',
+    '7. systematic rotation',
+    '8. template',
+    '9. commission',
+    '10. treatise',
+    '11. citation'
+  ];
+  document.getElementById('ansKey3Body').innerHTML=key.join('<br>');
+  document.getElementById('ansKey3').classList.add('show');
+  refreshDoneButton();
+}
+window.checkArticleQs=checkArticleQs;
+
+/* ===== TASK 5 MINI LISTENING ===== */
+var miniMcqData=[
+  {n:1,q:"According to the speaker, why is a design portfolio so important?",opts:["It helps designers learn new software.","Clients usually spend several hours studying one portfolio.","It helps designers stand out when clients compare many portfolios.","It is only useful for experienced designers."],ans:"C"},
+  {n:2,q:"What does USP (Unique Selling Proposition) refer to?",opts:["The software you use.","The projects you've completed.","The qualities that make you different from other designers.","Your education and qualifications."],ans:"C"},
+  {n:3,q:"Which phrase from High Five Studio acts as its USP?",opts:["\"No-code creative studio\"","\"Designing modern websites\"","\"For startups with taste\"","\"Specialized in websites\""],ans:"C"},
+  {n:4,q:"Why does the speaker praise Dun Bischen's portfolio?",opts:["She has won many awards.","She clearly identifies her target clients and shared values.","She uses bright colours.","She focuses on mobile app design."],ans:"B"},
+  {n:5,q:"According to the speaker, what is wrong with simply placing screenshots inside generic device mockups?",opts:["It makes the website load slowly.","It makes the work look repetitive and prevents it from standing out.","Clients dislike computers.","It is technically difficult to create."],ans:"B"},
+  {n:6,q:"What makes the second designer's mockups more effective?",opts:["They only use laptops.","They use different perspectives and give each project more space.","They include more text.","They use brighter colours."],ans:"B"},
+  {n:7,q:"What is the purpose of social proof?",opts:["To increase website speed.","To convince clients that others trust and value your work.","To improve search engine rankings.","To explain your design process."],ans:"B"},
+  {n:8,q:"Which of the following is NOT mentioned as a type of social proof?",opts:["Client testimonials.","Industry awards.","Number of years of experience.","University degree."],ans:"D"},
+  {n:9,q:"Why does recognition from award websites help?",opts:["It guarantees more expensive projects.","It proves that respected people in the industry appreciate your work.","Clients only hire award winners.","It replaces the need for a portfolio."],ans:"B"},
+  {n:10,q:"Which three principles does the speaker recommend?",opts:["Typography, animation, branding","Colour, coding, SEO","Unique Selling Proposition, high-quality mockups, social proof","Wireframes, UX research, accessibility"],ans:"C"}
+];
+(function buildMiniMcq(){
+  var wrap=document.getElementById('miniMcqList');var html='';
+  miniMcqData.forEach(function(q){
+    html+='<div class="q-block" id="mmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';
+    var letters=['A','B','C','D'];
+    q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="mq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});
+    html+='</div></div>';
+  });
+  wrap.innerHTML=html;
+})();
+
+var miniGapData=[
+  {n:1,t:"A strong design ___ helps attract better clients.",ans:"portfolio"},
+  {n:2,t:"Every designer should have a unique selling ___.",ans:"proposition"},
+  {n:3,t:"High Five Studio focuses on designing websites for ___ with taste.",ans:"startups"},
+  {n:4,t:"Dun Bischen connects with her audience by sharing the same ___ as her clients.",ans:"values"},
+  {n:5,t:"High-quality ___ make projects look much more professional.",ans:"mockups"},
+  {n:6,t:"The speaker criticises designers who simply upload ___ from their design software.",ans:"screenshots"},
+  {n:7,t:"Using identical mockups makes the portfolio feel ___.",ans:"repetitive"},
+  {n:8,t:"Showing projects from different ___ creates more visual interest.",ans:"perspectives"},
+  {n:9,t:"Good presentation allows your work to ___.",ans:"shine"},
+  {n:10,t:"Social proof helps build ___ with potential clients.",ans:"credibility"},
+  {n:11,t:"Client ___ are one of the easiest forms of social proof.",ans:"testimonials"},
+  {n:12,t:"Industry ___ from design websites increases trust.",ans:"recognition"},
+  {n:13,t:"Designers should submit work to ___ sites whenever possible.",ans:"awards"},
+  {n:14,t:"Even being ___ on a design website can strengthen a portfolio.",ans:"featured"},
+  {n:15,t:"Familiar company names help convince potential ___ to trust you.",ans:"clients"}
+];
+(function buildMiniGap(){
+  var wrap=document.getElementById('miniGapList');var html='';
+  miniGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="mg'+g.n+'">')+'</p>';});
+  wrap.innerHTML=html;
+})();
+
+var miniMatchData=[
+  {n:1,term:"portfolio",ans:"J"},{n:2,term:"unique selling proposition",ans:"C"},{n:3,term:"mockup",ans:"D"},
+  {n:4,term:"screenshot",ans:"E"},{n:5,term:"repetitive",ans:"F"},{n:6,term:"perspective",ans:"I"},
+  {n:7,term:"social proof",ans:"B"},{n:8,term:"credibility",ans:"G"},{n:9,term:"testimonial",ans:"K"},
+  {n:10,term:"recognition",ans:"H"},{n:11,term:"feature (v.)",ans:"L"},{n:12,term:"award",ans:"M"},
+  {n:13,term:"client",ans:"A"},{n:14,term:"value proposition",ans:"N"},{n:15,term:"shine (v.)",ans:"O"}
+];
+var miniMatchDefs={
+  A:"people or companies you work for",B:"proof that other people trust or value you",
+  C:"something that makes a person or business different from competitors",D:"an image showing how a design will appear on a real device",
+  E:"an image captured from a computer screen",F:"repeated so often that it becomes boring",
+  G:"the ability to make people believe you are trustworthy",H:"public praise or acknowledgement for achievements",
+  I:"the angle or viewpoint from which something is shown",J:"a collection of work used to attract employers or clients",
+  K:"comments from satisfied customers recommending someone",L:"to publish or showcase someone's work",
+  M:"an official prize for excellent work",N:"the main promise explaining why customers should choose you",
+  O:"to attract attention because of excellent presentation or quality"
+};
+(function buildMiniMatch(){
+  var wrap=document.getElementById('miniMatchList');
+  var letters=Object.keys(miniMatchDefs).sort();
+  var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');
+  var html='<p class="instr">';
+  letters.forEach(function(l){html+='<b>'+l+'.</b> '+miniMatchDefs[l]+'<br>';});
+  html+='</p>';
+  miniMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="mm'+m.n+'">'+optHtml+'</select></div>';});
+  wrap.innerHTML=html;
+})();
+
+function checkListeningMini(){
+  var rMcq=0,rGap=0,rMatch=0;
+  miniMcqData.forEach(function(q){
+    var chosen=document.querySelector('input[name="mq'+q.n+'"]:checked');
+    var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;
+    var block=document.getElementById('mmcq'+q.n);
+    if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}
+  });
+  miniGapData.forEach(function(g){var inp=document.getElementById('mg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  miniMatchData.forEach(function(m){var sel=document.getElementById('mm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
+  alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
+  var mcqKey='<b>Part 1 MCQ:</b><br>'+miniMcqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  var gapKey='<br><br><b>Part 2 Gap fill:</b><br>'+miniGapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ');
+  var matchKey='<br><br><b>Part 3 Matching:</b><br>'+miniMatchData.map(function(m){return m.n+'. '+m.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey5Body').innerHTML=mcqKey+gapKey+matchKey;
+  document.getElementById('ansKey5').classList.add('show');
+  refreshDoneButton();
+}
+window.checkListeningMini=checkListeningMini;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[
+  {n:1,q:"According to the speaker, why is a design portfolio so important?",opts:["It helps designers learn new software.","Clients usually spend several hours studying one portfolio.","It helps designers stand out when clients compare many portfolios.","It is only useful for experienced designers."],ans:"C"},
+  {n:2,q:"What does USP (Unique Selling Proposition) refer to?",opts:["The software you use.","The projects you've completed.","The qualities that make you different from other designers.","Your education and qualifications."],ans:"C"},
+  {n:3,q:"Which phrase from High Five Studio acts as its USP?",opts:["\"No-code creative studio\"","\"Designing modern websites\"","\"For startups with taste\"","\"Specialized in websites\""],ans:"C"},
+  {n:4,q:"Why does the speaker praise Dun Bischen's portfolio?",opts:["She has won many awards.","She clearly identifies her target clients and shared values.","She uses bright colours.","She focuses on mobile app design."],ans:"B"},
+  {n:5,q:"What is wrong with simply placing screenshots inside generic device mockups?",opts:["It makes the website load slowly.","It makes the work look repetitive and prevents it from standing out.","Clients dislike computers.","It is technically difficult to create."],ans:"B"},
+  {n:6,q:"What makes the second designer's mockups more effective?",opts:["They only use laptops.","They use different perspectives and give each project more space.","They include more text.","They use brighter colours."],ans:"B"},
+  {n:7,q:"What is the purpose of social proof?",opts:["To increase website speed.","To convince clients that others trust and value your work.","To improve search engine rankings.","To explain your design process."],ans:"B"},
+  {n:8,q:"Which of the following is NOT mentioned as a type of social proof?",opts:["Client testimonials.","Industry awards.","Number of years of experience.","University degree."],ans:"D"},
+  {n:9,q:"Why does recognition from award websites help?",opts:["It guarantees more expensive projects.","It proves that respected people in the industry appreciate your work.","Clients only hire award winners.","It replaces the need for a portfolio."],ans:"B"},
+  {n:10,q:"Which three principles does the speaker recommend?",opts:["Typography, animation, branding","Colour, coding, SEO","Unique Selling Proposition, high-quality mockups, social proof","Wireframes, UX research, accessibility"],ans:"C"}
+];
+(function buildVidMcq(){
+  var wrap=document.getElementById('vidMcqList');var html='';
+  vidMcqData.forEach(function(q){
+    html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';
+    var letters=['A','B','C','D'];
+    q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});
+    html+='</div></div>';
+  });
+  wrap.innerHTML=html;
+})();
+
+var vidGapData=[
+  {n:1,t:"A strong design ___ helps attract better clients.",ans:"portfolio"},
+  {n:2,t:"Every designer should have a unique selling ___.",ans:"proposition"},
+  {n:3,t:"High Five Studio focuses on designing websites for ___ with taste.",ans:"startups"},
+  {n:4,t:"Dun Bischen connects with her audience by sharing the same ___ as her clients.",ans:"values"},
+  {n:5,t:"High-quality ___ make projects look much more professional.",ans:"mockups"},
+  {n:6,t:"The speaker criticises designers who simply upload ___ from their design software.",ans:"screenshots"},
+  {n:7,t:"Using identical mockups makes the portfolio feel ___.",ans:"repetitive"},
+  {n:8,t:"Showing projects from different ___ creates more visual interest.",ans:"perspectives"},
+  {n:9,t:"Good presentation allows your work to ___.",ans:"shine"},
+  {n:10,t:"Social proof helps build ___ with potential clients.",ans:"credibility"},
+  {n:11,t:"Client ___ are one of the easiest forms of social proof.",ans:"testimonials"},
+  {n:12,t:"Industry ___ from design websites increases trust.",ans:"recognition"},
+  {n:13,t:"Designers should submit work to ___ sites whenever possible.",ans:"awards"},
+  {n:14,t:"Even being ___ on a design website can strengthen a portfolio.",ans:"featured"},
+  {n:15,t:"Familiar company names help convince potential ___ to trust you.",ans:"clients"}
+];
+(function buildVidGap(){
+  var wrap=document.getElementById('vidGapList');var html='';
+  vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});
+  wrap.innerHTML=html;
+})();
+
+var vidMatchData=[
+  {n:1,term:"portfolio",ans:"J"},{n:2,term:"unique selling proposition",ans:"C"},{n:3,term:"mockup",ans:"D"},
+  {n:4,term:"screenshot",ans:"E"},{n:5,term:"repetitive",ans:"F"},{n:6,term:"perspective",ans:"I"},
+  {n:7,term:"social proof",ans:"B"},{n:8,term:"credibility",ans:"G"},{n:9,term:"testimonial",ans:"K"},
+  {n:10,term:"recognition",ans:"H"},{n:11,term:"feature (v.)",ans:"L"},{n:12,term:"award",ans:"M"},
+  {n:13,term:"client",ans:"A"},{n:14,term:"value proposition",ans:"N"},{n:15,term:"shine (v.)",ans:"O"}
+];
+var vidMatchDefs={A:"people or companies you work for",B:"proof that other people trust or value you",C:"something that makes a person or business different from competitors",D:"an image showing how a design will appear on a real device",E:"an image captured from a computer screen",F:"repeated so often that it becomes boring",G:"the ability to make people believe you are trustworthy",H:"public praise or acknowledgement for achievements",I:"the angle or viewpoint from which something is shown",J:"a collection of work used to attract employers or clients",K:"comments from satisfied customers recommending someone",L:"to publish or showcase someone's work",M:"an official prize for excellent work",N:"the main promise explaining why customers should choose you",O:"to attract attention because of excellent presentation or quality"};
+(function buildVidMatch(){
+  var wrap=document.getElementById('vidMatchList');
+  var letters=Object.keys(vidMatchDefs).sort();
+  var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');
+  var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';
+  vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});
+  wrap.innerHTML=html;
+})();
+
+function checkVideoTask(){
+  var rMcq=0,rGap=0,rMatch=0;
+  vidMcqData.forEach(function(q){
+    var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');
+    var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;
+    var block=document.getElementById('vmcq'+q.n);
+    if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}
+  });
+  vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
+  alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
+  var mcqKey='<b>Part 1 MCQ:</b><br>'+vidMcqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  var gapKey='<br><br><b>Part 2 Gap fill:</b><br>'+vidGapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ');
+  var matchKey='<br><br><b>Part 3 Matching:</b><br>'+vidMatchData.map(function(m){return m.n+'. '+m.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey6Body').innerHTML=mcqKey+gapKey+matchKey;
+  document.getElementById('ansKey6').classList.add('show');
+  refreshDoneButton();
+}
+window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:"animals",2:"slower",3:"shell",4:"grow",5:"36",6:"France",7:"hosted",8:"play offs",9:"searing",10:"slowly",11:"drag",12:"searing",13:"sprint",14:"incentive",15:"winner",16:"pardoned",17:"cruel",18:"garlic",19:"cauldrons",20:"pot",21:"Sebastian",22:"trophy",23:"18",24:"9",25:"sluggish",26:"drag",27:"hot",28:"sprint",29:"pardon",30:"cauldron"};
+var dictLines=[
+  {sp:"Rosie",t:"Hello and welcome to 6 Minute English from BBC Learning English. I'm Rosie."},
+  {sp:"Rob",t:"And I'm Rob."},
+  {sp:"Rosie",t:"This week's story is about racing {1}. Everyone knows about horse racing, but today we're talking about something much {2}."},
+  {sp:"Rob",t:"Snails? As in the slimy creatures with a {3} that live in the garden?"},
+  {sp:"Rosie",t:"Before we delve into this unusual sport, here's today's quiz. The Giant African snail is the biggest snail in the world. But how big can it {4}?"},
+  {sp:"Rob",t:"I'll say {5} centimetres long."},
+  {sp:"Rosie",t:"The 49th World Snail Racing Championships took place in a village in south-west {6}."},
+  {sp:"Rob",t:"The village has {7} the competition for the last thirty years."},
+  {sp:"Chris Bockman",t:"The rules are pretty simple. The first snail that reaches the end of the table goes into the {8}."},
+  {sp:"Chris Bockman",t:"Under a {9} heat of around 30 degrees centigrade, the snails are a little sluggish."},
+  {sp:"Rosie",t:"The word sluggish means tired and moving {10}."},
+  {sp:"Rob",t:"The master of ceremonies was dressed in {11}."},
+  {sp:"Rosie",t:"The heat was described as {12}, meaning extremely hot."},
+  {sp:"Rob",t:"The race is definitely not a {13}, which is a short, very fast race."},
+  {sp:"Rosie",t:"There is an important {14} for the snails to win."},
+  {sp:"Patrick Dubos",t:"We eat all of the snails except for the {15}, which I pardon."},
+  {sp:"Rob",t:"The winning snail is {16}, meaning it is saved from being eaten."},
+  {sp:"Rosie",t:"Some people think it is {17} to eat the competitors."},
+  {sp:"Chris Bockman",t:"The snails are cooked in ham, tomatoes and {18}."},
+  {sp:"Rob",t:"They are cooked in massive {19}."},
+  {sp:"Rosie",t:"A cauldron is a huge cooking {20}."},
+  {sp:"Rob",t:"The winning snail was called {21}."},
+  {sp:"Rosie",t:"He was given a {22} at the end of the competition."},
+  {sp:"Rosie",t:"Let's check the quiz answer. The Giant African snail can grow to {23} centimetres long."},
+  {sp:"Rob",t:"Its shell has a diameter of {24} centimetres."},
+  {sp:"Rosie",t:"If someone is {25}, they move slowly because they are tired."},
+  {sp:"Rob",t:"If someone is dressed in {26}, a man is wearing women's clothes."},
+  {sp:"Rosie",t:"Searing means extremely {27}."},
+  {sp:"Rob",t:"A {28} is a short, very fast race."},
+  {sp:"Rosie",t:"If someone receives a {29}, they are officially forgiven or spared."},
+  {sp:"Rob",t:"A {30} is a very large cooking pot."}
+];
+(function buildDict(){
+  var el=document.getElementById('dictation-text');var html='';
+  dictLines.forEach(function(line){
+    var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'" data-num="'+num+'">';});
+    html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';
+  });
+  el.innerHTML=html;
+})();
+
+var compData=[
+  {n:1,q:"Where did the World Snail Racing Championships take place?",opts:["England","Germany","France","Italy"],ans:"C"},
+  {n:2,q:"What does the word sluggish mean?",opts:["Very excited","Tired and moving slowly","Angry and noisy","Very hungry"],ans:"B"},
+  {n:3,q:"Why does the winning snail survive?",opts:["It is sold to a museum.","It escapes.","It is pardoned and not eaten.","It wins a cash prize."],ans:"C"},
+  {n:4,q:"What are the snails cooked in?",opts:["Frying pans","Ovens","Cauldrons","Barbecues"],ans:"C"},
+  {n:5,q:"What was the correct answer to the quiz?",opts:["The Giant African snail grows to 48 cm.","The Giant African snail grows to 36 cm.","The Giant African snail grows to 18 cm.","The Giant African snail grows to 9 cm."],ans:"C"}
+];
+(function buildComp(){
+  var wrap=document.getElementById('comp-list');var html='';
+  compData.forEach(function(q){
+    html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';
+    var letters=['A','B','C','D'];
+    q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});
+    html+='</div></div>';
+  });
+  wrap.innerHTML=html;
+})();
+
+function checkPodcast(){
+  var rDict=0,rComp=0;
+  Object.keys(dictAns).forEach(function(n){
+    var inp=document.getElementById('dict'+n);if(!inp)return;
+    var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();
+    if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');
+  });
+  compData.forEach(function(q){
+    var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');
+    var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;
+    var block=document.getElementById('compBlock'+q.n);
+    if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}
+  });
+  alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');
+  var dictKey='<b>Dictation:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ');
+  var compKey='<br><br><b>Comprehension:</b><br>'+compData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey7Body').innerHTML=dictKey+compKey;
+  document.getElementById('ansKey7').classList.add('show');
+  refreshDoneButton();
+}
+window.checkPodcast=checkPodcast;
+
+/* ===== TASK 8 LISTENING WALKTHROUGH ===== */
+function revealListeningWalkthrough(){
+  var cb=document.getElementById('t9check');var wt=document.getElementById('listeningWalkthrough');
+  if(cb&&cb.checked&&wt)wt.style.display='block';refreshDoneButton();
+}
+window.revealListeningWalkthrough=revealListeningWalkthrough;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){
+  if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}
+  else{setTimeout(waitForSdk,100);}
+})();
+showTask(current);
+})();
+</script>
+</body>
+</html>
