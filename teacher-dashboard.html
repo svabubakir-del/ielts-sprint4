@@ -38,7 +38,21 @@
 
   /* ---- STUDENT TABLE ---- */
   .section{ margin-bottom:40px; }
-  .student-table{ width:100%; border-collapse:collapse; font-size:14px; }
+  /* ---- TABS ---- */
+  .tabs{ display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:28px; }
+  .tab-btn{ background:none; border:none; padding:12px 22px; font-size:15px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; }
+  .tab-btn.active{ color:var(--accent); border-bottom-color:var(--accent); }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+  /* ---- MATERIALS GRID ---- */
+  .materials-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; }
+  .mat-card{ display:block; background:var(--card); border:1.5px solid var(--border); border-radius:10px; padding:16px 14px; text-decoration:none; color:var(--text); transition:transform .15s,box-shadow .15s; }
+  .mat-card:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.08); border-color:var(--accent); }
+  .mat-card.relax{ border-color:#f0c36d; }
+  .mat-num{ font-size:26px; font-weight:800; color:var(--accent); line-height:1; margin-bottom:4px; }
+  .mat-card.relax .mat-num{ color:var(--success); }
+  .mat-label{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  /* ---- STUDENT TABLE ---- */
   .student-table th{ text-align:left; padding:10px 14px; border-bottom:2px solid var(--border); font-size:12px; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); background:var(--bg); font-weight:700; }
   .student-table td{ padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
   .student-table tr:hover td{ background:#f5f7f9; }
@@ -135,24 +149,30 @@
     <div class="stat-card"><div class="num" id="statActive">—</div><div class="lbl">Active students</div></div>
   </div>
 
-  <div class="section">
-    <h2>My students</h2>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('students',this)">👥 My students</button>
+    <button class="tab-btn" onclick="switchTab('materials',this)">📚 All materials</button>
+  </div>
+
+  <!-- STUDENTS TAB -->
+  <div class="tab-panel active" id="tab-students">
     <p style="color:var(--muted);font-size:14px;margin:0 0 14px;">Click any student row to see their full day-by-day progress.</p>
     <table class="student-table">
       <thead>
-        <tr>
-          <th>Name</th>
-          <th>Username</th>
-          <th>Overall progress</th>
-          <th>Days complete</th>
-          <th>Status</th>
-        </tr>
+        <tr><th>Name</th><th>Username</th><th>Overall progress</th><th>Days complete</th><th>Status</th></tr>
       </thead>
       <tbody id="studentBody">
         <tr><td colspan="5" style="color:var(--muted);padding:20px 14px;">Loading students…</td></tr>
       </tbody>
     </table>
   </div>
+
+  <!-- MATERIALS TAB -->
+  <div class="tab-panel" id="tab-materials">
+    <p style="color:var(--muted);font-size:14px;margin:0 0 18px;">All 30 days are accessible to you regardless of student unlock status. Opens in teacher mode.</p>
+    <div class="materials-grid" id="materialsGrid"></div>
+  </div>
+
 </div>
 
 <!-- STUDENT DETAIL MODAL -->
@@ -202,6 +222,31 @@
     1:'Vocabulary', 2:'Mini reading', 3:'Article', 4:'Main reading passage',
     5:'Full reading', 6:'Listening mini task', 7:'Video', 8:'Podcast', 9:'Full listening'
   };
+
+  /* ---- TABS ---- */
+  function switchTab(name, btn){
+    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.getElementById('tab-'+name).classList.add('active');
+    btn.classList.add('active');
+  }
+  window.switchTab=switchTab;
+
+  /* ---- MATERIALS GRID ---- */
+  (function buildMaterials(){
+    var RELAX=[7,14,21,28];
+    var grid=document.getElementById('materialsGrid');
+    var html='';
+    for(var d=1;d<=30;d++){
+      var isRelax=RELAX.includes(d);
+      var padded=String(d).padStart(2,'0');
+      html+='<a href="day'+d+'/day'+d+'.html?teacher=true" class="mat-card'+(isRelax?' relax':'')+'">'+
+        '<div class="mat-num">'+padded+'</div>'+
+        '<div class="mat-label">'+(isRelax?'Recovery':'Day '+d)+'</div>'+
+      '</a>';
+    }
+    grid.innerHTML=html;
+  })();
 
   /* ---- LOAD GROUP ---- */
   async function loadGroup(){
