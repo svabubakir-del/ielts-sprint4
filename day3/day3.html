@@ -77,12 +77,12 @@
 
 <!-- TASK 2 -->
 <section class="task" id="task2" data-task="2">
-  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then answer True or False. Find the word in the text that means the same as or the opposite of the bold word.</p></div>
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then decide if each statement is True or False.</p></div>
   <div class="card">
     <h3>The creative brain</h3>
     <p class="passage-text">Scientists have shown that creativity is not simply a product of high intelligence. Research suggests that beyond a certain point, a higher IQ does not automatically improve creative ability — in fact, a person with a moderate IQ can sometimes be far more creative than someone with exceptional intelligence. One key feature of highly creative individuals is that they possess less latent inhibition, the brain's natural tendency to block out unnecessary background stimuli. As a result, creative people absorb more sensory information than others, giving them a larger pool of material from which to form original ideas. Studies have also shown that the creative process involves two separate stages: a quiet, relaxed phase and a more active, organised phase of cortical arousal. Creative individuals switch between these two states naturally, without great effort. Interestingly, social connections also matter — many highly creative people depend on at least one trusted relationship to support and sustain their work.</p>
   </div>
-  <div class="card" id="mini-reading-qs"><p class="instr">Decide True or False. Then write the word in the text that means the same (1–2) or opposite (3–5) of the bold word.</p></div>
+  <div class="card" id="mini-reading-qs"><p class="instr">Read the statements below and decide if they are True or False according to the text.</p></div>
   <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
   <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
 </section>
@@ -306,16 +306,16 @@ function checkVocab(){
 
 /* ===== TASK 2 MINI READING ===== */
 var miniReading=[
-  {n:1,bold:'boost',tf:'True',word:'improve'},
-  {n:2,bold:'absorb',tf:'True',word:'absorb'},
-  {n:3,bold:'more',tf:'False',word:'less'},
-  {n:4,bold:'identical',tf:'False',word:'separate'},
-  {n:5,bold:'isolation',tf:'False',word:'connections'}
+  {n:1,statement:'A higher IQ always boosts a person\'s creative ability.',tf:'False'},
+  {n:2,statement:'Creative people absorb more sensory information from their environment than others.',tf:'True'},
+  {n:3,statement:'Highly creative individuals have more latent inhibition than the average person.',tf:'False'},
+  {n:4,statement:'The two stages of the creative process are identical to each other.',tf:'False'},
+  {n:5,statement:'Social connections play an important role in supporting creative people\'s work.',tf:'True'}
 ];
-(function buildMR(){var wrap=document.getElementById('mini-reading-qs');var html='';miniReading.forEach(function(q){html+='<div class="tf-row"><b>'+q.n+'.</b> Statement with bold word <b>'+q.bold+'</b> — <div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div> Word: <input class="fill short" id="mrw'+q.n+'"></div>';});wrap.innerHTML=html;})();
-function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');var wordInp=document.getElementById('mrw'+q.n);var tfOk=chosen&&chosen.value===q.tf;var wordOk=wordInp.value.trim().toLowerCase()===q.word.toLowerCase();if(tfOk&&wordOk)right++;wordInp.classList.toggle('ok',wordOk);wordInp.classList.toggle('no',!wordOk&&wordInp.value.trim()!=='');});
+(function buildMR(){var wrap=document.getElementById('mini-reading-qs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});
 alert('You got '+right+'/5 correct.');
-document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. '+q.tf+' — <b>'+q.word+'</b>';}).join('<br>');
+document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');
 document.getElementById('ansKey2').classList.add('show');refreshDoneButton();}window.checkMiniReading=checkMiniReading;
 
 /* ===== TASK 3 ARTICLE ===== */
