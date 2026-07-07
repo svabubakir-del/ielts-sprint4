@@ -201,6 +201,7 @@
 var DAY=3,TOTAL_TASKS=8,current=1;
 var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
 var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};  // tracks tasks where student has clicked "Check answers"
 if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
 
 var STATE_KEY='sprint4_day'+DAY+'_state';
@@ -256,6 +257,7 @@ function reviewDay(){document.getElementById('completionScreen').classList.remov
 function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
 function isTaskComplete(n){
   if(teacherMode)return true;
+  if(checkedTasks[n])return true;  // student has clicked Check answers — always allow Done
   if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);
   var container=document.getElementById('task'+n);
   var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}
@@ -301,7 +303,7 @@ function checkVocab(){
   var rB=0;vocabB.forEach(function(s){var inp=document.getElementById('vb'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
   alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');
   document.getElementById('ansKey1Body').innerHTML='<b>Exercise A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Exercise B:</b><br>'+vocabB.map(function(s){return s.n+'. '+s.ans;}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey1').classList.add('show');refreshDoneButton();
+  document.getElementById('ansKey1').classList.add('show');refreshDoneButton();checkedTasks[1]=true;refreshDoneButton();
 }window.checkVocab=checkVocab;
 
 /* ===== TASK 2 MINI READING ===== */
@@ -316,7 +318,7 @@ var miniReading=[
 function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});
 alert('You got '+right+'/5 correct.');
 document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');
-document.getElementById('ansKey2').classList.add('show');refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
 
 /* ===== TASK 3 ARTICLE ===== */
 function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
@@ -328,7 +330,7 @@ function checkArticleQs(){
   Object.keys(aqMcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===aqMcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===aqMcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
   alert('Article comprehension: '+right+'/'+total+' correct.');
   document.getElementById('ansKey3Body').innerHTML='1. True &nbsp;•&nbsp; 2. False (less) &nbsp;•&nbsp; 3. False (inspiration, not elaboration) &nbsp;•&nbsp; 4. False (late 1970s) &nbsp;•&nbsp; 5. False (they shift between states) &nbsp;•&nbsp; 6. C (120) &nbsp;•&nbsp; 7. B';
-  document.getElementById('ansKey3').classList.add('show');refreshDoneButton();}window.checkArticleQs=checkArticleQs;
+  document.getElementById('ansKey3').classList.add('show');checkedTasks[3]=true;refreshDoneButton();}window.checkArticleQs=checkArticleQs;
 
 /* ===== TASK 5 MINI LISTENING ===== */
 var t5McqData=[
@@ -352,7 +354,7 @@ function checkTask5(){
   Object.keys(t5MatchAns).forEach(function(n){var sel=document.getElementById('t5v'+n);if(sel&&sel.value===t5MatchAns[n])rMatch++;});
   alert('Task 1 MCQ: '+rMcq+'/6\nTask 2 Matching: '+rMatch+'/6');
   document.getElementById('ansKey5Body').innerHTML='<b>Task 1:</b><br>'+t5McqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Task 2:</b><br>1-c &nbsp;•&nbsp; 2-f &nbsp;•&nbsp; 3-b &nbsp;•&nbsp; 4-d &nbsp;•&nbsp; 5-a &nbsp;•&nbsp; 6-e';
-  document.getElementById('ansKey5').classList.add('show');refreshDoneButton();}window.checkTask5=checkTask5;
+  document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
 
 /* ===== TASK 6 VIDEO ===== */
 var vidMcqData=[
@@ -399,7 +401,7 @@ function checkVideoTask(){
   vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
   alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
   document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b><br>'+vidMcqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Gap fill:</b><br>'+vidGapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Matching:</b><br>'+vidMatchData.map(function(m){return m.n+'. '+m.ans;}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey6').classList.add('show');refreshDoneButton();}window.checkVideoTask=checkVideoTask;
+  document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkVideoTask=checkVideoTask;
 
 /* ===== TASK 7 PODCAST ===== */
 var dictAns={1:'emails',2:'rude',3:'greeting',4:'defensive',5:'emoji',6:'threatened',7:'uncivil',8:'incivility',9:'accomplished',10:'JD Vance',11:'belittle',12:'place',13:'inferior',14:'important',15:'avoiding',16:'plate',17:'task',18:'incivility',19:'frazzled',20:'send',21:'Elon Musk',22:'defensive',23:'impolite',24:'belittle',25:'place',26:'plate',27:'frazzled',28:'fight',29:'emoji',30:'job'};
@@ -454,7 +456,7 @@ function checkPodcast(){
   compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
   alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');
   document.getElementById('ansKey7Body').innerHTML='<b>Dictation:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comprehension:</b><br>'+compData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey7').classList.add('show');refreshDoneButton();}window.checkPodcast=checkPodcast;
+  document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkPodcast=checkPodcast;
 
 /* ===== TASK 8 FULL LISTENING ===== */
 var t8McqData=[
@@ -485,7 +487,7 @@ function checkTask8(){
   t8GapData.forEach(function(g){var inp=document.getElementById('t8g'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans.toLowerCase();if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
   alert('Task 1: '+rMcq+'/6\nTask 2: '+rGap+'/8');
   document.getElementById('ansKey8Body').innerHTML='<b>Task 1:</b><br>'+t8McqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Task 2:</b><br>'+t8GapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey8').classList.add('show');refreshDoneButton();}window.checkTask8=checkTask8;
+  document.getElementById('ansKey8').classList.add('show');checkedTasks[8]=true;refreshDoneButton();}window.checkTask8=checkTask8;
 
 /* ===== INIT ===== */
 var t4checkEl=document.getElementById('t4check');
