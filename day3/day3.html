@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 3</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#ffffff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+  .tf-toggle{display:flex;gap:10px;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 3</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words below, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">speculate</span><span class="chip">creativity</span><span class="chip">insight</span><span class="chip">incubate</span><span class="chip">elude</span><span class="chip">discipline</span><span class="chip">aesthetic</span><span class="chip">obsessive</span><span class="chip">trigger</span><span class="chip">stimuli</span><span class="chip">inhibition</span><span class="chip">juggle</span><span class="chip">inspiration</span><span class="chip">elaboration</span><span class="chip">dominant</span><span class="chip">cortical arousal</span><span class="chip">intuitively</span><span class="chip">synthesis</span><span class="chip">coordination</span><span class="chip">neural networks</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text (longer, easier)</h4><p class="instr">Complete the text with words from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Complete each sentence (medium, harder)</h4><p class="instr">Complete each sentence with ONE word or phrase from the box. Each is used only once.</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then answer True or False. Find the word in the text that means the same as or the opposite of the bold word.</p></div>
+  <div class="card">
+    <h3>The creative brain</h3>
+    <p class="passage-text">Scientists have shown that creativity is not simply a product of high intelligence. Research suggests that beyond a certain point, a higher IQ does not automatically improve creative ability — in fact, a person with a moderate IQ can sometimes be far more creative than someone with exceptional intelligence. One key feature of highly creative individuals is that they possess less latent inhibition, the brain's natural tendency to block out unnecessary background stimuli. As a result, creative people absorb more sensory information than others, giving them a larger pool of material from which to form original ideas. Studies have also shown that the creative process involves two separate stages: a quiet, relaxed phase and a more active, organised phase of cortical arousal. Creative individuals switch between these two states naturally, without great effort. Interestingly, social connections also matter — many highly creative people depend on at least one trusted relationship to support and sustain their work.</p>
+  </div>
+  <div class="card" id="mini-reading-qs"><p class="instr">Decide True or False. Then write the word in the text that means the same (1–2) or opposite (3–5) of the bold word.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions below.</p></div>
+  <div class="card"><h3>The Mechanics of the Creative Mind</h3><p class="instr">A background article on creativity, the threshold theory, latent inhibition, alpha waves and cortical arousal — with a full vocabulary glossary at the end.</p><a class="btn link-out" href="article-day-3.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check" onchange="revealArticleQs()"><label for="t3check">I have read the article</label></div>
+  <div id="articleQs" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h4>Section 1 — True / False / Not Given</h4>
+      <p class="instr">Write True, False, or Not Given according to the article.</p>
+      <div class="q-block"><div class="q-text">1. According to the Threshold Theory, a person with an IQ of 125 can be more creative than someone with an IQ of 150.</div><div class="tf-toggle"><label><input type="radio" name="aq1" value="True"> True</label><label><input type="radio" name="aq1" value="False"> False</label><label><input type="radio" name="aq1" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">2. Highly creative individuals possess more latent inhibition than the average person.</div><div class="tf-toggle"><label><input type="radio" name="aq2" value="True"> True</label><label><input type="radio" name="aq2" value="False"> False</label><label><input type="radio" name="aq2" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">3. Alpha waves are associated with the elaboration stage of creativity.</div><div class="tf-toggle"><label><input type="radio" name="aq3" value="True"> True</label><label><input type="radio" name="aq3" value="False"> False</label><label><input type="radio" name="aq3" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">4. Colin Martindale conducted his brain wave research in the 1980s.</div><div class="tf-toggle"><label><input type="radio" name="aq4" value="True"> True</label><label><input type="radio" name="aq4" value="False"> False</label><label><input type="radio" name="aq4" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">5. The most creative people are those who remain in a relaxed brain state at all times.</div><div class="tf-toggle"><label><input type="radio" name="aq5" value="True"> True</label><label><input type="radio" name="aq5" value="False"> False</label><label><input type="radio" name="aq5" value="Not Given"> Not Given</label></div></div>
+    </div>
+    <div class="card">
+      <h4>Section 2 — Multiple choice</h4>
+      <div class="q-block" id="aq6Block"><div class="q-text">6. According to the Threshold Theory, at what IQ level does the link between intelligence and creativity weaken?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq6" value="A"> A) 100</label><label class="opt-row" data-val="B"><input type="radio" name="aq6" value="B"> B) 110</label><label class="opt-row" data-val="C"><input type="radio" name="aq6" value="C"> C) 120</label><label class="opt-row" data-val="D"><input type="radio" name="aq6" value="D"> D) 140</label></div></div>
+      <div class="q-block" id="aq7Block"><div class="q-text">7. According to the article, what explains why creative ideas often appear in the shower or while walking?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq7" value="A"> A) Physical exercise stimulates the brain directly.</label><label class="opt-row" data-val="B"><input type="radio" name="aq7" value="B"> B) The relaxed state produces alpha waves that support the inspiration phase.</label><label class="opt-row" data-val="C"><input type="radio" name="aq7" value="C"> C) Distractions help the brain to focus more easily.</label><label class="opt-row" data-val="D"><input type="radio" name="aq7" value="D"> D) The cortical arousal phase is triggered by physical movement.</label></div></div>
+    </div>
+    <div class="check-row"><button class="btn secondary" onclick="checkArticleQs()">Check answers</button></div>
+    <details class="answer-key" id="ansKey3"><summary>Answer key</summary><div class="answer-key-body" id="ansKey3Body"></div></details>
+  </div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_3.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, come back and record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 14 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
+  <div class="card">
+    <h4>Task 1 — Multiple choice</h4>
+    <div id="t5McqList"></div>
+  </div>
+  <div class="card">
+    <h4>Task 2 — Match the verbs and nouns</h4>
+    <p class="instr">Match each verb (1–6) with the correct noun (a–f).</p>
+    <div class="wordbank" style="margin-bottom:14px;"><span class="chip">a. funding</span><span class="chip">b. a need</span><span class="chip">c. a problem</span><span class="chip">d. itself</span><span class="chip">e. the range of services</span><span class="chip">f. an idea</span></div>
+    <div id="t5MatchList"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video</h2><p class="task-sub">Watch the video, then complete all three exercises below.</p></div>
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/NdQ8RAfItX0" title="Day 3 Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+  <div class="card"><h4>Part 2 — Gap fill</h4>
+    <div class="wordbank"><span class="chip">phrases</span><span class="chip">conversations</span><span class="chip">relevant</span><span class="chip">comprehension</span><span class="chip">rhythm</span><span class="chip">recognition</span><span class="chip">fluency</span><span class="chip">confidence</span><span class="chip">cultural</span><span class="chip">expressions</span><span class="chip">simulate</span><span class="chip">feedback</span><span class="chip">consistent</span><span class="chip">chatbot</span><span class="chip">tutor</span></div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — Rude Emails</h2><p class="task-sub">Listen to the BBC 6 Minute English podcast and complete the exercises.</p></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening task</h2><p class="task-sub">Listen and complete both exercises below.</p></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task8.mp3"></audio></div>
+  <div class="card"><h4>Task 1 — Circle the best answer</h4><div id="t8McqList"></div></div>
+  <div class="card">
+    <h4>Task 2 — Complete the sentences</h4>
+    <div class="wordbank"><span class="chip">personal</span><span class="chip">good fit</span><span class="chip">aligned</span><span class="chip">replicated</span><span class="chip">stability</span><span class="chip">measured</span><span class="chip">responsible</span><span class="chip">report</span></div>
+    <div class="passage-text" id="t8GapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check answers</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div>
+  <div class="eyebrow">Day 3 of 30</div>
+  <h1>Congratulations — Day 3 complete! 🎉</h1>
+  <p>All 8 tasks are done and your progress has been saved. Come back tomorrow for Day 4.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=3,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+
+var STATE_KEY='sprint4_day'+DAY+'_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+
+var debTimers={};
+function autosaveField(id,val){
+  if(!studentSession)return;
+  clearTimeout(debTimers[id]);
+  debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);
+}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;
+  if(/^mr|^radio_mr/.test(id))return 2;
+  if(/^aq|^radio_aq/.test(id))return 3;
+  if(id==='t4score'||id==='t4check')return 4;
+  if(/^t5m|^t5v/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;
+  if(/^dict|^comp|^radio_comp/.test(id))return 7;
+  if(/^t8m|^t8g/.test(id))return 8;
+  return 1;
+}
+function hookAutosave(){
+  document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});
+  document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});
+  document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});
+}
+async function restoreAnswers(){
+  if(!studentSession)return;var db=getSB();if(!db)return;
+  var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);
+  (res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});
+}
+function saveProgress(t,c){
+  try{var k='sprint4_day'+DAY+'_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}
+  if(!studentSession)return;var db=getSB();if(!db)return;
+  db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});
+}
+
+var dotsWrap=document.getElementById('dots');
+for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){
+  if(teacherMode)return true;
+  if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);
+  var container=document.getElementById('task'+n);
+  var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}
+  var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}
+  var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}
+  var checks=container.querySelectorAll('input[type=checkbox]');for(var c=0;c<checks.length;c++){if(!checks[c].checked)return false;}
+  return true;
+}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit your answers there, then come back here.';}window.openTask4=openTask4;
+
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segs=['For centuries, thinkers have tried to','/*1*/','about what makes some people more creative than others. Today, we understand that','/*2*/','is not magic — it is a complex process happening inside the brain. Research into the moment of','/*3*/','— the sudden flash when a solution appears — shows that ideas often','/*4*/','silently in the unconscious before they surface. Yet the creative process continues to','/*5*/','easy measurement and definition. Creative individuals typically show strong','/*6*/','in their chosen field, working consistently for many years. They often have a keen','/*7*/','sense, drawn to beauty and design. Many are almost','/*8*/','in the pursuit of their goals. Something as ordinary as a quiet walk can','/*9*/','an original idea, because creative brains are more open to incoming','/*10*/','Most people have a cognitive filter known as latent','/*11*/','that blocks irrelevant data, but creative individuals have less of this, allowing them to','/*12*/','more information simultaneously. The initial spark of','/*13*/','is just the beginning; what follows is the stage of','/*14*/','in which rough ideas are developed. During the','/*15*/','active phase of creativity, known as','/*16*/','the brain shifts from relaxed alpha waves into a focused, organised state. Truly creative individuals move between these states','/*17*/','without conscious effort. Their work involves a kind of mental','/*18*/','combining knowledge from many fields. This requires strong','/*19*/','between brain regions, supported by complex','/*20*/','that link different areas of thinking.'];
+var vocabA_ans={1:'speculate',2:'creativity',3:'insight',4:'incubate',5:'elude',6:'discipline',7:'aesthetic',8:'obsessive',9:'trigger',10:'stimuli',11:'inhibition',12:'juggle',13:'inspiration',14:'elaboration',15:'dominant',16:'cortical arousal',17:'intuitively',18:'synthesis',19:'coordination',20:'neural networks'};
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;vocabA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB=[
+  {n:1,t:'Scientists continue to ___ about the relationship between intelligence and creativity.',ans:'speculate'},
+  {n:2,t:'Research suggests that original ideas often ___ in the unconscious mind for weeks before they emerge.',ans:'incubate'},
+  {n:3,t:'A sudden flash of ___ can solve a problem that has been troubling someone for months.',ans:'insight'},
+  {n:4,t:'A simple, universally agreed definition of creativity continues to ___ scientists.',ans:'elude'},
+  {n:5,t:'Writing a great novel requires both natural talent and years of consistent ___.',ans:'discipline'},
+  {n:6,t:'Many great inventors have an almost ___ commitment to their work, spending years on a single problem.',ans:'obsessive'},
+  {n:7,t:'A familiar piece of music can ___ a flood of memories and unexpected ideas.',ans:'trigger'},
+  {n:8,t:'Creative individuals are often more sensitive to environmental ___ than the average person.',ans:'stimuli'},
+  {n:9,t:'People with lower latent ___ tend to notice background details that others overlook.',ans:'inhibition'},
+  {n:10,t:'Experienced project managers are trained to ___ multiple deadlines and priorities.',ans:'juggle'},
+  {n:11,t:'Many writers describe long walks in nature as their primary source of ___.',ans:'inspiration'},
+  {n:12,t:'After the initial idea comes the slow, careful work of ___ and development.',ans:'elaboration'},
+  {n:13,t:'Alpha waves are the ___ form of brain activity during states of relaxation and daydreaming.',ans:'dominant'},
+  {n:14,t:'Skilled musicians often know ___ when a melody sounds right, without analysing why.',ans:'intuitively'},
+  {n:15,t:'The essay required a creative ___ of ideas from psychology, biology, and philosophy.',ans:'synthesis'}
+];
+(function buildVB(){var wrap=document.getElementById('vocabB-list');var html='';vocabB.forEach(function(s){html+='<p>'+s.n+'. '+s.t.replace('___','<input class="fill short" id="vb'+s.n+'">')+'</p>';});wrap.innerHTML=html;})();
+
+function checkVocab(){
+  var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);var val=inp.value.trim().toLowerCase();var ans=vocabA_ans[i].toLowerCase();var ok=val===ans;if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}
+  var rB=0;vocabB.forEach(function(s){var inp=document.getElementById('vb'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');
+  document.getElementById('ansKey1Body').innerHTML='<b>Exercise A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Exercise B:</b><br>'+vocabB.map(function(s){return s.n+'. '+s.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey1').classList.add('show');refreshDoneButton();
+}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 MINI READING ===== */
+var miniReading=[
+  {n:1,bold:'boost',tf:'True',word:'improve'},
+  {n:2,bold:'absorb',tf:'True',word:'absorb'},
+  {n:3,bold:'more',tf:'False',word:'less'},
+  {n:4,bold:'identical',tf:'False',word:'separate'},
+  {n:5,bold:'isolation',tf:'False',word:'connections'}
+];
+(function buildMR(){var wrap=document.getElementById('mini-reading-qs');var html='';miniReading.forEach(function(q){html+='<div class="tf-row"><b>'+q.n+'.</b> Statement with bold word <b>'+q.bold+'</b> — <div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div> Word: <input class="fill short" id="mrw'+q.n+'"></div>';});wrap.innerHTML=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');var wordInp=document.getElementById('mrw'+q.n);var tfOk=chosen&&chosen.value===q.tf;var wordOk=wordInp.value.trim().toLowerCase()===q.word.toLowerCase();if(tfOk&&wordOk)right++;wordInp.classList.toggle('ok',wordOk);wordInp.classList.toggle('no',!wordOk&&wordInp.value.trim()!=='');});
+alert('You got '+right+'/5 correct.');
+document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. '+q.tf+' — <b>'+q.word+'</b>';}).join('<br>');
+document.getElementById('ansKey2').classList.add('show');refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 3 ARTICLE ===== */
+function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
+var aqTFAns={aq1:'True',aq2:'False',aq3:'False',aq4:'False',aq5:'False'};
+var aqMcqAns={aq6:'C',aq7:'B'};
+function checkArticleQs(){
+  var right=0,total=7;
+  Object.keys(aqTFAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');if(chosen&&chosen.value===aqTFAns[name])right++;});
+  Object.keys(aqMcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===aqMcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===aqMcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  alert('Article comprehension: '+right+'/'+total+' correct.');
+  document.getElementById('ansKey3Body').innerHTML='1. True &nbsp;•&nbsp; 2. False (less) &nbsp;•&nbsp; 3. False (inspiration, not elaboration) &nbsp;•&nbsp; 4. False (late 1970s) &nbsp;•&nbsp; 5. False (they shift between states) &nbsp;•&nbsp; 6. C (120) &nbsp;•&nbsp; 7. B';
+  document.getElementById('ansKey3').classList.add('show');refreshDoneButton();}window.checkArticleQs=checkArticleQs;
+
+/* ===== TASK 5 MINI LISTENING ===== */
+var t5McqData=[
+  {n:1,q:"Anna …",opts:["didn't start the company but manages it now.","started the company and manages it now.","started the company but doesn't manage it any more."],ans:"B"},
+  {n:2,q:"The app …",opts:["is for parents to learn from.","is for students to learn from.","is for students who want to find a tutor."],ans:"C"},
+  {n:3,q:"Many parents …",opts:["don't have the time or knowledge to help with their children's homework.","think that schools should help with their children's homework.","don't want to help with their children's homework."],ans:"A"},
+  {n:4,q:"The app …",opts:["has student exercises on it.","is only for people in remote areas.","offers live online support from tutors."],ans:"C"},
+  {n:5,q:"On the app, tutors who live in remote areas …",opts:["often charge lower rates.","often charge higher rates.","don't like to work too much."],ans:"A"},
+  {n:6,q:"The app …",opts:["is new and not many people know about it.","is already popular.","is not very successful."],ans:"B"}
+];
+(function buildT5Mcq(){var wrap=document.getElementById('t5McqList');var html='';t5McqData.forEach(function(q){html+='<div class="q-block" id="t5mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t5m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+var t5MatchVerbs=['to solve','to come up with','to meet','to speak for','to secure','to expand'];
+var t5MatchAns={1:'C',2:'F',3:'B',4:'D',5:'A',6:'E'};
+var t5NounOpts=['<option value="">--</option><option value="A">a. funding</option><option value="B">b. a need</option><option value="C">c. a problem</option><option value="D">d. itself</option><option value="E">e. the range of services</option><option value="F">f. an idea</option>'];
+(function buildT5Match(){var wrap=document.getElementById('t5MatchList');var html='';t5MatchVerbs.forEach(function(v,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+v+' → <select class="fill" id="t5v'+n+'">'+t5NounOpts[0]+'</select></div>';});wrap.innerHTML=html;})();
+
+function checkTask5(){
+  var rMcq=0,rMatch=0;
+  t5McqData.forEach(function(q){var chosen=document.querySelector('input[name="t5m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t5mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  Object.keys(t5MatchAns).forEach(function(n){var sel=document.getElementById('t5v'+n);if(sel&&sel.value===t5MatchAns[n])rMatch++;});
+  alert('Task 1 MCQ: '+rMcq+'/6\nTask 2 Matching: '+rMatch+'/6');
+  document.getElementById('ansKey5Body').innerHTML='<b>Task 1:</b><br>'+t5McqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Task 2:</b><br>1-c &nbsp;•&nbsp; 2-f &nbsp;•&nbsp; 3-b &nbsp;•&nbsp; 4-d &nbsp;•&nbsp; 5-a &nbsp;•&nbsp; 6-e';
+  document.getElementById('ansKey5').classList.add('show');refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[
+  {n:1,q:"According to the speaker, what is wrong with learning random phrases like \"The monkey is on the table\"?",opts:["They are grammatically incorrect.","They are useful but don't prepare you for real conversations.","They are too difficult for beginners.","They are only useful for advanced learners."],ans:"B"},
+  {n:2,q:"What should language learners begin with instead of long vocabulary lists?",opts:["Children's books","Fifty common phrases","Grammar exercises","Newspaper articles"],ans:"B"},
+  {n:3,q:"Why should learners choose phrases that are personal to them?",opts:["They are easier to translate.","They sound more formal.","They are more likely to be used and remembered.","They help improve handwriting."],ans:"C"},
+  {n:4,q:"What does listening to a language slightly above your level help develop?",opts:["Perfect pronunciation immediately","Memory and pattern recognition","Faster reading speed","Grammar accuracy only"],ans:"B"},
+  {n:5,q:"According to the video, why should you talk to yourself?",opts:["To memorise dictionary definitions","To practise speaking without pressure","To improve your writing skills","To avoid making mistakes"],ans:"B"},
+  {n:6,q:"What is the speaker's advice about watching TV?",opts:["Only watch the news.","Watch with subtitles in your own language.","Watch shows in your target language, including children's programmes if necessary.","Avoid TV because it is distracting."],ans:"C"},
+  {n:7,q:"Why is following social media in your target language useful?",opts:["It teaches formal academic language.","It introduces real-life expressions.","It improves spelling only.","It replaces speaking practice."],ans:"B"},
+  {n:8,q:"According to the speaker, AI chatbots are helpful because they...",opts:["always speak perfectly.","can replace human conversation completely.","provide a safe place to practise and receive feedback.","teach only grammar rules."],ans:"C"},
+  {n:9,q:"The speaker compares language learning to...",opts:["learning to swim.","learning to ride a bike.","climbing a mountain.","solving a puzzle."],ans:"B"},
+  {n:10,q:"What is the overall message of the video?",opts:["Grammar is the most important part of language learning.","AI is better than teachers.","Real conversations are the key to becoming fluent.","Vocabulary lists should be memorised first."],ans:"C"}
+];
+(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+var vidGapData=[
+  {n:1,t:"The speaker recommends learning fifty common ___ before studying grammar.",ans:"phrases"},
+  {n:2,t:"These phrases are the building blocks of real ___.",ans:"conversations"},
+  {n:3,t:"The more ___ the phrases are to your life, the easier they are to remember.",ans:"relevant"},
+  {n:4,t:"Try listening to material just above your level of ___.",ans:"comprehension"},
+  {n:5,t:"Listening helps you become familiar with the sounds and ___ of a language.",ans:"rhythm"},
+  {n:6,t:"It also develops memory and pattern ___.",ans:"recognition"},
+  {n:7,t:"Speaking regularly improves your ___.",ans:"fluency"},
+  {n:8,t:"AI can help learners build ___ before talking to native speakers.",ans:"confidence"},
+  {n:9,t:"Watching TV also helps learners understand ___ context.",ans:"cultural"},
+  {n:10,t:"Social media teaches everyday ___ that are rarely found in textbooks.",ans:"expressions"},
+  {n:11,t:"AI chatbots can ___ real conversations.",ans:"simulate"},
+  {n:12,t:"They also provide instant ___ on your grammar.",ans:"feedback"},
+  {n:13,t:"Following content every day helps you stay ___.",ans:"consistent"},
+  {n:14,t:"The speaker suggests using an AI ___ for language practice.",ans:"chatbot"},
+  {n:15,t:"AI can feel like having a personal ___ available 24/7.",ans:"tutor"}
+];
+(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+
+var vidMatchData=[{n:1,term:"phrase",ans:"D"},{n:2,term:"vocabulary",ans:"H"},{n:3,term:"comprehension",ans:"C"},{n:4,term:"fluency",ans:"A"},{n:5,term:"rhythm",ans:"F"},{n:6,term:"pattern recognition",ans:"I"},{n:7,term:"relevant",ans:"G"},{n:8,term:"expression",ans:"B"},{n:9,term:"cultural context",ans:"L"},{n:10,term:"simulate",ans:"K"},{n:11,term:"feedback",ans:"J"},{n:12,term:"confidence",ans:"M"},{n:13,term:"chatbot",ans:"N"},{n:14,term:"tutor",ans:"E"},{n:15,term:"consistent",ans:"O"}];
+var vidMatchDefs={A:"the ability to speak a language smoothly and naturally",B:"words used to communicate a particular idea",C:"understanding of what you hear or read",D:"a group of words expressing one idea",E:"words and phrases that people commonly use",F:"the regular beat or flow of spoken language",G:"connected to the situation or useful for a purpose",H:"the words a person knows in a language",I:"recognising repeated structures or patterns",J:"information that helps improve performance",K:"to imitate or recreate a real situation",L:"customs and background that help explain language use",M:"belief in your own abilities",N:"a computer program that can hold conversations",O:"happening regularly without stopping"};
+(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+function checkVideoTask(){
+  var rMcq=0,rGap=0,rMatch=0;
+  vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
+  alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
+  document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b><br>'+vidMcqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Gap fill:</b><br>'+vidGapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Matching:</b><br>'+vidMatchData.map(function(m){return m.n+'. '+m.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey6').classList.add('show');refreshDoneButton();}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:'emails',2:'rude',3:'greeting',4:'defensive',5:'emoji',6:'threatened',7:'uncivil',8:'incivility',9:'accomplished',10:'JD Vance',11:'belittle',12:'place',13:'inferior',14:'important',15:'avoiding',16:'plate',17:'task',18:'incivility',19:'frazzled',20:'send',21:'Elon Musk',22:'defensive',23:'impolite',24:'belittle',25:'place',26:'plate',27:'frazzled',28:'fight',29:'emoji',30:'job'};
+var dictLines=[
+  {sp:'Phil',t:'Hello, this is 6 Minute English from BBC Learning English. I\'m Phil.'},
+  {sp:'Becca',t:'And I\'m Becca.'},
+  {sp:'Phil',t:'Sending {1} is a big part of modern work, and most people try to write them politely.'},
+  {sp:'Becca',t:'Recently, BBC Radio 4 programme All in the Mind asked listeners what they find {2} in emails.'},
+  {sp:'Claudia Hammond',t:'Rachel says she doesn\'t like emails that begin with just your name and without a simple {3}.'},
+  {sp:'Claudia Hammond',t:'She says this unnecessary formality immediately puts her on the {4}.'},
+  {sp:'Dr Peter Olusoga',t:'Someone recently received a single {5} in response to a carefully worded email.'},
+  {sp:'Becca',t:'The phrase put someone on the defensive means making someone feel {6} or unsure.'},
+  {sp:'Phil',t:'These emails are examples of people being {7}, meaning rude or impolite.'},
+  {sp:'Phil',t:'The noun form of uncivil is {8}.'},
+  {sp:'Becca',t:'Now for today\'s quiz. Last year, thousands of US government workers received an email asking them to list five things they had {9} that week or resign.'},
+  {sp:'Phil',t:'I\'ll guess it was {10}.'},
+  {sp:'Dr Emma Russell',t:'A fight response is when we try to dominate or {11} other people.'},
+  {sp:'Dr Emma Russell',t:'Sometimes people copy senior staff into emails to put someone in their {12}.'},
+  {sp:'Phil',t:'To belittle someone means to make them feel {13} or unimportant.'},
+  {sp:'Phil',t:'The idiom put someone in their place means to show them they are less {14} than they think.'},
+  {sp:'Dr Emma Russell',t:'The flight response is when people try to protect themselves by withdrawing or {15}.'},
+  {sp:'Dr Emma Russell',t:'Sometimes people don\'t answer every point because they just want to get it off their {16}.'},
+  {sp:'Becca',t:'The idiom get something off your plate means giving someone else a {17} or problem to deal with.'},
+  {sp:'Dr Emma Russell',t:'When we\'re operating in stressful environments, we are more at risk of engaging in {18}.'},
+  {sp:'Becca',t:'If you\'re {19}, you feel tired or anxious because you\'re doing too many things.'},
+  {sp:'Phil',t:'If you\'re angry when writing an email, pause before you hit {20}.'},
+  {sp:'Becca',t:'The correct answer to the quiz was {21}.'},
+  {sp:'Becca',t:'To put someone on the {22} means to make them feel threatened or unsure.'},
+  {sp:'Phil',t:'The adjective uncivil means {23}.'},
+  {sp:'Becca',t:'To {24} someone means to make them feel inferior.'},
+  {sp:'Phil',t:'If you put someone in their {25}, you show them they are less important than they think.'},
+  {sp:'Becca',t:'To get something off your {26} means giving someone else a task instead of doing it yourself.'},
+  {sp:'Phil',t:'If you\'re {27}, you\'re tired or anxious because you\'re doing too much.'},
+  {sp:'Becca',t:'Rudeness in emails may be caused by the {28}-or-flight response.'},
+  {sp:'Phil',t:'One example of incivility is replying with a single {29}.'},
+  {sp:'Becca',t:'Thinking before you hit send could save your friendship or even your {30}.'}
+];
+(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'" data-num="'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
+
+var compData=[
+  {n:1,q:"What does the phrase put someone on the defensive mean?",opts:["To make someone laugh","To make someone feel threatened or unsure","To encourage someone to work harder","To make someone leave the office"],ans:"B"},
+  {n:2,q:"What is an example of incivility mentioned in the programme?",opts:["Sending a thank-you email","Replying with a single emoji to a thoughtful email","Writing a long report","Calling a colleague"],ans:"B"},
+  {n:3,q:"What does the idiom get something off your plate mean?",opts:["Finish your lunch","Remove unnecessary emails","Give a task or problem to someone else","Organise your desk"],ans:"C"},
+  {n:4,q:"According to Dr Emma Russell, being frazzled means:",opts:["Feeling energetic and confident","Feeling tired or anxious because you have too much to do","Feeling bored at work","Feeling excited about a promotion"],ans:"B"},
+  {n:5,q:"Who actually sent the email asking US government workers to justify their jobs?",opts:["Donald Trump","JD Vance","Elon Musk","Joe Biden"],ans:"C"}
+];
+(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+function checkPodcast(){
+  var rDict=0,rComp=0;
+  Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');
+  document.getElementById('ansKey7Body').innerHTML='<b>Dictation:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comprehension:</b><br>'+compData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey7').classList.add('show');refreshDoneButton();}window.checkPodcast=checkPodcast;
+
+/* ===== TASK 8 FULL LISTENING ===== */
+var t8McqData=[
+  {n:1,q:"Four years ago, Maria worked for a small HR services provider...",opts:["in the B2B sector.","in the B2C sector.","in both B2B and B2C sectors."],ans:"A"},
+  {n:2,q:"Maria has been in her current job...",opts:["for four years.","for three years.","for one year."],ans:"B"},
+  {n:3,q:"Maria's current role is focused...",opts:["only on learning and development.","on a number of HR topics.","only on payroll and she wants to do L&D."],ans:"B"},
+  {n:4,q:"Maria...",opts:["did a diploma in L&D two years ago.","is doing a diploma in psychology at the moment.","Both options are true."],ans:"C"},
+  {n:5,q:"Maria will need to...",opts:["identify and devise an L&D strategy.","devise and implement an L&D strategy.","implement an L&D strategy that has already been devised."],ans:"B"},
+  {n:6,q:"Maria...",opts:["will hear back from them next week.","has been invited to a second interview next week.","needs to call them next week to find out the next steps."],ans:"A"}
+];
+(function buildT8Mcq(){var wrap=document.getElementById('t8McqList');var html='';t8McqData.forEach(function(q){html+='<div class="q-block" id="t8mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t8m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+var t8GapData=[
+  {n:1,t:"Maria feels her skills and experience are a ___ for the company.",ans:"good fit"},
+  {n:2,t:"Maria changed jobs because she was looking for more ___.",ans:"stability"},
+  {n:3,t:"She was ___ for learning and development.",ans:"responsible"},
+  {n:4,t:"She feels ___ with the company's brand and values.",ans:"aligned"},
+  {n:5,t:"She's used to taking a ___ approach to L&D.",ans:"personal"},
+  {n:6,t:"Her ideas can be ___ on a larger scale.",ans:"replicated"},
+  {n:7,t:"She would ___ to the HR manager.",ans:"report"},
+  {n:8,t:"Performance will be ___ in different ways.",ans:"measured"}
+];
+(function buildT8Gap(){var wrap=document.getElementById('t8GapList');var html='';t8GapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="t8g'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+
+function checkTask8(){
+  var rMcq=0,rGap=0;
+  t8McqData.forEach(function(q){var chosen=document.querySelector('input[name="t8m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t8mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  t8GapData.forEach(function(g){var inp=document.getElementById('t8g'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans.toLowerCase();if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  alert('Task 1: '+rMcq+'/6\nTask 2: '+rGap+'/8');
+  document.getElementById('ansKey8Body').innerHTML='<b>Task 1:</b><br>'+t8McqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Task 2:</b><br>'+t8GapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey8').classList.add('show');refreshDoneButton();}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+})();
+</script>
+</body>
+</html>
