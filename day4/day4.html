@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 4</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#ffffff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}input.fill.wide{width:320px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+  .group-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+  .group-cell{border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--bg);}
+  .group-cell h5{margin:0 0 10px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--accent-dark);}
+  .group-cell select{width:100%;margin-bottom:6px;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 4</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">lush</span><span class="chip">abundant</span><span class="chip">sediment</span><span class="chip">refuge</span><span class="chip">encroaching</span><span class="chip">artefact</span><span class="chip">attribute</span><span class="chip">opponent</span><span class="chip">controversial</span><span class="chip">sophistication</span><span class="chip">ascertain</span><span class="chip">notoriously</span><span class="chip">unreliable</span><span class="chip">crosscheck</span><span class="chip">contradictory</span><span class="chip">plausible</span><span class="chip">extinction</span><span class="chip">rigorous</span><span class="chip">sceptical</span><span class="chip">geological</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill in each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text carefully, then choose the correct answer for each question.</p></div>
+  <div class="card">
+    <h3>Archaeological Dating: Challenges and Controversies</h3>
+    <p class="passage-text">Determining the age of ancient human remains is a notoriously difficult process. Scientists use several methods, including radiocarbon dating, luminescence dating, and analysis of surrounding sediment layers. Each technique carries a degree of uncertainty. The most rigorous investigations use multiple methods and then crosscheck the results to identify any contradictory findings.</p>
+    <p class="passage-text">One of the central challenges is that different teams frequently reach contradictory conclusions. Researchers are therefore trained to be sceptical of any single data source. When results from one method conflict with those of another, scientists must ascertain which dataset is more plausible by consulting additional evidence. The process of critical evaluation is essential, particularly when the extinction of an entire species or the origins of humanity are at stake.</p>
+  </div>
+  <div class="card"><div id="miniMcqList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions.</p></div>
+  <div class="card"><h3>The Clashes of Archaeology at Lake Mungo</h3><p class="instr">A background reading on one of Australia's most controversial archaeological sites, with a full vocabulary glossary.</p><a class="btn link-out" href="article-day-4.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check" onchange="revealArticleQs()"><label for="t3check">I have read the article</label></div>
+  <div id="articleQs" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h4>Section 1 — Matching information</h4>
+      <p class="instr">The article has four sections labelled <b>A–C</b> (Introduction + A, B, C). Choose the correct section for each piece of information.</p>
+      <div class="passage-text">
+        <p>1. A description of an elaborate burial ritual performed for an ancient human.<br><select class="fill" id="aq1"><option value="">--</option><option>Introduction</option><option>A</option><option>B</option><option>C</option></select></p>
+        <p>2. An explanation of how the age of a discovery could support a theory about human origins.<br><select class="fill" id="aq2"><option value="">--</option><option>Introduction</option><option>A</option><option>B</option><option>C</option></select></p>
+        <p>3. A scientific principle about the reliability of laboratory data.<br><select class="fill" id="aq3"><option value="">--</option><option>Introduction</option><option>A</option><option>B</option><option>C</option></select></p>
+        <p>4. A description of Australia's landscape today compared to 50,000 years ago.<br><select class="fill" id="aq4"><option value="">--</option><option>Introduction</option><option>A</option><option>B</option><option>C</option></select></p>
+        <p>5. A reference to climate change as an alternative explanation for animal disappearance.<br><select class="fill" id="aq5"><option value="">--</option><option>Introduction</option><option>A</option><option>B</option><option>C</option></select></p>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Section 2 — Summary completion</h4>
+      <p class="instr">Complete the summary using NO MORE THAN TWO WORDS from the article for each answer.</p>
+      <div class="passage-text">
+        <p>Jim Bowler discovered the remains of Mungo Lady in <input class="fill short" id="aq6">. The body of Mungo Man had been covered in <input class="fill" id="aq7">, suggesting remarkable cultural sophistication. The two scientists disagreed sharply: Bowler's team concluded the remains were around <input class="fill short" id="aq8"> years old, while Alan Thorne's team used <input class="fill" id="aq9"> techniques and proposed a date of 62,000 years.</p>
+      </div>
+    </div>
+    <div class="check-row"><button class="btn secondary" onclick="checkArticleQs()">Check answers</button></div>
+    <details class="answer-key" id="ansKey3"><summary>Answer key</summary><div class="answer-key-body" id="ansKey3Body"></div></details>
+  </div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_4.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, come back and record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 14 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task4.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Write the words in the correct group</h4>
+    <div class="wordbank"><span class="chip">screen</span><span class="chip">show an alert</span><span class="chip">laptop</span><span class="chip">browse websites</span><span class="chip">display</span><span class="chip">smartphone</span><span class="chip">access the internet</span><span class="chip">buzz</span><span class="chip">satnav</span><span class="chip">monitor</span><span class="chip">show a notification</span><span class="chip">interact on social media</span></div>
+    <p class="instr" style="margin-top:10px;">For each word, select the correct category.</p>
+    <div id="prepGroupList"></div>
+  </div>
+  <div class="card">
+    <h4>Task 1 — Circle the best answer</h4>
+    <div id="t5McqList"></div>
+  </div>
+  <div class="card">
+    <h4>Task 2 — Put the words in order to make sentences</h4>
+    <p class="instr">Type the correctly ordered sentence in each box.</p>
+    <div id="t5UnscrambleList"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video</h2><p class="task-sub">Watch the video, then complete all three exercises below.</p></div>
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/U7Gj2e35YXA" title="Day 4 Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+  <div class="card"><h4>Part 2 — Gap fill</h4>
+    <div class="wordbank"><span class="chip">prompt</span><span class="chip">conflations</span><span class="chip">transcript</span><span class="chip">summary</span><span class="chip">draft</span><span class="chip">interviews</span><span class="chip">prioritise</span><span class="chip">itinerary</span><span class="chip">mobility</span><span class="chip">roleplay</span><span class="chip">convincing</span><span class="chip">privacy</span><span class="chip">sensitive</span><span class="chip">electricity</span><span class="chip">wisely</span></div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — The Power of Poetry</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening task</h2><p class="task-sub">Listen and complete all three tasks below.</p></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task8.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Match the vocabulary to the definitions</h4>
+    <p class="instr">Match each word (1–6) to the correct definition (a–f).</p>
+    <div class="wordbank"><span class="chip">a. a benefit a company's products provide to customers</span><span class="chip">b. something agreed to be ready by a specific time</span><span class="chip">c. someone with an interest in a project's success or failure</span><span class="chip">d. to work together to achieve something</span><span class="chip">e. a project schedule</span><span class="chip">f. to work with people from different divisions</span></div>
+    <div id="t8PrepList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Task 1 — Choose the correct option</h4><div id="t8McqList"></div></div>
+  <div class="card">
+    <h4>Task 2 — Put the words in order to make longer phrases</h4>
+    <p class="instr">Type the correctly ordered phrase in each box.</p>
+    <div id="t8UnscrambleList"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check answers</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div>
+  <div class="eyebrow">Day 4 of 30</div>
+  <h1>Congratulations — Day 4 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 5.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=4,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+
+var STATE_KEY='sprint4_day'+DAY+'_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+
+var debTimers={};
+function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;if(/^mini|^radio_mini/.test(id))return 2;if(/^aq/.test(id))return 3;
+  if(id==='t4score'||id==='t4check')return 4;if(/^prep|^t5m|^t5u/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^comp|^radio_comp/.test(id))return 7;
+  if(/^t8p|^t8m|^t8u/.test(id))return 8;return 1;
+}
+function hookAutosave(){
+  document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});
+  document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});
+  document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});
+}
+async function restoreAnswers(){
+  if(!studentSession)return;var db=getSB();if(!db)return;
+  var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);
+  (res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});
+}
+function saveProgress(t,c){
+  try{var k='sprint4_day'+DAY+'_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}
+  if(!studentSession)return;var db=getSB();if(!db)return;
+  db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});
+}
+
+var dotsWrap=document.getElementById('dots');
+for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){
+  if(teacherMode)return true;if(checkedTasks[n])return true;
+  if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);
+  var container=document.getElementById('task'+n);
+  var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}
+  var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}
+  var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}
+  var checks=container.querySelectorAll('input[type=checkbox]');for(var c=0;c<checks.length;c++){if(!checks[c].checked)return false;}
+  return true;
+}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
+
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segs=['Thousands of years ago, many parts of the world were far more','/*1*/','than they are today. Wildlife was','/*2*/','and freshwater lakes teemed with life. Over time, layers of','/*3*/','accumulated on ancient lake beds, gradually covering the remains of lost civilizations. These sunken sites often served as a','/*4*/','for early communities retreating from','/*5*/','seas and hostile environments. Today, archaeologists must search for individual','/*6*/','s — objects made or used by ancient humans — in order to understand how these people lived. Scientists often','/*7*/','the cultural achievements of these communities to their remarkable','/*8*/','— far greater than was once assumed. However, dating ancient sites is','/*9*/','complex. Different teams frequently produce','/*10*/','results, and it can be extremely difficult to','/*11*/','the true age of an object or site. Many dating techniques are considered','/*12*/','when used alone, which is why scientists must','/*13*/','their results using independent methods. An','/*14*/','of the mainstream scientific view might propose an alternative theory, but this can be','/*15*/','especially when it challenges widely accepted','/*16*/','records. Any','/*17*/','explanation for past events — such as the','/*18*/','of ancient species — must be based on','/*19*/','scientific methods. Scientists who are','/*20*/','of popular theories are right to demand high standards of evidence.'];
+var vocabA_ans={1:'lush',2:'abundant',3:'sediment',4:'refuge',5:'encroaching',6:'artefact',7:'attribute',8:'sophistication',9:'notoriously',10:'contradictory',11:'ascertain',12:'unreliable',13:'crosscheck',14:'opponent',15:'controversial',16:'geological',17:'plausible',18:'extinction',19:'rigorous',20:'sceptical'};
+
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;vocabA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB_words=['abundant','refuge','sophistication','ascertain','notoriously','unreliable','crosscheck','contradictory','plausible','extinction','rigorous','sceptical','geological','opponent','controversial'];
+var vocabB_defs={A:'in a way that is widely known, especially for something negative',B:'relating to the physical structure and history of the Earth',C:'to verify information using a different or independent method',D:'an object made or used by humans in the past',E:'to find out something for certain through investigation',F:'seeming reasonable or probable',G:'a person who actively disagrees with or resists an idea',H:'the permanent dying out of a species',I:'present in very large quantities; plentiful',J:'the quality of being complex, refined, and advanced',K:'causing strong disagreement or debate',L:'not able to be trusted or depended on',M:'containing statements or ideas that conflict with each other',N:'a place providing shelter or protection from danger',O:'extremely thorough, careful, and precise',P:'having doubts; not easily convinced by claims'};
+var vocabB_ans={1:'I',2:'N',3:'J',4:'E',5:'A',6:'L',7:'C',8:'M',9:'F',10:'H',11:'O',12:'P',13:'B',14:'G',15:'K'};
+
+(function buildVB(){
+  var wrap=document.getElementById('vocabB-list');
+  var letters=Object.keys(vocabB_defs).sort();
+  var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');
+  var html='<p class="instr" style="margin-bottom:12px;">';
+  letters.forEach(function(l){html+='<b>'+l+'.</b> '+vocabB_defs[l]+'<br>';});
+  html+='</p>';
+  vocabB_words.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="vb'+n+'">'+optHtml+'</select></div>';});
+  wrap.innerHTML=html;
+})();
+
+function checkVocab(){
+  var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);var ok=inp.value.trim().toLowerCase()===vocabA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}
+  var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById('vb'+j);if(sel&&sel.value===vocabB_ans[j])rB++;}
+  alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');
+  var bodyA='<b>Exercise A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ');
+  var bodyB='<br><br><b>Exercise B:</b><br>'+vocabB_words.map(function(w,i){return (i+1)+'. '+vocabB_ans[i+1];}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey1Body').innerHTML=bodyA+bodyB;
+  document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();
+}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 MINI READING (MCQ) ===== */
+var miniMcqData=[
+  {n:1,q:"According to the text, which of the following best describes why dating ancient remains is difficult?",opts:["There are not enough scientists working on the problem.","All dating methods carry uncertainty and can produce conflicting results.","Laboratories in different countries cannot share data.","Ancient remains are rarely found in large quantities."],ans:"B"},
+  {n:2,q:"What does the text say scientists do when results from different methods conflict?",opts:["They choose the method that gives the oldest date.","They discard all data and start again.","They ascertain which dataset is more plausible using additional evidence.","They publish two separate reports."],ans:"C"},
+  {n:3,q:"What makes an investigation the most rigorous?",opts:["Using only the most modern laboratory equipment.","Having a large team of researchers.","Testing only bone samples, not sediment.","Applying multiple methods and crosschecking the results."],ans:"D"},
+  {n:4,q:"What does the word sceptical suggest about a scientist's approach?",opts:["They prefer to accept one result without question.","They doubt single data sources and look for corroboration.","They avoid publishing their findings.","They only trust radiocarbon dating."],ans:"B"}
+];
+(function buildMiniMcq(){var wrap=document.getElementById('miniMcqList');var html='';miniMcqData.forEach(function(q){html+='<div class="q-block" id="miniMcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="mini'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+function checkMiniReading(){
+  var right=0;
+  miniMcqData.forEach(function(q){var chosen=document.querySelector('input[name="mini'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)right++;var block=document.getElementById('miniMcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  alert('You got '+right+'/4 correct.');
+  document.getElementById('ansKey2Body').innerHTML=miniMcqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();
+}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 3 ARTICLE ===== */
+function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
+var aqSelectAns={aq1:'A',aq2:'C',aq3:'B',aq4:'Introduction',aq5:'C'};
+var aqGapAns={aq6:'1969',aq7:'red ochre',aq8:'40,000',aq9:'alternative laboratory'};
+function checkArticleQs(){
+  var right=0,total=9;
+  Object.keys(aqSelectAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value===aqSelectAns[id];if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value!=='');});
+  Object.keys(aqGapAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===aqGapAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  alert('Article comprehension: '+right+'/'+total+' correct.');
+  var key='<b>Section 1 (matching):</b><br>1. A &nbsp;•&nbsp; 2. C &nbsp;•&nbsp; 3. B &nbsp;•&nbsp; 4. Introduction &nbsp;•&nbsp; 5. C<br><br><b>Section 2 (summary):</b><br>6. 1969 &nbsp;•&nbsp; 7. red ochre &nbsp;•&nbsp; 8. 40,000 &nbsp;•&nbsp; 9. alternative laboratory';
+  document.getElementById('ansKey3Body').innerHTML=key;
+  document.getElementById('ansKey3').classList.add('show');checkedTasks[3]=true;refreshDoneButton();
+}window.checkArticleQs=checkArticleQs;
+
+/* ===== TASK 5 MINI LISTENING ===== */
+var prepWords=['screen','show an alert','laptop','browse websites','display','smartphone','access the internet','buzz','satnav','monitor','show a notification','interact on social media'];
+var prepAns={screen:'parts',showanalert:'attention',laptop:'devices',browsewebsites:'things',display:'parts',smartphone:'devices',accesstheinternet:'things',buzz:'attention',satnav:'devices',monitor:'parts',shownotification:'attention',interactonsocialmedia:'things'};
+var prepCats={devices:['laptop','smartphone','satnav'],attention:['show an alert','buzz','show a notification'],things:['browse websites','access the internet','interact on social media'],parts:['screen','display','monitor']};
+
+(function buildPrep(){
+  var wrap=document.getElementById('prepGroupList');var html='';
+  var catOpts='<option value="">--</option><option value="devices">devices</option><option value="attention">things a device does to get your attention</option><option value="things">things you do with a device</option><option value="parts">parts of a device</option>';
+  prepWords.forEach(function(w,idx){html+='<div class="q-text">'+w+': <select class="fill" id="prep'+idx+'">'+catOpts+'</select></div>';});
+  wrap.innerHTML=html;
+})();
+
+var t5McqData=[
+  {n:1,q:"The radio host says that a digital detox …",opts:["means we are in front of screens all the time.","is something younger people are trying more.","is important for our health."],ans:"B"},
+  {n:2,q:"Which sentence is not true about Amanda Vince's job?",opts:["She is online a lot of the time.","She follows fashion on social media.","She uploads her own videos to social media."],ans:"C"},
+  {n:3,q:"What is the name of the book that influenced Amanda?",opts:["Log Off: How to Stay Connected after Disconnecting","Log Off: How to Disconnect and Stay Disconnected","Log Off: Advice for the Digital Detox"],ans:"A"},
+  {n:4,q:"The first step in a digital detox is to get rid of distractions, such as …",opts:["noises the phone makes.","screens in your home and workplace.","the bright colours on your phone."],ans:"A"},
+  {n:5,q:"Amanda removed notifications from …",opts:["her close family and friends.","everything except important people in her life.","everything except very important work-related things."],ans:"B"},
+  {n:6,q:"The book also suggested that …",opts:["we replace digital distractions with real-world ones.","we think about the reason we are looking at our phones so much.","we try to be more polite with our phones around people"],ans:"B"},
+  {n:7,q:"Amanda and her partner …",opts:["tried a two-day digital detox first.","found it impossible to completely disconnect.","found it very easy to do a digital detox for a weekend."],ans:"A"},
+  {n:8,q:"Amanda believes that a digital detox …",opts:["is not a good idea if you have a lot of work.","is better if it's for a week, not just a weekend.","is something everyone will enjoy."],ans:"C"}
+];
+(function buildT5Mcq(){var wrap=document.getElementById('t5McqList');var html='';t5McqData.forEach(function(q){html+='<div class="q-block" id="t5mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t5m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+var t5Unscramble=[
+  {n:1,scrambled:'ever Have you would be wondered what like? it',ans:'Have you ever wondered what it would be like?'},
+  {n:2,scrambled:'that? by mean do What you',ans:'What do you mean by that?'},
+  {n:3,scrambled:"confess, I too. have to that to me happens",ans:'I have to confess, that happens to me too.'},
+  {n:4,scrambled:"to the I'm first admit that.",ans:"I'm the first to admit that."},
+  {n:5,scrambled:"drastic. sound doesn't This too",ans:"This doesn't sound too drastic."},
+  {n:6,scrambled:"the next to ready You're step. take",ans:"You're ready to take the next step."}
+];
+(function buildT5Unscramble(){var wrap=document.getElementById('t5UnscrambleList');var html='';t5Unscramble.forEach(function(s){html+='<div class="q-block"><div class="q-text">'+s.n+'. <span style="color:var(--muted)">'+s.scrambled+'</span></div><input class="fill wide" id="t5u'+s.n+'" placeholder="Type the correct sentence…"></div>';});wrap.innerHTML=html;})();
+
+function checkTask5(){
+  var rPrep=0,rMcq=0,rUn=0;
+  var catKeys={screen:'parts','show an alert':'attention',laptop:'devices','browse websites':'things',display:'parts',smartphone:'devices','access the internet':'things',buzz:'attention',satnav:'devices',monitor:'parts','show a notification':'attention','interact on social media':'things'};
+  prepWords.forEach(function(w,idx){var sel=document.getElementById('prep'+idx);if(!sel)return;if(sel.value===catKeys[w])rPrep++;});
+  t5McqData.forEach(function(q){var chosen=document.querySelector('input[name="t5m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t5mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  t5Unscramble.forEach(function(s){var inp=document.getElementById('t5u'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rUn++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  alert('Prep task: '+rPrep+'/12\nTask 1 MCQ: '+rMcq+'/8\nTask 2 sentences: '+rUn+'/6');
+  var prepKey='<b>Prep task:</b> devices: laptop, smartphone, satnav &nbsp;|&nbsp; attention: show an alert, buzz, show a notification &nbsp;|&nbsp; things: browse websites, access the internet, interact on social media &nbsp;|&nbsp; parts: screen, display, monitor';
+  var mcqKey='<br><br><b>Task 1:</b><br>'+t5McqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  var unKey='<br><br><b>Task 2:</b><br>'+t5Unscramble.map(function(s){return s.n+'. '+s.ans;}).join('<br>');
+  document.getElementById('ansKey5Body').innerHTML=prepKey+mcqKey+unKey;
+  document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();
+}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[
+  {n:1,q:"According to the video, what do many people first ask a generative AI chatbot?",opts:["To solve maths problems","Questions about themselves","To write computer code","To create artwork"],ans:"B"},
+  {n:2,q:"Why does the speaker suggest asking AI about yourself first?",opts:["Because it never makes mistakes.","Because it gives a quick answer that is easy to verify.","Because it only uses official records.","Because it improves the AI immediately."],ans:"B"},
+  {n:3,q:"What problem did lawyer Steven Schwartz experience?",opts:["His chatbot refused to answer.","It generated fake legal cases for his court document.","His computer crashed.","His internet connection failed."],ans:"B"},
+  {n:4,q:"According to the speaker, what is one of the best ways to use AI?",opts:["As a final version of every document.","To replace professional writers.","As a first draft that you later check and improve.","Only for entertainment."],ans:"C"},
+  {n:5,q:"How can AI help people searching for jobs?",opts:["It guarantees job offers.","It can rewrite CVs and create draft cover letters.","It contacts employers directly.","It replaces job interviews."],ans:"B"},
+  {n:6,q:"Which task is mentioned as an example of AI improving productivity?",opts:["Repairing computers","Planning a daily to-do list","Teaching someone to drive","Booking flights automatically"],ans:"B"},
+  {n:7,q:"Why shouldn't AI be trusted for legal or medical advice?",opts:["It cannot access the internet.","Its responses may sound convincing but are not always reliable.","It only understands English.","It refuses to answer these questions."],ans:"B"},
+  {n:8,q:"What happens to information you type into many AI chatbots?",opts:["It is automatically deleted.","It is never stored.","It may be stored and used according to the company's policies.","It becomes public immediately."],ans:"C"},
+  {n:9,q:"Why is it important to check privacy settings?",opts:["To improve AI's writing ability.","To reduce the amount of personal information shared.","To make AI answer faster.","To increase internet speed."],ans:"B"},
+  {n:10,q:"What is the speaker's overall advice?",opts:["Avoid AI completely.","Trust every AI response.","Use AI because it is always correct.","Use AI wisely while understanding its limitations."],ans:"D"}
+];
+(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+var vidGapData=[
+  {n:1,t:"Every conversation with a chatbot begins with a ___.",ans:"prompt"},
+  {n:2,t:"AI sometimes makes strange ___ by combining incorrect pieces of information.",ans:"conflations"},
+  {n:3,t:"You can paste a meeting ___ into a chatbot for processing.",ans:"transcript"},
+  {n:4,t:"The chatbot can quickly turn it into a clear ___.",ans:"summary"},
+  {n:5,t:"AI is often most useful for creating a first ___ of a document.",ans:"draft"},
+  {n:6,t:"It can even conduct practice job ___ with users.",ans:"interviews"},
+  {n:7,t:"AI can help you ___ your daily tasks.",ans:"prioritise"},
+  {n:8,t:"It can also create a personalised holiday ___.",ans:"itinerary"},
+  {n:9,t:"Plans can be adjusted according to your budget and level of ___.",ans:"mobility"},
+  {n:10,t:"Some people use chatbots to ___ difficult conversations.",ans:"roleplay"},
+  {n:11,t:"AI responses often sound very ___, even when they are wrong.",ans:"convincing"},
+  {n:12,t:"Users should carefully read the company's ___ policy.",ans:"privacy"},
+  {n:13,t:"Avoid sharing ___ personal information with AI chatbots.",ans:"sensitive"},
+  {n:14,t:"AI data centres consume enormous amounts of ___.",ans:"electricity"},
+  {n:15,t:"The speaker encourages everyone to use AI ___.",ans:"wisely"}
+];
+(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+
+var vidMatchData=[{n:1,term:"generative AI",ans:"C"},{n:2,term:"chatbot",ans:"D"},{n:3,term:"prompt",ans:"M"},{n:4,term:"conflate",ans:"E"},{n:5,term:"transcript",ans:"F"},{n:6,term:"summary",ans:"G"},{n:7,term:"draft",ans:"A"},{n:8,term:"CV",ans:"I"},{n:9,term:"prioritise",ans:"H"},{n:10,term:"itinerary",ans:"J"},{n:11,term:"roleplay",ans:"K"},{n:12,term:"convincing",ans:"L"},{n:13,term:"privacy policy",ans:"N"},{n:14,term:"sensitive information",ans:"B"},{n:15,term:"electricity",ans:"O"}];
+var vidMatchDefs={A:"a rough first version of a piece of writing",B:"private information that should be protected",C:"software that creates new text, images or other content",D:"a computer program that can hold conversations",E:"to combine different things incorrectly",F:"a complete written record of spoken words",G:"a short version containing only the main ideas",H:"to arrange tasks according to importance",I:"a document describing your education and work experience",J:"a plan showing the places and activities for a trip",K:"to act out a situation for practice",L:"believable or persuasive",M:"the instructions or question given to an AI",N:"rules explaining how a company collects and uses personal data",O:"energy used to power machines and buildings"};
+(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+function checkVideoTask(){
+  var rMcq=0,rGap=0,rMatch=0;
+  vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
+  alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
+  document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b><br>'+vidMcqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Gap fill:</b><br>'+vidGapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Matching:</b><br>'+vidMatchData.map(function(m){return m.n+'. '+m.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();
+}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:'poetry',2:'life',3:'get',4:'open mic night',5:'soul',6:'spiritual',7:'vocabulary',8:'alliteration',9:'alliteration',10:'poetry',11:'fail',12:'scale',13:'science',14:'jargon',15:'impenetrable',16:'turn-off',17:'rain',18:'poetry',19:'goosebumps',20:'words',21:'impact',22:'alliteration',23:'right',24:'open mic night',25:'soul',26:'jargon',27:'impenetrable',28:'turn-off',29:'goosebumps',30:'affected'};
+var dictLines=[
+  {sp:'Neil',t:"Hello, this is 6 Minute English from BBC Learning English. I'm Neil."},
+  {sp:'Pippa',t:"And I'm Pippa. In this episode we're discussing {1}. For some, poetry is what you study at school, then forget, while for others it becomes an important part of their {2}."},
+  {sp:'Neil',t:"I haven't written any poetry since I was at school. I would love to read more poetry, but I just don't {3} it."},
+  {sp:'Pippa',t:"A good place to hear poetry is an {4}, a live event where anyone is allowed to stand up on stage to sing or recite poems."},
+  {sp:'Pippa',t:"Sometimes people can really touch your {5} with what they're saying."},
+  {sp:'Neil',t:"For Maria, poetry has the power to heal emotions and touch your soul, meaning to affect you deeply on an emotional or {6} level."},
+  {sp:'Pippa',t:"We'll hear more about the positive power of poetry and learn some useful new {7}."},
+  {sp:'Neil',t:"But first, I have a question for you. Repeating the same initial sound across several words is called {8}."},
+  {sp:'Pippa',t:"I'm going to say {9}."},
+  {sp:'Neil',t:"Hot Poets help people understand global issues like climate change by turning science into {10}."},
+  {sp:'Liv Torc',t:"It starts with an adventure at sea, a big blue murder mystery, where the killer is not the whale but an epic humanity {11} of overfishing and polluting at unimaginable {12}."},
+  {sp:'Myra Anubi',t:"You've identified that there is an issue around the communication of {13}."},
+  {sp:'Liv Torc',t:"A lot of this {14} is really hard to understand, or a lot of the science is quite {15} to normal people, so it's instantly a {16}."},
+  {sp:'Neil',t:"Science often uses specialist vocabulary. For example, scientists may say precipitation, while everyday English simply says {17}."},
+  {sp:'Pippa',t:"Hot Poets try to make complicated ideas easier to understand through {18}."},
+  {sp:'Kat Bruce',t:"It still gives me {19} when I hear it now."},
+  {sp:'Kat Bruce',t:"I think it's everything that I wish I could say and put into {20} myself."},
+  {sp:'Neil',t:"Maybe poetry can't fix everything, but it is making an {21} for good."},
+  {sp:'Neil',t:"You said the repeated initial sound was called {22}."},
+  {sp:'Pippa',t:"And I was {23}!"},
+  {sp:'Neil',t:"Let's recap the vocabulary we've learned, starting with {24}, a live event where anyone can perform poems or music."},
+  {sp:'Pippa',t:"If something touches your {25}, it affects you deeply on an emotional or spiritual level."},
+  {sp:'Neil',t:"{26} means specialist words and phrases used in a particular profession or subject."},
+  {sp:'Pippa',t:"If something is {27}, it is impossible to understand."},
+  {sp:'Neil',t:"A {28} is something people dislike or find uninteresting."},
+  {sp:'Pippa',t:"And finally, if you get {29}, the hairs on your skin stand up because you're cold, frightened, or emotionally {30}."}
+];
+(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
+
+var compData=[
+  {n:1,q:"Why do the Hot Poets write poems?",opts:["To entertain tourists only","To help people understand complex scientific issues","To teach grammar","To compete with scientists"],ans:"B"},
+  {n:2,q:"What does the word jargon mean?",opts:["Funny stories","Old-fashioned poems","Specialist or technical vocabulary","A type of song"],ans:"C"},
+  {n:3,q:"According to the programme, why can scientific papers be difficult for many people?",opts:["They are too short.","They contain too many pictures.","They use jargon and can be impenetrable.","They are written in different languages."],ans:"C"},
+  {n:4,q:"What does it mean if something gives you goosebumps?",opts:["It makes you laugh loudly.","It makes you sleepy.","It causes a strong emotional or physical reaction.","It makes you forget something."],ans:"C"},
+  {n:5,q:"What is an open mic night?",opts:["A scientific conference","A live event where anyone can perform poems or music","A television talent show","A formal poetry competition"],ans:"B"}
+];
+(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+function checkPodcast(){
+  var rDict=0,rComp=0;
+  Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');
+  document.getElementById('ansKey7Body').innerHTML='<b>Dictation:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comprehension:</b><br>'+compData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();
+}window.checkPodcast=checkPodcast;
+
+/* ===== TASK 8 ===== */
+var t8PrepWords=['to collaborate','a value proposition','to work cross-functionally','a deliverable','a timeline','a stakeholder'];
+var t8PrepAns={1:'D',2:'A',3:'F',4:'B',5:'E',6:'C'};
+var t8PrepDefs={A:'a benefit that a company\'s products or services provide to customers',B:'something that a person has agreed to have ready by a specific time',C:'someone who has an interest in the success or failure of a project or product',D:'to work together with others in order to achieve something',E:'a project schedule',F:'to work with people from different divisions or departments'};
+(function buildT8Prep(){
+  var wrap=document.getElementById('t8PrepList');
+  var letters=['A','B','C','D','E','F'];
+  var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');
+  var html='';
+  t8PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t8p'+n+'">'+optHtml+'</select></div>';});
+  wrap.innerHTML=html;
+})();
+
+var t8McqData=[
+  {n:1,q:"The project is important because …",opts:["it will improve what the company is offering the customer.","it involves working with people from other departments.","the head office is closely following its progress."],ans:"A"},
+  {n:2,q:"Matteo is concerned about …",opts:["communication in the team.","taking on work that they have little experience of.","not having time to work on the project."],ans:"C"},
+  {n:3,q:"Akiko is the best person to do the customer survey questionnaire because …",opts:["she normally handles the company's marketing initiatives.","she has worked with John on similar tasks.","she has studied the subject."],ans:"C"},
+  {n:4,q:"Matteo initially asks for …",opts:["paid overtime.","an assistant.","a reduction in his targets."],ans:"C"},
+  {n:5,q:"John's immediate response to Barbara's offer to help Matteo is …",opts:["enthusiastic.","not entirely positive.","a definite no."],ans:"B"},
+  {n:6,q:"It's important that Matteo does the designs because …",opts:["a client has asked specifically for him.","no one else knows how to do them.","he has the software to do them at home."],ans:"B"}
+];
+(function buildT8Mcq(){var wrap=document.getElementById('t8McqList');var html='';t8McqData.forEach(function(q){html+='<div class="q-block" id="t8mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t8m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+var t8Unscramble=[
+  {n:1,scrambled:'get good clear to It\'s this',ans:"It's good to get this clear"},
+  {n:2,scrambled:'up It\'s to you',ans:"It's up to you"},
+  {n:3,scrambled:'all have a lot you I know on',ans:"I know you all have a lot on"},
+  {n:4,scrambled:'this your help appreciate on I really',ans:"I really appreciate your help on this"},
+  {n:5,scrambled:'to do So, the need first thing we is the questionnaire',ans:"So, the first thing we need to do is the questionnaire"},
+  {n:6,scrambled:"to but I'm already I'd love up tied",ans:"I'd love to but I'm already tied up"},
+  {n:7,scrambled:"moment I'm at overloaded the",ans:"I'm overloaded at the moment"},
+  {n:8,scrambled:"OK. We'll out it It's work",ans:"It's OK. We'll work it out"}
+];
+(function buildT8Unscramble(){var wrap=document.getElementById('t8UnscrambleList');var html='';t8Unscramble.forEach(function(s){html+='<div class="q-block"><div class="q-text">'+s.n+'. <span style="color:var(--muted)">'+s.scrambled+'</span></div><input class="fill wide" id="t8u'+s.n+'" placeholder="Type the correct phrase…"></div>';});wrap.innerHTML=html;})();
+
+function checkTask8(){
+  var rPrep=0,rMcq=0,rUn=0;
+  for(var i=1;i<=6;i++){var sel=document.getElementById('t8p'+i);if(sel&&sel.value===t8PrepAns[i])rPrep++;}
+  t8McqData.forEach(function(q){var chosen=document.querySelector('input[name="t8m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t8mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  t8Unscramble.forEach(function(s){var inp=document.getElementById('t8u'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rUn++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  alert('Prep task: '+rPrep+'/6\nTask 1: '+rMcq+'/6\nTask 2: '+rUn+'/8');
+  var prepKey='<b>Prep task:</b><br>'+t8PrepWords.map(function(w,i){return (i+1)+'. '+t8PrepAns[i+1]+' — '+t8PrepDefs[t8PrepAns[i+1]];}).join('<br>');
+  var mcqKey='<br><br><b>Task 1:</b><br>'+t8McqData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
+  var unKey='<br><br><b>Task 2:</b><br>'+t8Unscramble.map(function(s){return s.n+'. '+s.ans;}).join('<br>');
+  document.getElementById('ansKey8Body').innerHTML=prepKey+mcqKey+unKey;
+  document.getElementById('ansKey8').classList.add('show');checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+})();
+</script>
+</body>
+</html>
