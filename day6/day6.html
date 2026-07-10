@@ -52,6 +52,11 @@
   .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
   .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
   #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}
+  .hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -62,7 +67,8 @@
   <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
   <div class="dots" id="dots"></div>
 </header>
-<main class="content"><div class="wrap">
+<main class="content">
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div><div class="wrap">
 
 <!-- TASK 1 -->
 <section class="task" id="task1" data-task="1">
@@ -475,6 +481,42 @@ if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
 if(taskDone[4])task4MessageReceived=true;
 (function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
 showTask(current);
+})();
+</script>
+<script>
+(function(){
+  var tools=document.getElementById('hlTools');
+  document.addEventListener('mouseup',function(e){
+    if(tools.contains(e.target))return;
+    setTimeout(function(){
+      var s=getSelection();
+      if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}
+      var r=s.getRangeAt(0);
+      if(!r.toString().trim()){tools.style.display='none';return;}
+      var rc=r.getBoundingClientRect();
+      tools.style.display='flex';
+      tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';
+      tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';
+    },1);
+  });
+  document.addEventListener('mousedown',function(e){
+    if(!tools.contains(e.target))tools.style.display='none';
+  });
+  document.getElementById('hlBtn').onclick=function(){
+    var s=getSelection();if(!s||!s.rangeCount)return;
+    var r=s.getRangeAt(0);
+    try{var span=document.createElement('span');span.className='hl';r.surroundContents(span);}
+    catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}
+    s.removeAllRanges();tools.style.display='none';
+  };
+  document.getElementById('hlClear').onclick=function(){
+    var s=getSelection();if(!s||!s.rangeCount)return;
+    var r=s.getRangeAt(0);
+    document.querySelectorAll('.hl').forEach(function(x){
+      if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}
+    });
+    s.removeAllRanges();tools.style.display='none';
+  };
 })();
 </script>
 </body>
