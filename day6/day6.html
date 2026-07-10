@@ -209,283 +209,53 @@
 <canvas id="confettiCanvas"></canvas>
 <script src="../supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 (function(){
-"use strict";
-var DAY=6,TOTAL_TASKS=8,current=1;
-var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
-var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
-var checkedTasks={};
-if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
-var STATE_KEY='sprint4_day'+DAY+'_state';
-function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
-function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
-restoreState();
-var _sb=null;
-function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
-var studentSession=null;
-try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
-var debTimers={};
-function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
-function getTaskForField(id){
-  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(/^aq/.test(id))return 3;
-  if(id==='t4score'||id==='t4check')return 4;if(/^t5p|^t5tf|^radio_t5tf|^t5v/.test(id))return 5;
-  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;
-  if(/^t8p|^t8m|^t8g/.test(id))return 8;return 1;
-}
-function hookAutosave(){
-  document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});
-  document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});
-  document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});
-}
-async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
-function saveProgress(t,c){try{var k='sprint4_day'+DAY+'_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
-var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
-function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
-function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
-function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
-function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
-function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
-function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
-function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}var checks=container.querySelectorAll('input[type=checkbox]');for(var c=0;c<checks.length;c++){if(!checks[c].checked)return false;}return true;}
-document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
-var task4MessageReceived=false;
-window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
-function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
-function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
-
-/* ===== TASK 1 VOCAB ===== */
-var vocabA_segs=['One of the most','/*1*/','discoveries in cognitive science is that our','/*2*/','of the world is not a direct recording of reality. Many aspects of what we see are, in fact, a kind of','/*3*/','— a mental construction rather than a faithful reproduction. When we encounter a visual scene, our brain immediately makes','/*4*/','calculations about what we are looking at. This process of','/*5*/','— drawing conclusions from partial information — happens so quickly that we have no','/*6*/','awareness of it at all. The brain must calculate','/*7*/','deciding which interpretation of an ambiguous image is most likely. Sometimes the brain will','/*8*/','the simplest explanation if it contradicts a deeper','/*9*/','about how the world works. For example, the difference between a','/*10*/','surface — one that curves outward — and a','/*11*/','one — curving inward — can radically change how a shape appears. Our brains','/*12*/','these rules even when the evidence contradicts them. The','/*13*/','of visual processing can lead to','/*14*/','when parts of the brain fail, which can','/*15*/','a person\'s ability to function normally. Such conditions carry real','/*16*/','for daily life. Not everyone experiences the world in the same way. For people with','/*17*/','senses become blended — a word might have a','/*18*/','of colour. The idea that perception could work so differently was once met with','/*19*/','by scientists who considered such reports','/*20*/'];
-var vocabA_ans={1:'unsettling',2:'perception',3:'illusion',4:'unconscious',5:'inference',6:'rational',7:'probabilities',8:'reject',9:'notion',10:'convex',11:'concave',12:'preserve',13:'complexity',14:'impairment',15:'undermine',16:'consequences',17:'synaesthesia',18:'vividness',19:'derision',20:'implausible'};
-(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;vocabA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
-
-var vocabB_words=['perception','implausible','unconscious','inference','notion','derision','undermine','rational','vividness','synaesthesia','impairment','illusion','probabilities','reject','unsettling'];
-var vocabB_defs={A:'to weaken or damage something gradually',B:'a false belief or perception of something',C:'contemptuous mockery or ridicule',D:'the way in which something is seen, understood, or interpreted',E:'not seeming reasonable or probable',F:'based on logic and reason rather than emotion',G:'causing anxiety or disturbance',H:'the quality of being bright, clear, or strikingly striking',I:'happening or existing without conscious awareness',J:'the likelihoods that something will or will not happen',K:'a condition in which stimulation of one sense produces an experience of another',L:'a conclusion reached by reasoning from evidence or observation',M:'a general idea or belief about something',N:'a condition in which an ability is weakened or damaged',O:'to refuse to accept or consider something'};
-var vocabB_ans={1:'D',2:'E',3:'I',4:'L',5:'M',6:'C',7:'A',8:'F',9:'H',10:'K',11:'N',12:'B',13:'J',14:'O',15:'G'};
-(function buildVB(){var wrap=document.getElementById('vocabB-list');var letters=Object.keys(vocabB_defs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr" style="margin-bottom:12px;">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vocabB_defs[l]+'<br>';});html+='</p>';vocabB_words.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="vb'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
-function checkVocab(){
-  var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);var ok=inp.value.trim().toLowerCase()===vocabA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}
-  var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById('vb'+j);if(sel&&sel.value===vocabB_ans[j])rB++;}
-  alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');
-  document.getElementById('ansKey1Body').innerHTML='<b>Exercise A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Exercise B:</b><br>'+vocabB_words.map(function(w,i){return (i+1)+'. '+vocabB_ans[i+1];}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();
-}window.checkVocab=checkVocab;
-
-/* ===== TASK 2 MINI READING ===== */
-var miniReading=[
-  {n:1,statement:'The human eye works in a similar way to a camera, directly recording what is around it.',tf:'False'},
-  {n:2,statement:'Unconscious inference involves drawing conclusions from incomplete sensory data.',tf:'True'},
-  {n:3,statement:'The brain\'s interpretation of visual data is always an accurate reflection of the physical world.',tf:'False'},
-  {n:4,statement:'Optical illusions occur when the brain perceives something that does not physically exist.',tf:'True'},
-  {n:5,statement:'According to the text, rational thinking can easily correct errors in visual perception.',tf:'False'}
-];
-(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
-function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
-
-/* ===== TASK 3 ARTICLE ===== */
-function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
-var aqMcqAns={aq1:'B',aq2:'C',aq3:'B',aq4:'B',aq5:'C'};
-var aqGapAns={aq6:'photons',aq7:'guessing game',aq8:'top-down processing',aq9:'identify'};
-function checkArticleQs(){
-  var right=0,total=9;
-  Object.keys(aqMcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===aqMcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===aqMcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
-  Object.keys(aqGapAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===aqGapAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
-  alert('Article comprehension: '+right+'/'+total+' correct.');
-  document.getElementById('ansKey3Body').innerHTML='<b>Section 1:</b> 1.B &nbsp;•&nbsp; 2.C &nbsp;•&nbsp; 3.B &nbsp;•&nbsp; 4.B &nbsp;•&nbsp; 5.C<br><br><b>Section 2:</b> 6. photons &nbsp;•&nbsp; 7. guessing game &nbsp;•&nbsp; 8. top-down processing &nbsp;•&nbsp; 9. identify';
-  document.getElementById('ansKey3').classList.add('show');checkedTasks[3]=true;refreshDoneButton();
-}window.checkArticleQs=checkArticleQs;
-
-/* ===== TASK 5 ===== */
-var t5PrepWords=['an incentive','to motivate','a promotion','complex','automated','a social psychologist'];
-var t5PrepAns={1:'C',2:'E',3:'F',4:'A',5:'B',6:'D'};
-(function buildT5Prep(){var wrap=document.getElementById('t5PrepList');var letters=['A','B','C','D','E','F'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t5PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t5p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
-
-var t5TFData=[
-  {n:1,statement:'We try to motivate workers in the same way that we try to motivate our children.',tf:'True'},
-  {n:2,statement:'In the Glucksberg experiment, the people who were offered a reward finished faster than people who were not offered one.',tf:'False'},
-  {n:3,statement:'The people who were offered smaller rewards in Ariely\'s experiment performed better than those offered bigger rewards.',tf:'True'},
-  {n:4,statement:'In Ariely\'s experiment, people were more creative when they were concentrating on achieving a goal.',tf:'False'},
-  {n:5,statement:'In the future, jobs will require workers to be more creative.',tf:'True'},
-  {n:6,statement:'People always work better when they start the day later and work into the night.',tf:'False'}
-];
-(function buildT5TF(){var wrap=document.getElementById('t5TFList');var html='';t5TFData.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="t5tf'+q.n+'" value="True"> True</label><label><input type="radio" name="t5tf'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML=html;})();
-
-var t5MatchData=[
-  {n:1,first:"Glucksberg's experiment shows that people solve a problem faster when",ans:'B'},
-  {n:2,first:"Ariely's experiment shows that people are less creative when",ans:'F'},
-  {n:3,first:"The same results as Glucksberg's experiment have been found when",ans:'A'},
-  {n:4,first:"An incentive works for people when",ans:'D'},
-  {n:5,first:"Incentives will no longer work for motivating people at work when",ans:'E'},
-  {n:6,first:"The example of the big tech companies shows that people work better when",ans:'C'}
-];
-(function buildT5Match(){var wrap=document.getElementById('t5MatchList');var optHtml='<option value="">--</option><option value="A">a</option><option value="B">b</option><option value="C">c</option><option value="D">d</option><option value="E">e</option><option value="F">f</option>';var html='';t5MatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.first+' &rarr; <select class="fill" id="t5v'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
-
-function checkTask5(){
-  var rPrep=0,rTF=0,rMatch=0;
-  for(var i=1;i<=6;i++){var sel=document.getElementById('t5p'+i);if(sel&&sel.value===t5PrepAns[i])rPrep++;}
-  t5TFData.forEach(function(q){var chosen=document.querySelector('input[name="t5tf'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)rTF++;});
-  t5MatchData.forEach(function(m){var sel=document.getElementById('t5v'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
-  alert('Prep task: '+rPrep+'/6\nTask 1 T/F: '+rTF+'/6\nTask 2 Matching: '+rMatch+'/6');
-  var prepKey='<b>Prep:</b> 1-C 2-E 3-F 4-A 5-B 6-D';
-  var tfKey='<br><br><b>Task 1:</b> '+t5TFData.map(function(q){return q.n+'.'+q.tf.charAt(0);}).join(' ');
-  var matchKey='<br><br><b>Task 2:</b> '+t5MatchData.map(function(m){return m.n+'.'+m.ans.toLowerCase();}).join(' ');
-  document.getElementById('ansKey5Body').innerHTML=prepKey+tfKey+matchKey;
-  document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();
-}window.checkTask5=checkTask5;
-
-/* ===== TASK 6 VIDEO ===== */
-var vidMcqData=[
-  {n:1,q:"According to the video, approximately how many hours do people spend gaming worldwide each year?",opts:["One billion hours","Half a trillion hours","Five trillion hours","Fifty billion hours"],ans:"B"},
-  {n:2,q:"What percentage of children play video games?",opts:["50%","60%","75%","90%"],ans:"D"},
-  {n:3,q:"Why did Nick spend so much time playing World of Warcraft as a teenager?",opts:["He wanted to become a professional gamer.","He was preparing for competitions.","He was coping with depression.","His friends forced him to play."],ans:"C"},
-  {n:4,q:"According to Nick's research, what matters most for mental health?",opts:["The number of hours spent gaming","The type of gaming device","The quality of the gaming experience","The age of the player"],ans:"C"},
-  {n:5,q:"Which of the following is NOT mentioned as a possible benefit of gaming?",opts:["Learning new skills","Experimenting with identity","Improving artistic creativity","Guaranteeing academic success"],ans:"D"},
-  {n:6,q:"According to the video, around what percentage of gaming sessions now take place in multiplayer games?",opts:["40%","60%","80%","95%"],ans:"C"},
-  {n:7,q:"Research suggests people feel happiest when playing with …",opts:["strangers online","professional gamers","people they also know offline","family members only"],ans:"C"},
-  {n:8,q:"Nick recommends keeping a diary of your gaming to …",opts:["improve your game scores","record your favourite games","monitor how gaming affects other parts of your life","share gaming tips online"],ans:"C"},
-  {n:9,q:"What realisation did Nick have while playing Diablo III?",opts:["The game was too difficult.","He could keep playing endlessly without achieving much in real life.","He wanted to become a game developer.","The game improved his fitness."],ans:"B"},
-  {n:10,q:"What is the main message of the video?",opts:["Video games are harmful for everyone.","People should completely avoid multiplayer games.","Healthy gaming depends on balance and self-awareness.","Children should only play educational games."],ans:"C"}
-];
-(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
-
-var vidGapData=[
-  {n:1,t:"Some people worry that gaming can become an unhealthy ___.",ans:"compulsion"},
-  {n:2,t:"Nick found himself ___ into World of Warcraft to cope with depression.",ans:"retreating"},
-  {n:3,t:"Therapy helped him bring gaming back into ___ with the rest of his life.",ans:"balance"},
-  {n:4,t:"Games can provide players with a sense of ___.",ans:"accomplishments"},
-  {n:5,t:"Some players enjoy experimenting with their ___ while gaming.",ans:"identity"},
-  {n:6,t:"Certain game design features are described as ___ because they encourage players to keep playing and spending.",ans:"manipulative"},
-  {n:7,t:"Scientific ___ suggests that gaming time alone does not determine its effects on mental health.",ans:"evidence"},
-  {n:8,t:"Games are learning engines that encourage ___ and personal growth.",ans:"curiosity"},
-  {n:9,t:"Around 80% of gaming sessions now happen in ___ games.",ans:"multiplayer"},
-  {n:10,t:"It is perfectly acceptable to ___ gaming, provided it doesn't negatively affect other important areas of life.",ans:"prioritize"},
-  {n:11,t:"School, sleep and relationships should not be ___ out by excessive gaming.",ans:"squeezed"},
-  {n:12,t:"Keeping a gaming ___ can help monitor your habits.",ans:"diary"},
-  {n:13,t:"Nick encourages players to become more ___ about their gaming habits.",ans:"reflective"},
-  {n:14,t:"A healthy gaming experience should feel positive and ___.",ans:"enriching"},
-  {n:15,t:"Playing different games can help develop creativity and strengthen personal ___.",ans:"identity"}
-];
-(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
-
-var vidMatchData=[{n:1,term:"vivid",ans:"C"},{n:2,term:"enrich",ans:"E"},{n:3,term:"retreat",ans:"D"},{n:4,term:"accomplishment",ans:"B"},{n:5,term:"manipulate",ans:"A"},{n:6,term:"vulnerable",ans:"F"},{n:7,term:"definitive",ans:"G"},{n:8,term:"stimulate",ans:"H"},{n:9,term:"curiosity",ans:"I"},{n:10,term:"intricate",ans:"J"},{n:11,term:"prioritize",ans:"K"},{n:12,term:"cultivate",ans:"L"},{n:13,term:"loot",ans:"M"},{n:14,term:"reflective",ans:"N"},{n:15,term:"session",ans:"O"}];
-var vidMatchDefs={A:"to make someone do something unfairly for someone else's benefit",B:"a strong feeling of success or achievement",C:"very clear, detailed and easy to remember",D:"to move away to a safer or more comfortable place",E:"to improve the quality or value of something",F:"able to be easily hurt or influenced",G:"supported by clear proof; final and certain",H:"to encourage something to become more active or develop",I:"a strong desire to learn or know something",J:"extremely detailed or complicated",K:"to treat something as the most important",L:"to develop or improve something over time",M:"valuable items collected or won in a game",N:"thinking carefully about your experiences and actions",O:"a period of time spent doing a particular activity"};
-(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
-function checkVideoTask(){
-  var rMcq=0,rGap=0,rMatch=0;
-  vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
-  vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
-  vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
-  alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
-  document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b><br>'+vidMcqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><br><b>Gap fill:</b><br>'+vidGapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Matching:</b><br>'+vidMatchData.map(function(m){return m.n+'.'+m.ans;}).join(' ');
-  document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();
-}window.checkVideoTask=checkVideoTask;
-
-/* ===== TASK 7 PODCAST ===== */
-var dictAns={1:'two weeks',2:'popular',3:'competitive',4:'coach',5:'noughts and crosses',6:'ten metres',7:'life',8:'competitively',9:'into',10:'get into',11:'level',12:'industry',13:'industry',14:'elements',15:'scene',16:'world',17:'scene',18:'ten',19:'four',20:'two weeks',21:'competitively',22:'got into',23:'paid',24:'business',25:'industry',26:'scene',27:'audiences',28:'website',29:'goodbye',30:'scene'};
-var dictLines=[
-  {sp:'Neil',t:"Hello and welcome to 6 Minute English. I'm Neil."},
-  {sp:'Catherine',t:"Hello. I'm Catherine."},
-  {sp:'Neil',t:"If I say to you, fortnight, what do you think of?"},
-  {sp:'Catherine',t:"A fortnight is a period of {1}."},
-  {sp:'Neil',t:"But Fortnite, with a different spelling, is an online computer game that has become incredibly {2} in a very short period of time."},
-  {sp:'Catherine',t:"As well as being popular, it's also very {3}."},
-  {sp:'Neil',t:"Soon you'll even be able to make big money playing it and hire people to be your Fortnite {4}."},
-  {sp:'Neil',t:"One of the earliest computer games was Bertie the Brain, which played {5}, also called tic-tac-toe."},
-  {sp:'Neil',t:"How tall was this computer? a) one metre b) about four metres c) about {6}"},
-  {sp:'Kyle Jackson',t:"I've played video games all my {7}, basically."},
-  {sp:'Kyle Jackson',t:"I started playing {8} when I was around nine or ten."},
-  {sp:'Kyle Jackson',t:"I got into Halo, Call of Duty and games like that."},
-  {sp:'Catherine',t:"If you are {9} something, you are very interested in it."},
-  {sp:'Neil',t:"To {10} something means to become interested in it."},
-  {sp:'Catherine',t:"Kyle thinks he could play at a professional {11}."},
-  {sp:'George Yao',t:"Gaming is becoming a multi-billion-dollar {12}."},
-  {sp:'George Yao',t:"It's not just games anymore – it's a whole {13}."},
-  {sp:'Catherine',t:"An industry includes many different {14} working together."},
-  {sp:'Neil',t:"George mentioned creating games, publishing games and the eSports {15}."},
-  {sp:'Neil',t:"The word scene refers to the {16} of eSports – the events, competitions and players."},
-  {sp:'Neil',t:"Many people want to be part of that {17}."},
-  {sp:'Neil',t:"Let's check the quiz answer."},
-  {sp:'Catherine',t:"I guessed the computer was {18} metres tall."},
-  {sp:'Neil',t:"The correct answer was about {19} metres."},
-  {sp:'Catherine',t:"A fortnight means a period of {20}."},
-  {sp:'Neil',t:"eSports are competitions where people play video games {21}."},
-  {sp:'Catherine',t:"I've never really {22} multiplayer games."},
-  {sp:'Neil',t:"A professional is someone who gets {23} to do something."},
-  {sp:'Catherine',t:"The video game industry is a multi-billion-dollar {24}."},
-  {sp:'Neil',t:"We also talk about the fashion industry and the movie {25}."},
-  {sp:'Catherine',t:"The word {26} describes the world of a particular activity."},
-  {sp:'Neil',t:"The eSports scene includes games, teams, competitions and {27}."},
-  {sp:'Neil',t:"You can also find us on Facebook, Twitter, Instagram, YouTube and our {28}."},
-  {sp:'Catherine',t:"Thanks for joining us and {29}."},
-  {sp:'Neil',t:"See you again on the 6 Minute English {30}!"}
-];
-(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
-var compData=[
-  {n:1,q:"What does Fortnite refer to in this programme?",opts:["A period of two weeks","An online computer game","A sports competition","A computer company"],ans:"B"},
-  {n:2,q:"What does the expression get into something mean?",opts:["To enter a building","To become interested in something","To win a competition","To stop doing something"],ans:"B"},
-  {n:3,q:"According to George Yao, the gaming world has become what?",opts:["A school subject","A hobby for children only","A multi-billion-dollar industry","A government project"],ans:"C"},
-  {n:4,q:"What does professional mean in the programme?",opts:["Someone who plays only for fun","Someone who gets paid because they are highly skilled","Someone who teaches at school","Someone who owns a computer"],ans:"B"},
-  {n:5,q:"What does the word scene mean?",opts:["A place in a film","The world or community of a particular activity","A computer screen","A sports stadium"],ans:"B"}
-];
-(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
-function checkPodcast(){
-  var rDict=0,rComp=0;
-  Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
-  compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
-  alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');
-  document.getElementById('ansKey7Body').innerHTML='<b>Dictation:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comprehension:</b><br>'+compData.map(function(q){return q.n+'. '+q.ans;}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();
-}window.checkPodcast=checkPodcast;
-
-/* ===== TASK 8 ===== */
-var t8PrepWords=['self-indulgent','to spring up','a hassle','to turn up','to shudder','retro','immature','a touchy subject'];
-var t8PrepAns={1:'D',2:'C',3:'A',4:'F',5:'B',6:'H',7:'G',8:'E'};
-var t8PrepDefs={A:'something that is annoying because it causes difficulty or trouble',B:'to shake suddenly and briefly, especially in fear or disgust',C:'to appear unexpectedly',D:'allowing yourself to have or do anything you enjoy',E:'something that you have to talk about carefully as it can make people angry or unhappy',F:'to arrive or to come to something',G:'behaving in a way that seems too young for your age',H:'in the style of the past'};
-(function buildT8Prep(){var wrap=document.getElementById('t8PrepList');var letters=['A','B','C','D','E','F','G','H'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t8PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t8p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
-
-var t8McqData=[
-  {n:1,q:"Charles thinks a surprise party is …",opts:["a chance to relax.","too much of a shock.","a different way to celebrate."],ans:"B"},
-  {n:2,q:"Marco and Dora agree that …",opts:["a 40th birthday is more special than other birthdays.","ageing is a bad thing.","both of the above are true."],ans:"A"},
-  {n:3,q:"Charles sees himself as someone who …",opts:["prefers to be in the background.","likes to be the centre of attention.","organises nice things for other people."],ans:"A"},
-  {n:4,q:"Describe Marco's feelings about his child's ninth birthday party.",opts:["He's not looking forward to it.","He's looking forward to it.","It's a sensitive topic for him."],ans:"A"},
-  {n:5,q:"Why can't he organise a trip to the cinema for the ninth birthday party?",opts:["Children prefer to go rock-climbing.","Another child has had a cinema party recently.","It's not a good idea to repeat parties from the year before."],ans:"C"},
-  {n:6,q:"Charles stopped celebrating birthdays because …",opts:["he thinks they're not suitable for adults.","it became hard to find people to celebrate with.","it's less fun when you can't play kids' games."],ans:"B"}
-];
-(function buildT8Mcq(){var wrap=document.getElementById('t8McqList');var html='';t8McqData.forEach(function(q){html+='<div class="q-block" id="t8mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t8m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
-
-var t8GapData=[
-  {n:1,t:'Charles complains that organising his own party is a ___.',ans:'hassle'},
-  {n:2,t:'The idea of a surprise party makes Charles ___.',ans:'shudder'},
-  {n:3,t:"He doesn't like having to pretend to be delighted by a party when he thought he was going home to put his ___ up.",ans:'feet'},
-  {n:4,t:"Marco says the fear that no one is going to ___ is even worse when it's your child's birthday.",ans:'turn up'},
-  {n:5,t:'Dora is offended that Charles says she is ___.',ans:'attention-seeking'},
-  {n:6,t:'Marco realises that birthdays can be a ___ subject.',ans:'touchy'},
-  {n:7,t:'Charles likes drinks with friends or dinner – celebrations that are quite low-___.',ans:'key'},
-  {n:8,t:'They agree that having a children\'s style party could be fun and ___.',ans:'retro'}
-];
-(function buildT8Gap(){var wrap=document.getElementById('t8GapList');var html='';t8GapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="t8g'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
-
-function checkTask8(){
-  var rPrep=0,rMcq=0,rGap=0;
-  for(var i=1;i<=8;i++){var sel=document.getElementById('t8p'+i);if(sel&&sel.value===t8PrepAns[i])rPrep++;}
-  t8McqData.forEach(function(q){var chosen=document.querySelector('input[name="t8m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t8mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
-  t8GapData.forEach(function(g){var inp=document.getElementById('t8g'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans.toLowerCase();if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
-  alert('Prep task: '+rPrep+'/8\nTask 1: '+rMcq+'/6\nTask 2: '+rGap+'/8');
-  document.getElementById('ansKey8Body').innerHTML='<b>Prep:</b> 1-D 2-C 3-A 4-F 5-B 6-H 7-G 8-E<br><br><b>Task 1:</b> '+t8McqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><br><b>Task 2:</b><br>'+t8GapData.map(function(g){return g.n+'. '+g.ans;}).join(' &nbsp;•&nbsp; ');
-  document.getElementById('ansKey8').classList.add('show');checkedTasks[8]=true;refreshDoneButton();
-}window.checkTask8=checkTask8;
-
-/* ===== INIT ===== */
-var t4checkEl=document.getElementById('t4check');
-if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
-if(taskDone[4])task4MessageReceived=true;
-(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
-showTask(current);
-})();
-</script>
-<script>
-(function(){
+  var HL_KEY='sprint4_hl_day6';
   var tools=document.getElementById('hlTools');
+
+  /* ── Save all current .hl texts to localStorage ── */
+  function saveHighlights(){
+    var texts=[];
+    document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});
+    try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}
+  }
+
+  /* ── Re-apply a single text highlight by walking text nodes ── */
+  function applyHighlight(searchText){
+    if(!searchText.trim())return;
+    var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{
+      acceptNode:function(node){
+        var p=node.parentNode;
+        while(p){
+          var tag=p.tagName||'';
+          if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||(p.className&&p.className.indexOf('hl')>=0&&p.className.indexOf('hl-')===0)||p.className==='hl')return NodeFilter.FILTER_REJECT;
+          p=p.parentNode;
+        }
+        return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
+      }
+    });
+    var node;var found=false;
+    while((node=walker.nextNode())&&!found){
+      var idx=node.textContent.indexOf(searchText);
+      if(idx>=0){
+        var r=document.createRange();
+        r.setStart(node,idx);r.setEnd(node,idx+searchText.length);
+        try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}
+      }
+    }
+  }
+
+  /* ── Restore highlights on page load ── */
+  function restoreHighlights(){
+    try{
+      var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');
+      saved.forEach(function(t){applyHighlight(t);});
+    }catch(e){}
+  }
+
+  /* ── Show/hide toolbar on text selection ── */
   document.addEventListener('mouseup',function(e){
     if(tools.contains(e.target))return;
     setTimeout(function(){
@@ -502,13 +272,18 @@ showTask(current);
   document.addEventListener('mousedown',function(e){
     if(!tools.contains(e.target))tools.style.display='none';
   });
+
+  /* ── Highlight button ── */
   document.getElementById('hlBtn').onclick=function(){
     var s=getSelection();if(!s||!s.rangeCount)return;
     var r=s.getRangeAt(0);
-    try{var span=document.createElement('span');span.className='hl';r.surroundContents(span);}
+    try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}
     catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}
     s.removeAllRanges();tools.style.display='none';
+    saveHighlights();
   };
+
+  /* ── Clear button ── */
   document.getElementById('hlClear').onclick=function(){
     var s=getSelection();if(!s||!s.rangeCount)return;
     var r=s.getRangeAt(0);
@@ -516,7 +291,15 @@ showTask(current);
       if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}
     });
     s.removeAllRanges();tools.style.display='none';
+    saveHighlights();
   };
+
+  /* ── Restore on load ── */
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',restoreHighlights);
+  }else{
+    restoreHighlights();
+  }
 })();
 </script>
 </body>
