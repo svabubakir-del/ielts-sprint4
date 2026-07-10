@@ -105,9 +105,53 @@
   </table>
   <div class="footer-note">Background Reading — IELTS Sprint4 Day 6 &nbsp;•&nbsp; Visual Neuroscience &amp; Perception</div>
 </div>
+
 <script>
 (function(){
+  var HL_KEY='sprint4_hl_art6';
   var tools=document.getElementById('hlTools');
+
+  /* ── Save all current .hl texts to localStorage ── */
+  function saveHighlights(){
+    var texts=[];
+    document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});
+    try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}
+  }
+
+  /* ── Re-apply a single text highlight by walking text nodes ── */
+  function applyHighlight(searchText){
+    if(!searchText.trim())return;
+    var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{
+      acceptNode:function(node){
+        var p=node.parentNode;
+        while(p){
+          var tag=p.tagName||'';
+          if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||(p.className&&p.className.indexOf('hl')>=0&&p.className.indexOf('hl-')===0)||p.className==='hl')return NodeFilter.FILTER_REJECT;
+          p=p.parentNode;
+        }
+        return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
+      }
+    });
+    var node;var found=false;
+    while((node=walker.nextNode())&&!found){
+      var idx=node.textContent.indexOf(searchText);
+      if(idx>=0){
+        var r=document.createRange();
+        r.setStart(node,idx);r.setEnd(node,idx+searchText.length);
+        try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}
+      }
+    }
+  }
+
+  /* ── Restore highlights on page load ── */
+  function restoreHighlights(){
+    try{
+      var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');
+      saved.forEach(function(t){applyHighlight(t);});
+    }catch(e){}
+  }
+
+  /* ── Show/hide toolbar on text selection ── */
   document.addEventListener('mouseup',function(e){
     if(tools.contains(e.target))return;
     setTimeout(function(){
@@ -124,13 +168,18 @@
   document.addEventListener('mousedown',function(e){
     if(!tools.contains(e.target))tools.style.display='none';
   });
+
+  /* ── Highlight button ── */
   document.getElementById('hlBtn').onclick=function(){
     var s=getSelection();if(!s||!s.rangeCount)return;
     var r=s.getRangeAt(0);
-    try{var span=document.createElement('span');span.className='hl';r.surroundContents(span);}
+    try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}
     catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}
     s.removeAllRanges();tools.style.display='none';
+    saveHighlights();
   };
+
+  /* ── Clear button ── */
   document.getElementById('hlClear').onclick=function(){
     var s=getSelection();if(!s||!s.rangeCount)return;
     var r=s.getRangeAt(0);
@@ -138,7 +187,15 @@
       if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}
     });
     s.removeAllRanges();tools.style.display='none';
+    saveHighlights();
   };
+
+  /* ── Restore on load ── */
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',restoreHighlights);
+  }else{
+    restoreHighlights();
+  }
 })();
 </script>
 </body>
