@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 8</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 8</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">curiosity</span><span class="chip">prehistoric</span><span class="chip">radiocarbon dating</span><span class="chip">particles</span><span class="chip">composed of</span><span class="chip">intrigued</span><span class="chip">controversial</span><span class="chip">evidence</span><span class="chip">ultimately</span><span class="chip">qualifications</span><span class="chip">inventor</span><span class="chip">institution</span><span class="chip">prestigious</span><span class="chip">flaws</span><span class="chip">expertise</span><span class="chip">anthropology</span><span class="chip">archaeologist</span><span class="chip">breakthrough</span><span class="chip">determination</span><span class="chip">ingenuity</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word or phrase from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Complete each sentence</h4><p class="instr">Complete each sentence with ONE word or phrase from the box.</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then decide if each statement is True or False.</p></div>
+  <div class="card">
+    <h3>The science of reading the past</h3>
+    <p class="passage-text">Modern archaeology relies on a variety of scientific tools to reconstruct ancient civilisations. One of the most important of these is radiocarbon dating, which measures the rate of decay of carbon particles in organic material to establish its age. This technique was developed in the 1940s and transformed the study of prehistoric human remains. Before its invention, archaeologists had to depend on indirect methods such as pottery typology — comparing the style and design of ceramic fragments to establish which historical period they belonged to. Today, archaeologists also study animal bones left behind at ancient sites to determine what people ate and how they lived. Even microscopic plant fossils called phytoliths, which survive in soil for thousands of years, can reveal the diet of an ancient community. Together, these methods give scientists a remarkably detailed picture of daily life in the ancient world.</p>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions below.</p></div>
+  <div class="card"><h3>The Garbage of Empires</h3><p class="instr">A background reading on middens, pottery typology, phytoliths and zooarchaeology — with a full vocabulary glossary.</p><a class="btn link-out" href="article-day-8.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check" onchange="revealArticleQs()"><label for="t3check">I have read the article</label></div>
+  <div id="articleQs" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h4>Section 1 — True / False / Not Given</h4>
+      <div class="q-block"><div class="q-text">1. According to the article, archaeologists consider a chest of gold coins more valuable than a garbage dump.</div><div class="tf-toggle"><label><input type="radio" name="aq1" value="True"> True</label><label><input type="radio" name="aq1" value="False"> False</label><label><input type="radio" name="aq1" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">2. Pottery styles in the ancient Mediterranean changed slowly over centuries.</div><div class="tf-toggle"><label><input type="radio" name="aq2" value="True"> True</label><label><input type="radio" name="aq2" value="False"> False</label><label><input type="radio" name="aq2" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">3. Phytoliths are microscopic silica structures, similar in substance to glass.</div><div class="tf-toggle"><label><input type="radio" name="aq3" value="True"> True</label><label><input type="radio" name="aq3" value="False"> False</label><label><input type="radio" name="aq3" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">4. The article states that phytoliths can only be found in European archaeological sites.</div><div class="tf-toggle"><label><input type="radio" name="aq4" value="True"> True</label><label><input type="radio" name="aq4" value="False"> False</label><label><input type="radio" name="aq4" value="Not Given"> Not Given</label></div></div>
+      <div class="q-block"><div class="q-text">5. According to the article, finding mostly young calf bones at a site often signals economic difficulty.</div><div class="tf-toggle"><label><input type="radio" name="aq5" value="True"> True</label><label><input type="radio" name="aq5" value="False"> False</label><label><input type="radio" name="aq5" value="Not Given"> Not Given</label></div></div>
+    </div>
+    <div class="card">
+      <h4>Section 2 — Short answer (no more than three words from the article)</h4>
+      <div class="passage-text">
+        <p>6. What term do archaeologists use for an ancient garbage dump?<br><input class="fill short" id="aq6"></p>
+        <p>7. What ancient everyday material was used for storing grain, shipping olive oil, and cooking dinner?<br><input class="fill short" id="aq7"></p>
+        <p>8. What chemical substance forms the microscopic structures known as phytoliths?<br><input class="fill short" id="aq8"></p>
+        <p>9. What can scientists determine by examining the age at which ancient animals were killed?<br><input class="fill" id="aq9"></p>
+      </div>
+    </div>
+    <div class="check-row"><button class="btn secondary" onclick="checkArticleQs()">Check answers</button></div>
+    <details class="answer-key" id="ansKey3"><summary>Answer key</summary><div class="answer-key-body" id="ansKey3Body"></div></details>
+  </div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_8.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
+  <div class="card">
+    <h4>Task — Which idea is each speaker talking about?</h4>
+    <p class="instr">Listen to two people talking about student motivation. Which of the ideas below is each speaker talking about?</p>
+    <div class="wordbank">
+      <span class="chip">A – having a group of hardworking friends you can study with</span>
+      <span class="chip">B – being able to study when and where you choose</span>
+      <span class="chip">C – receiving a reward for your efforts</span>
+      <span class="chip">D – getting positive feedback from your teachers or tutors</span>
+      <span class="chip">E – taking a course that offers practical work rather than simply theoretical content</span>
+    </div>
+    <div style="margin-top:14px;">
+      <div class="q-text">Speaker 1 — <select class="fill" id="sp1"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+      <div class="q-text" style="margin-top:10px;">Speaker 2 — <select class="fill" id="sp2"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+    </div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — Understanding Statistics</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/aPh3E8IoHzk" title="Understanding Statistics" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+  <div class="card"><h4>Part 2 — Gap fill</h4>
+    <div class="wordbank"><span class="chip">claims</span><span class="chip">reject</span><span class="chip">perceive</span><span class="chip">emotional</span><span class="chip">headlines</span><span class="chip">instinctive</span><span class="chip">context</span><span class="chip">equivalent</span><span class="chip">measured</span><span class="chip">envelope</span><span class="chip">weapon</span><span class="chip">preconceptions</span><span class="chip">telescope</span><span class="chip">journalist</span><span class="chip">curiosity</span></div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — Millennial Entrepreneurs</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening test</h2><p class="task-sub">Open the test in a new tab, complete it, then come back and enter your score. The walkthrough video will appear below.</p></div>
+  <div class="card"><a class="btn link-out" href="Listening-8.html" target="_blank" rel="noopener">🎧 Open full listening test</a></div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t8check" onchange="revealListeningWalkthrough()"><label for="t8check">I have completed the full listening test</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After finishing, come back and record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
+  <div id="listeningWalkthrough" style="display:none;margin-top:18px;">
+    <div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/dGO3EiQcqSg" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+    </div>
+  </div>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 8 of 30</div>
+  <h1>Congratulations — Day 8 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 9.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=8,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+var STATE_KEY='sprint4_day8_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(/^aq/.test(id))return 3;
+  if(id==='t4score'||id==='t4check')return 4;if(/^sp/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;
+  if(id==='t8score'||id==='t8check')return 8;return 1;
+}
+function hookAutosave(){document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k='sprint4_day8_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
+var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);if(n===8){var cb=document.getElementById('t8check');return cb&&cb.checked;}var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}return true;}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
+function revealListeningWalkthrough(){var cb=document.getElementById('t8check');var wt=document.getElementById('listeningWalkthrough');if(cb&&cb.checked&&wt)wt.style.display='block';refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segs=['For centuries, the greatest challenge facing any','/*1*/','was determining the age of','/*2*/','remains. Carbon exists in all living organisms — every living thing is','/*3*/','molecules containing carbon','/*4*/','When an organism dies, these particles begin to decay at a predictable rate. This became the foundation of','/*5*/','Willard Libby, the','/*6*/','of this technique, was first','/*7*/','by the idea while working at the University of Chicago — a','/*8*/','research','/*9*/','Despite lacking formal','/*10*/','in archaeology or','/*11*/','his scientific','/*12*/','in chemistry was extraordinary. Libby\'s idea was considered','/*13*/','at first, but the','/*14*/','quickly accumulated. His method had','/*15*/','— it was only reliable for organic materials up to around 50,000 years old. But the','/*16*/','it represented for science was immense. It was Libby\'s','/*17*/','and','/*18*/','that drove him forward. He was','/*19*/','awarded the Nobel Prize in Chemistry in 1960. Even today, his discovery continues to satisfy the','/*20*/','of scientists studying the ancient world.'];
+var vocabA_ans={1:'archaeologist',2:'prehistoric',3:'composed of',4:'particles',5:'radiocarbon dating',6:'inventor',7:'intrigued',8:'prestigious',9:'institution',10:'qualifications',11:'anthropology',12:'expertise',13:'controversial',14:'evidence',15:'flaws',16:'breakthrough',17:'determination',18:'ingenuity',19:'ultimately',20:'curiosity'};
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;vocabA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB=[
+  {n:1,t:'Scientists have long been ___ by the mystery of how ancient civilisations disappeared so suddenly.',ans:'intrigued'},
+  {n:2,t:'Studying ___ cave paintings in southern France has helped scientists understand early human behaviour.',ans:'prehistoric'},
+  {n:3,t:'___ uses the decay of carbon atoms to determine the age of ancient organic material.',ans:'Radiocarbon dating'},
+  {n:4,t:'Water is made up of tiny ___ of hydrogen and oxygen atoms.',ans:'particles'},
+  {n:5,t:'The human body is ___ approximately 60% water by weight.',ans:'composed of'},
+  {n:6,t:'The discovery of Tutankhamun\'s tomb was a ___ in the field of Egyptology.',ans:'breakthrough'},
+  {n:7,t:'The claim that humans lived on Earth millions of years ago remains deeply ___.',ans:'controversial'},
+  {n:8,t:'Without solid ___ to support his theory, the scientist struggled to convince his colleagues.',ans:'evidence'},
+  {n:9,t:'He had the ___ of a world-class chemist, yet lacked direct experience in historical science.',ans:'expertise'},
+  {n:10,t:'The Cambridge ___ has produced some of the world\'s greatest scientific discoveries.',ans:'institution'},
+  {n:11,t:'Winning a prize from such a ___ university was a huge professional honour.',ans:'prestigious'},
+  {n:12,t:'The theory had serious ___ that only became apparent after years of careful testing.',ans:'flaws'},
+  {n:13,t:'After decades of debate, she ___ admitted that her initial hypothesis had been wrong.',ans:'ultimately'},
+  {n:14,t:'Her ___ in the face of repeated failure was remarkable — she refused to give up.',ans:'determination'},
+  {n:15,t:'The engineer\'s ___ led to a solution that no one else in the team had thought of.',ans:'ingenuity'}
+];
+(function buildVB(){var wrap=document.getElementById('vocabB-list');var html='';vocabB.forEach(function(s){html+='<p>'+s.n+'. '+s.t.replace('___','<input class="fill short" id="vb'+s.n+'">')+'</p>';});wrap.innerHTML=html;})();
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);var ok=inp.value.trim().toLowerCase()===vocabA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}var rB=0;vocabB.forEach(function(s){var inp=document.getElementById('vb'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');document.getElementById('ansKey1Body').innerHTML='<b>A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>B:</b><br>'+vocabB.map(function(s){return s.n+'. '+s.ans;}).join(' &nbsp;•&nbsp; ');document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var miniReading=[{n:1,statement:'Radiocarbon dating measures the speed at which carbon particles decay in organic material.',tf:'True'},{n:2,statement:'The technique of radiocarbon dating was invented in the nineteenth century.',tf:'False'},{n:3,statement:'Pottery typology involves comparing ceramic fragments to establish their historical period.',tf:'True'},{n:4,statement:'Phytoliths are too fragile to survive in soil for long periods of time.',tf:'False'},{n:5,statement:'The passage suggests that modern archaeology relies on a single scientific method.',tf:'False'}];
+(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 3 ===== */
+function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
+var aqTFAns={aq1:'False',aq2:'False',aq3:'True',aq4:'Not Given',aq5:'True'};
+var aqShortAns={aq6:'midden',aq7:'pottery',aq8:'silica',aq9:'desperate or thriving'};
+function checkArticleQs(){var right=0,total=9;Object.keys(aqTFAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');if(chosen&&chosen.value===aqTFAns[name])right++;});Object.keys(aqShortAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(aqShortAns[id].split(' ')[0])>=0;if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});alert('Article: '+right+'/'+total+' correct.');document.getElementById('ansKey3Body').innerHTML='<b>S1:</b> 1.False 2.False 3.True 4.Not Given 5.True<br><b>S2:</b> 6.midden 7.pottery 8.silica 9.desperate or thriving';document.getElementById('ansKey3').classList.add('show');checkedTasks[3]=true;refreshDoneButton();}window.checkArticleQs=checkArticleQs;
+
+/* ===== TASK 5 ===== */
+function checkTask5(){var s1=document.getElementById('sp1').value;var s2=document.getElementById('sp2').value;var r=0;if(s1==='C')r++;if(s2==='A')r++;alert('You got '+r+'/2 correct.');document.getElementById('ansKey5Body').innerHTML='Speaker 1: <b>C</b> — receiving a reward for your efforts<br>Speaker 2: <b>A</b> — having a group of hardworking friends you can study with';document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[{n:1,q:"According to the speaker, what is the first reaction some people have to statistics?",opts:["They believe every statistic.","They ignore all numbers completely.","They reject all statistics as unreliable.","They always verify every claim immediately."],ans:"C"},{n:2,q:"According to the video, why do statistics often go viral on social media?",opts:["They are always scientifically accurate.","They trigger strong emotions.","They are difficult to understand.","They contain mathematical formulas."],ans:"B"},{n:3,q:"What are the \"Three Cs\" of data wisdom?",opts:["Compare, Calculate, Confirm","Calm, Context, Curiosity","Care, Confidence, Communication","Check, Collect, Clarify"],ans:"B"},{n:4,q:"Before sharing an emotional statistic, what does the speaker recommend?",opts:["Ignore it completely.","Share it immediately.","Notice your emotional reaction and look at it again.","Ask your friends for their opinion."],ans:"C"},{n:5,q:"Which example is used to explain the importance of context?",opts:["Crime statistics","School exam results","NHS savings from weight loss","Climate change predictions"],ans:"C"},{n:6,q:"According to the speaker, £100 million spread across the UK population equals approximately …",opts:["£100 per person","£10 per person","£1.50 per person","30 pence per person per month"],ans:"C"},{n:7,q:"Which question is NOT suggested when evaluating statistics?",opts:["What is being measured?","Is it increasing or decreasing?","Who created the internet?","What is the source of the claim?"],ans:"C"},{n:8,q:"According to the speaker, what do you need to understand statistics better?",opts:["Advanced university mathematics","Expensive software","A search engine, simple calculations and curiosity","A professional statistician"],ans:"C"},{n:9,q:"What does the speaker compare statistics to?",opts:["A microscope for doctors","A telescope for an astronomer","A compass for sailors","A map for travellers"],ans:"B"},{n:10,q:"What is the overall message of the video?",opts:["Statistics should never be trusted.","Statistics are always accurate.","Statistics should be examined calmly, with context and curiosity.","Only experts can understand statistics."],ans:"C"}];
+(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+var vidGapData=[{n:1,t:"We are surrounded by statistical ___ every day.",ans:"claims"},{n:2,t:"The speaker says we should not automatically ___ all statistics.",ans:"reject"},{n:3,t:"Statistics can reveal things that we cannot directly ___.",ans:"perceive"},{n:4,t:"Many statistics are presented with strong ___ appeal.",ans:"emotional"},{n:5,t:"Emotional numbers often end up in newspaper ___.",ans:"headlines"},{n:6,t:"Before reacting, notice your ___ response.",ans:"instinctive"},{n:7,t:"Understanding the ___ helps us judge whether a statistic is meaningful.",ans:"context"},{n:8,t:"The Health Secretary said the saving was ___ to about 30 pence per person per year.",ans:"equivalent"},{n:9,t:"One useful question is: 'What is being ___ here?'",ans:"measured"},{n:10,t:"Simple calculations can even be done on the back of an ___.",ans:"envelope"},{n:11,t:"Numbers should not be used as a ___ during arguments.",ans:"weapon"},{n:12,t:"Statistics should not simply support our ___.",ans:"preconceptions"},{n:13,t:"The speaker compares statistics to a ___ that helps us understand the world.",ans:"telescope"},{n:14,t:"A good ___ helps readers stay calm and understand the data.",ans:"journalist"},{n:15,t:"Asking questions shows genuine ___.",ans:"curiosity"}];
+(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+var vidMatchData=[{n:1,term:"claim",ans:"A"},{n:2,term:"perceive",ans:"B"},{n:3,term:"reject",ans:"C"},{n:4,term:"exert",ans:"D"},{n:5,term:"baggage",ans:"E"},{n:6,term:"context",ans:"F"},{n:7,term:"instinctive",ans:"G"},{n:8,term:"vindication",ans:"H"},{n:9,term:"equivalent",ans:"I"},{n:10,term:"curiosity",ans:"J"},{n:11,term:"preconception",ans:"K"},{n:12,term:"telescope",ans:"L"},{n:13,term:"dismiss",ans:"M"},{n:14,term:"statistic",ans:"N"},{n:15,term:"source",ans:"O"}];
+var vidMatchDefs={A:"a statement that something is true, although it may need proof",B:"to notice or become aware of something",C:"to refuse to accept something",D:"to make a strong effort",E:"emotional ideas or feelings connected to something",F:"the circumstances surrounding an event or statement",G:"happening naturally without conscious thought",H:"proof that someone or something was right",I:"equal in value, amount or meaning",J:"a strong desire to learn or know something",K:"an opinion formed before knowing all the facts",L:"an instrument used to observe distant objects",M:"to treat something as unimportant or not worth considering",N:"a numerical fact or piece of data",O:"the origin of information or evidence"};
+(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkVideoTask(){var rMcq=0,rGap=0,rMatch=0;vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> '+vidMcqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><b>Gap:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><b>Match:</b> '+vidMatchData.map(function(m){return m.n+'.'+m.ans;}).join(' ');document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:'brain',2:'boss',3:'millennials',4:'environment',5:'microfinance',6:'b',7:'easily',8:'crowdfunding',9:'entrepreneur',10:'start-ups',11:'funding',12:'internet',13:'money',14:'corrupt',15:'collective',16:'goal',17:'life',18:'comfort',19:'week',20:'microfinance',21:'people',22:'business',23:'start-up',24:'money',25:'corrupt',26:'goal',27:'life',28:'place',29:'vocabulary',30:'now'};
+var dictLines=[{sp:'Rob',t:"Hello. This is 6 Minute English from BBC Learning English. I'm Rob."},{sp:'Sam',t:"And I'm Sam."},{sp:'Rob',t:"Have you got a business {1}, Sam? Would you like to start your own business?"},{sp:'Sam',t:"I like the idea of being my own {2}."},{sp:'Rob',t:"Many {3} dream of starting their own businesses."},{sp:'Sam',t:"Some millennials are dissatisfied with the old ways of doing things, including the impact of companies on society and the {4}."},{sp:'Rob',t:"Today's quiz is about Muhammad Yunus. In 2006 he won the Nobel Peace Prize for: a) offering {5} to low-income businesses b) starting the first business to earn £1 million in under a week c) developing a progressive model of taxation"},{sp:'Sam',t:"I'll choose option {6}."},{sp:'Ethan Mollick',t:"There are now many platforms that make starting businesses much more {7}."},{sp:'Ethan Mollick',t:"The growth of {8} has helped make entrepreneurship more accessible."},{sp:'Rob',t:"An {9} is someone who starts their own business after seeing a new opportunity."},{sp:'Sam',t:"Many entrepreneurs create {10}, newly formed businesses designed to grow quickly."},{sp:'Rob',t:"Crowdfunding means raising {11} by asking many people to contribute small amounts of money, usually via the {12}."},{sp:'Sam',t:"For many millennials, business is not only about making {13}, but also about being socially responsible."},{sp:'Charles Kenny',t:"If your country has a {14} and inefficient government, improving it can help national development."},{sp:'Charles Kenny',t:"Real change requires {15} effort."},{sp:'Rob',t:"Collective effort means people working together to achieve a common {16}."},{sp:'Sam',t:"This can improve people's quality of {17}."},{sp:'Rob',t:"Quality of life means a person's level of satisfaction and {18}."},{sp:'Sam',t:"I answered that Muhammad Yunus started a business earning £1 million in under a {19}."},{sp:'Rob',t:"The correct answer was that he offered {20} to low-income businesses."},{sp:'Rob',t:"Millennials are the current generation of young {21}."},{sp:'Sam',t:"An entrepreneur starts their own {22}."},{sp:'Rob',t:"A {23} is a newly formed business intended to grow rapidly."},{sp:'Sam',t:"Crowdfunding involves asking lots of people online to each give a small amount of {24}."},{sp:'Rob',t:"If someone is {25}, they act illegally or immorally for money or power."},{sp:'Sam',t:"Collective effort means working together towards a common {26}."},{sp:'Rob',t:"Improving quality of {27} is one important goal."},{sp:'Sam',t:"Many millennials hope business can make the world a better {28}."},{sp:'Rob',t:"Thanks for listening. Join us again for more topical discussion and {29}."},{sp:'Sam',t:"Bye for {30}!"}];
+(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
+var compData=[{n:1,q:"What is an entrepreneur?",opts:["Someone who works for the government","Someone who starts their own business","Someone who invests only in banks","Someone who teaches business"],ans:"B"},{n:2,q:"What is crowdfunding?",opts:["Borrowing money from one bank","Asking many people, usually online, to each contribute a small amount of money","Selling company shares on the stock market","Receiving government funding only"],ans:"B"},{n:3,q:"According to the programme, why do many millennials start businesses?",opts:["Only to become famous","Only to make as much money as possible","To earn money and make a positive social impact","Because they dislike technology"],ans:"C"},{n:4,q:"What does the word corrupt mean?",opts:["Honest and responsible","Acting illegally or immorally for money or power","Working very hard","Being inexperienced"],ans:"B"},{n:5,q:"What is meant by quality of life?",opts:["The number of jobs in a country","The amount of money someone earns","A person's level of satisfaction and comfort","The size of a business"],ans:"C"}];
+(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+function checkPodcast(){var rDict=0,rComp=0;Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');document.getElementById('ansKey7Body').innerHTML='<b>Dict:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comp:</b> '+compData.map(function(q){return q.n+'.'+q.ans;}).join(' ');document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkPodcast=checkPodcast;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+
+/* ===== PERSISTENT HIGHLIGHT ===== */
+(function(){
+  var HL_KEY='sprint4_hl_day8';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+})();
+</script>
+</body>
+</html>
