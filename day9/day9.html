@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 9</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}input.fill.num{width:50px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 9</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">consolidate</span><span class="chip">reinforce</span><span class="chip">decay</span><span class="chip">interference</span><span class="chip">sensory</span><span class="chip">solidify</span><span class="chip">retain</span><span class="chip">redundant</span><span class="chip">adequate</span><span class="chip">cognitive</span><span class="chip">deficits</span><span class="chip">developmental</span><span class="chip">procedural</span><span class="chip">hypothesize</span><span class="chip">intervening</span><span class="chip">exploit</span><span class="chip">relevance</span><span class="chip">impairment</span><span class="chip">retention</span><span class="chip">intervention</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then decide if each statement is True or False.</p></div>
+  <div class="card">
+    <h3>Sleep and memory consolidation</h3>
+    <p class="passage-text">The relationship between sleep and memory has been one of the most intensively studied areas of neuroscience over the past three decades. Scientists now know that sleep plays an active role in memory consolidation — the process by which temporary memories are stabilised and transferred into long-term storage. Without adequate sleep, this consolidation process is disrupted, leading to measurable deficits in recall and learning. Research has also shown that sleep protects memories from interference: while we are awake, new sensory experiences constantly compete with recently formed memories, threatening to overwrite them. During sleep, however, the brain is shielded from incoming sensory data, allowing it to replay and reinforce the day's most important information. Studies of patients with sleep impairment have revealed that even a single night of poor sleep can result in significant cognitive decline the following day.</p>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions below.</p></div>
+  <div class="card"><h3>The Brain's Nightly Janitorial Crew</h3><p class="instr">A background reading on the glymphatic system, synaptic homeostasis, and retroactive interference — with a full vocabulary glossary.</p><a class="btn link-out" href="article-day-9.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check" onchange="revealArticleQs()"><label for="t3check">I have read the article</label></div>
+  <div id="articleQs" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h4>Section 1 — Multiple choice</h4>
+      <div class="q-block" id="aq1Block"><div class="q-text">1. Why does the glymphatic system only activate during sleep?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq1" value="A"> A) The brain is too busy during the day to clean itself</label><label class="opt-row" data-val="B"><input type="radio" name="aq1" value="B"> B) Brain cells shrink during sleep, creating channels for fluid to flow</label><label class="opt-row" data-val="C"><input type="radio" name="aq1" value="C"> C) Sleep lowers body temperature, activating the system</label><label class="opt-row" data-val="D"><input type="radio" name="aq1" value="D"> D) The lymphatic system only functions during the night</label></div></div>
+      <div class="q-block" id="aq2Block"><div class="q-text">2. What happens to toxic proteins like amyloid-beta if you skip sleep?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq2" value="A"> A) They dissolve naturally during daytime activity</label><label class="opt-row" data-val="B"><input type="radio" name="aq2" value="B"> B) They are processed by the lymphatic system instead</label><label class="opt-row" data-val="C"><input type="radio" name="aq2" value="C"> C) They accumulate and suffocate neurons</label><label class="opt-row" data-val="D"><input type="radio" name="aq2" value="D"> D) They are removed by white blood cells during exercise</label></div></div>
+      <div class="q-block" id="aq3Block"><div class="q-text">3. What is the main purpose of synaptic pruning during sleep?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq3" value="A"> A) To generate entirely new brain cells</label><label class="opt-row" data-val="B"><input type="radio" name="aq3" value="B"> B) To remove trivial connections so that important pathways stand out</label><label class="opt-row" data-val="C"><input type="radio" name="aq3" value="C"> C) To connect unrelated memories to each other</label><label class="opt-row" data-val="D"><input type="radio" name="aq3" value="D"> D) To increase the overall size of the brain</label></div></div>
+      <div class="q-block" id="aq4Block"><div class="q-text">4. What is retroactive interference?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq4" value="A"> A) A method of improving memory through repetition</label><label class="opt-row" data-val="B"><input type="radio" name="aq4" value="B"> B) A biological system that activates during deep sleep</label><label class="opt-row" data-val="C"><input type="radio" name="aq4" value="C"> C) New experiences overwriting fragile, recently formed memories</label><label class="opt-row" data-val="D"><input type="radio" name="aq4" value="D"> D) The brain's immune response to toxic proteins</label></div></div>
+    </div>
+    <div class="card">
+      <h4>Section 2 — Summary completion (no more than two words from the article)</h4>
+      <div class="passage-text"><p>According to the article, the brain cannot clean itself while <input class="fill short" id="aq5">. The glymphatic system acts as a microscopic <input class="fill short" id="aq6">, activating only during deep sleep. The <input class="fill" id="aq7"> explains how the brain evaluates and deletes unimportant neural connections during sleep. Sleep also acts as a biological <input class="fill short" id="aq8"> that protects new memories from being overwritten by new experiences.</p></div>
+    </div>
+    <div class="check-row"><button class="btn secondary" onclick="checkArticleQs()">Check answers</button></div>
+    <details class="answer-key" id="ansKey3"><summary>Answer key</summary><div class="answer-key-body" id="ansKey3Body"></div></details>
+  </div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_9.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task — Business &amp; Elections</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Match vocabulary to definitions</h4>
+    <div class="wordbank"><span class="chip">a. the number of people who go to an organised event such as an election</span><span class="chip">b. information about a group of people</span><span class="chip">c. a place where people go to vote in an election</span><span class="chip">d. when a company announces it will make less money than expected</span><span class="chip">e. money that a business receives over a period of time</span><span class="chip">f. the difference between what something costs and how much it is sold for</span><span class="chip">g. a part of a company's profits divided among the people who own it</span><span class="chip">h. a person who owns part of a company</span></div>
+    <div id="t5PrepList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Task 1 — Circle the correct option</h4><div id="t5McqList"></div></div>
+  <div class="card">
+    <h4>Task 2 — Complete the sentences with words from the box</h4>
+    <div class="wordbank"><span class="chip">shareholders</span><span class="chip">demographics</span><span class="chip">more and more</span><span class="chip">increasing</span><span class="chip">trend</span><span class="chip">voter turnout</span><span class="chip">growing interest</span><span class="chip">profit warning</span><span class="chip">revenue</span><span class="chip">election</span><span class="chip">cashless payment</span><span class="chip">gross margin</span><span class="chip">polling stations</span><span class="chip">dividends</span></div>
+    <div class="passage-text" id="t5GapText" style="margin-top:12px;"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — Computer Schedulers &amp; Productivity</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/iDbdXTMnOmE" title="Computer Schedulers" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+  <div class="card"><h4>Part 2 — Gap fill</h4>
+    <div class="wordbank"><span class="chip">scheduler</span><span class="chip">procrastinating</span><span class="chip">CPU</span><span class="chip">quadratic</span><span class="chip">buckets</span><span class="chip">chronological</span><span class="chip">context</span><span class="chip">productivity</span><span class="chip">responsiveness</span><span class="chip">interruptions</span><span class="chip">coalescing</span><span class="chip">battery</span><span class="chip">overwhelmed</span><span class="chip">prioritizing</span><span class="chip">progress</span></div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — Cycling Around the World</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening task — A Trip to Toronto</h2><p class="task-sub">Listen and complete all three tasks below.</p></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task8.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Match vocabulary to definitions</h4>
+    <div class="wordbank"><span class="chip">a. shocking and very bad</span><span class="chip">b. very unsuccessful; where everything goes badly wrong</span><span class="chip">c. similar</span><span class="chip">d. extremely good</span><span class="chip">e. with a lot of space</span><span class="chip">f. giving a beautiful view of nature</span><span class="chip">g. easy to hear, see or feel</span><span class="chip">h. somewhere not changed in a way that makes it less beautiful</span></div>
+    <div id="t8PrepList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card">
+    <h4>Task 1 — Put the conversation topics in the order they are mentioned (1–8)</h4>
+    <div id="t8OrderList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Task 2 — Circle the best answer</h4><div id="t8McqList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check answers</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 9 of 30</div>
+  <h1>Congratulations — Day 9 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 10.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=9,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+var STATE_KEY='sprint4_day9_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(/^aq/.test(id))return 3;
+  if(id==='t4score'||id==='t4check')return 4;if(/^t5p|^t5m|^t5g/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;
+  if(/^t8p|^t8o|^t8m/.test(id))return 8;return 1;
+}
+function hookAutosave(){document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k='sprint4_day9_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
+var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}return true;}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segs=['Scientists who study how the brain stores information have long tried to','/*1*/','about the mechanisms behind memory. They know that without sleep, the brain cannot properly','/*2*/','new information into long-term storage. Sleep acts to','/*3*/','newly formed memories, helping them','/*4*/','and become stable. Without this nightly process, memories begin to','/*5*/','— fading like an old photograph left in the sun. The brain\'s ability to','/*6*/','information depends entirely on the quality of this nocturnal maintenance cycle. One key challenge is','/*7*/','When new','/*8*/','experiences flood the brain before a memory has been secured, they overwrite the fragile data. Any','/*9*/','experience — a conversation, a news clip, a piece of music — can corrupt a memory that has not yet been fully saved. Research suggests that sleep is particularly critical for','/*10*/','memory — the kind that stores physical skills like typing or riding a bike. People with sleep','/*11*/','often show clear','/*12*/','difficulties, including slower reaction times and reduced attention spans. These effects can be even more severe in people with','/*13*/','disorders. For them, even','/*14*/','sleep may not fully address the','/*15*/','caused by underlying neurological differences. Scientists','/*16*/','this knowledge in practical ways — designing','/*17*/','programmes for people with memory','/*18*/','problems. The','/*19*/','of sleep science extends far beyond the laboratory. Understanding sleep could help address conditions where','/*20*/','neural pathways are blocking the formation of new, efficient connections.'];
+var vocabA_ans={1:'hypothesize',2:'consolidate',3:'reinforce',4:'solidify',5:'decay',6:'retain',7:'interference',8:'sensory',9:'intervening',10:'procedural',11:'deficits',12:'cognitive',13:'developmental',14:'adequate',15:'impairment',16:'exploit',17:'intervention',18:'retention',19:'relevance',20:'redundant'};
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;vocabA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB_words=['consolidate','reinforce','decay','interference','sensory','solidify','retain','cognitive','deficits','procedural','hypothesize','exploit','relevance','retention','intervention'];
+var vocabB_defs={A:'to keep or maintain something in existence',B:'to strengthen or support something that already exists',C:'to make use of something for a particular purpose',D:'to propose a theory or explanation without proof',E:'relating to the senses or physical perception',F:'relating to thought, memory, and mental processes',G:'relating to a process or series of steps',H:'the importance or connection of something to a subject',I:'to gradually deteriorate or break down over time',J:'the ability to keep information in memory over time',K:'the process of stabilising information into long-term memory',L:'the act of stepping in to prevent or improve a situation',M:'the disruption of memory or learning by other information',N:'shortfalls or lacks in performance or ability',O:'to become firm, stable, or fixed'};
+var vocabB_ans={1:'K',2:'B',3:'I',4:'M',5:'E',6:'O',7:'A',8:'F',9:'N',10:'G',11:'D',12:'C',13:'H',14:'J',15:'L'};
+(function buildVB(){var wrap=document.getElementById('vocabB-list');var letters=Object.keys(vocabB_defs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr" style="margin-bottom:12px;">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vocabB_defs[l]+'<br>';});html+='</p>';vocabB_words.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="vb'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);var ok=inp.value.trim().toLowerCase()===vocabA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById('vb'+j);if(sel&&sel.value===vocabB_ans[j])rB++;}alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');document.getElementById('ansKey1Body').innerHTML='<b>A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>B:</b><br>'+vocabB_words.map(function(w,i){return (i+1)+'. '+vocabB_ans[i+1];}).join(' &nbsp;•&nbsp; ');document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var miniReading=[{n:1,statement:'Sleep plays an active role in transferring temporary memories into long-term storage.',tf:'True'},{n:2,statement:'Adequate sleep has no measurable effect on a person\'s ability to recall information.',tf:'False'},{n:3,statement:'While awake, new sensory experiences can interfere with recently formed memories.',tf:'True'},{n:4,statement:'During sleep, the brain continues to receive and process incoming sensory data normally.',tf:'False'},{n:5,statement:'According to the passage, cognitive decline can result from even a single night of poor sleep.',tf:'True'}];
+(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 3 ===== */
+function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
+var aqMcqAns={aq1:'B',aq2:'C',aq3:'B',aq4:'C'};
+var aqGapAns={aq5:'awake',aq6:'dishwasher',aq7:'Synaptic Homeostasis Hypothesis',aq8:'shield'};
+function checkArticleQs(){var right=0,total=8;Object.keys(aqMcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===aqMcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===aqMcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});Object.keys(aqGapAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(aqGapAns[id].toLowerCase().split(' ')[0])>=0;if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});alert('Article: '+right+'/'+total+' correct.');document.getElementById('ansKey3Body').innerHTML='<b>MCQ:</b> 1.B 2.C 3.B 4.C<br><b>Summary:</b> 5.awake &nbsp;•&nbsp; 6.dishwasher &nbsp;•&nbsp; 7.Synaptic Homeostasis Hypothesis &nbsp;•&nbsp; 8.shield';document.getElementById('ansKey3').classList.add('show');checkedTasks[3]=true;refreshDoneButton();}window.checkArticleQs=checkArticleQs;
+
+/* ===== TASK 5 ===== */
+var t5PrepWords=['revenue','turnout','a polling station','demographics','a profit warning','a dividend','a shareholder','gross margin'];
+var t5PrepAns={1:'E',2:'A',3:'C',4:'B',5:'D',6:'G',7:'H',8:'F'};
+(function buildT5Prep(){var wrap=document.getElementById('t5PrepList');var letters=['A','B','C','D','E','F','G','H'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t5PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t5p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+var t5McqData=[{n:1,q:"The election …",opts:["wasn't too important because it was just a local one.","was very important for the whole country.","was about development."],ans:"B"},{n:2,q:"There was a voter increase of …",opts:["six per cent since the last election.","11 per cent since the last election.","54.5 per cent since the last election."],ans:"B"},{n:3,q:"ONK …",opts:["wants to go international.","has almost achieved the results it forecasted.","is a strong successful company with offices all over the world."],ans:"C"},{n:4,q:"ONK posted quarterly revenue of …",opts:["$14.8 billion.","$18.4 billion.","$40.8 billion."],ans:"A"},{n:5,q:"People want to …",opts:["carry smaller items when they leave their homes.","carry fewer items when they leave their homes.","own a smartwatch."],ans:"B"},{n:6,q:"More and more retailers …",opts:["accept cashless payments.","accept cash.","don't accept cash."],ans:"A"}];
+(function buildT5Mcq(){var wrap=document.getElementById('t5McqList');var html='';t5McqData.forEach(function(q){html+='<div class="q-block" id="t5mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t5m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+(function buildT5Gap(){
+  var html='<p><b>1.</b> There will be a number of new (a)<input class="fill short" id="t5ga1"> opened in time for next year\'s (b)<input class="fill short" id="t5ga2">. The government is trying to increase (c)<input class="fill" id="t5ga3">. They specifically want to focus on increasing the number of people from certain (d)<input class="fill short" id="t5ga4">, such as the 18–24 age group, or those from ethnic minorities.</p>';
+  html+='<p><b>2.</b> The company (a)<input class="fill short" id="t5gb1"> is down seven per cent on this time last year as a result of not enough of our leading products being sold and rising costs. It is for these reasons that the (b)<input class="fill" id="t5gb2"> has also fallen and the company has no choice but to issue a (c)<input class="fill" id="t5gb3">. This means that there will be a freeze on (d)<input class="fill short" id="t5gb4"> to (e)<input class="fill short" id="t5gb5"> until further notice.</p>';
+  html+='<p><b>3.</b> There is an (a)<input class="fill short" id="t5gc1"> number of people who don\'t like using cash to make payments. We have also seen that (b)<input class="fill" id="t5gc2"> people prefer to use (c)<input class="fill" id="t5gc3"> options. Furthermore, there is (d)<input class="fill" id="t5gc4"> in completely removing cash from society. However, many small shop owners say that this (e)<input class="fill short" id="t5gc5"> will be bad for business.</p>';
+  document.getElementById('t5GapText').innerHTML=html;
+})();
+var t5GapAns={t5ga1:'polling stations',t5ga2:'election',t5ga3:'voter turnout',t5ga4:'demographics',t5gb1:'revenue',t5gb2:'gross margin',t5gb3:'profit warning',t5gb4:'dividends',t5gb5:'shareholders',t5gc1:'increasing',t5gc2:'more and more',t5gc3:'cashless payment',t5gc4:'growing interest',t5gc5:'trend'};
+function checkTask5(){
+  var rPrep=0,rMcq=0,rGap=0;
+  for(var i=1;i<=8;i++){var sel=document.getElementById('t5p'+i);if(sel&&sel.value===t5PrepAns[i])rPrep++;}
+  t5McqData.forEach(function(q){var chosen=document.querySelector('input[name="t5m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t5mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  Object.keys(t5GapAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===t5GapAns[id].toLowerCase();if(ok)rGap++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  alert('Prep: '+rPrep+'/8\nTask 1: '+rMcq+'/6\nTask 2: '+rGap+'/14');
+  document.getElementById('ansKey5Body').innerHTML='<b>Prep:</b> 1-E 2-A 3-C 4-B 5-D 6-G 7-H 8-F<br><b>Task 1:</b> '+t5McqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><b>Task 2:</b><br>1: polling stations / election / voter turnout / demographics<br>2: revenue / gross margin / profit warning / dividends / shareholders<br>3: increasing / more and more / cashless payment / growing interest / trend';
+  document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();
+}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[{n:1,q:"What problem occurred with NASA's Pathfinder spacecraft after landing on Mars?",opts:["It ran out of power.","It was damaged by a dust storm.","It stopped transmitting because of a scheduler bug.","It lost contact due to a broken antenna."],ans:"C"},{n:2,q:"What is the main function of an operating system's scheduler?",opts:["To repair damaged files","To decide how long the CPU works on each task and what to do next","To increase internet speed","To save battery power"],ans:"B"},{n:3,q:"According to the speaker, Pathfinder was like a person who was ...",opts:["working efficiently.","learning new skills.","procrastinating.","sleeping."],ans:"C"},{n:4,q:"Why is checking every email to find the most important one considered inefficient?",opts:["It requires an internet connection.","It is an example of a quadratic time algorithm.","It deletes important emails.","It makes computers crash."],ans:"B"},{n:5,q:"What solution did Linux programmers introduce in 2003?",opts:["They deleted unnecessary tasks.","They ranked tasks more carefully.","They replaced full rankings with priority buckets.","They ignored low-priority tasks."],ans:"C"},{n:6,q:"According to the video, replying to emails in chronological order may be better because ...",opts:["it guarantees perfect prioritisation.","it avoids spending too much time deciding what to do next.","it automatically deletes spam.","it increases internet speed."],ans:"B"},{n:7,q:"What is a context switch?",opts:["Restarting the computer","Switching from one operating system to another","The process of moving from one task to another","Downloading new software"],ans:"C"},{n:8,q:"Productivity and responsiveness are described as ...",opts:["identical goals.","completely unrelated.","fundamentally in tension.","impossible to improve."],ans:"C"},{n:9,q:"What is interrupt coalescing?",opts:["Ignoring all interruptions permanently","Grouping interruptions together before dealing with them","Turning off the computer every hour","Ranking every interruption individually"],ans:"B"},{n:10,q:"According to the speaker, what benefit did interrupt coalescing provide in 2013?",opts:["Faster internet speeds","Better graphics performance","A massive improvement in laptop battery life","More storage space"],ans:"C"}];
+(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+var vidGapData=[{n:1,t:"Pathfinder appeared to be ___ because it stayed busy without completing its main task.",ans:"procrastinating"},{n:2,t:"Every operating system contains a ___ that decides which task the processor should handle next.",ans:"scheduler"},{n:3,t:"The ___ carries out the instructions assigned by the scheduler.",ans:"CPU"},{n:4,t:"Constantly scanning every email is compared to a ___ time algorithm.",ans:"quadratic"},{n:5,t:"Linux programmers replaced full rankings with priority ___.",ans:"buckets"},{n:6,t:"Instead of always choosing the most important email, replying in ___ order may be more efficient.",ans:"chronological"},{n:7,t:"Switching from one task to another is called a ___ switch.",ans:"context"},{n:8,t:"Too many context switches reduce overall ___.",ans:"productivity"},{n:9,t:"At the same time, reacting immediately to every message improves ___.",ans:"responsiveness"},{n:10,t:"Modern life is full of constant ___ that steal our attention.",ans:"interruptions"},{n:11,t:"Computers often use interrupt ___ to group notifications together.",ans:"coalescing"},{n:12,t:"This technique greatly improved laptop ___ life.",ans:"battery"},{n:13,t:"Even computers can become ___ when handling too many tasks.",ans:"overwhelmed"},{n:14,t:"Spending too much time ___ your work leaves less time for actually doing it.",ans:"prioritizing"},{n:15,t:"Using priority buckets allowed Linux to spend more time making ___.",ans:"progress"}];
+(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+var vidMatchData=[{n:1,term:"scheduler",ans:"E"},{n:2,term:"procrastinating",ans:"B"},{n:3,term:"CPU",ans:"A"},{n:4,term:"bug",ans:"D"},{n:5,term:"quadratic",ans:"H"},{n:6,term:"priority bucket",ans:"F"},{n:7,term:"context switch",ans:"C"},{n:8,term:"productivity",ans:"L"},{n:9,term:"responsiveness",ans:"I"},{n:10,term:"interruption",ans:"J"},{n:11,term:"interrupt coalescing",ans:"K"},{n:12,term:"overwhelmed",ans:"G"},{n:13,term:"chronological",ans:"M"},{n:14,term:"prioritize",ans:"N"},{n:15,term:"defer",ans:"O"}];
+var vidMatchDefs={A:"the central processor of a computer",B:"delaying important work by doing less important tasks",C:"the process of switching attention from one task to another",D:"a software error that causes problems",E:"a system that decides which task should run next",F:"a group containing tasks of similar importance",G:"becoming unable to cope with too much work",H:"related to growth that becomes much larger as size increases",I:"the ability to react quickly to new events",J:"anything that breaks your concentration",K:"combining interruptions and dealing with them together",L:"the amount of useful work completed",M:"arranged according to time",N:"to decide which tasks are most important",O:"to delay until a later time"};
+(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkVideoTask(){var rMcq=0,rGap=0,rMatch=0;vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> '+vidMcqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><b>Gap:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><b>Match:</b> '+vidMatchData.map(function(m){return m.n+'.'+m.ans;}).join(' ');document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:'up',2:'accessible',3:'34 million',4:'took off',5:'milestone',6:'ingrained',7:'successful',8:'liveability',9:'solution',10:'health',11:'live',12:'copy',13:'principles',14:'rest',15:'green',16:'34',17:'24',18:'established',19:'takes',20:'milestone',21:'wellbeing',22:'liveability',23:'copy',24:'accessible',25:'era',26:'culture',27:'rankings',28:'heat',29:'mental',30:'Emirates'};
+var dictLines=[{sp:'Neil',t:"Hello, this is 6 Minute English from BBC Learning English. I'm Neil."},{sp:'Becca',t:"And I'm Becca."},{sp:'Becca',t:"Yes. This year, sales of bicycles, or bikes as they're usually called, are {1} in Britain. Many people choose cycling because it's good for their health and the environment. And electric bikes are making cycling {2} to more people, including older people."},{sp:'Neil',t:"In this episode, we'll visit two countries: one with a long history of cycling and another where it's just getting started."},{sp:'Neil',t:"I'm going to say {3}."},{sp:'Meredith Glaser',t:"The bicycle is deeply ingrained into Dutch culture. But the rise of cycling started in the industrial era, when bicycle manufacturing {4}. And it went from a toy for rich people to an everyday tool for transportation, and this was a really important {5} for cycling in the Netherlands."},{sp:'Neil',t:"Cycling is deeply {6} into Dutch culture."},{sp:'Becca',t:"During the 1890s, bike manufacturing took off in the Netherlands. Take off means to suddenly become popular or {7}. This was a milestone for cycling in the Netherlands."},{sp:'Martin Tillman',t:"We also have quality of life and {8}. All the cities in the Gulf are very competitive, and they would love to be ranked very high in those global rankings, and cycling is seen as part of that quality-of-life {9}."},{sp:'Becca',t:"The phrase quality of life refers to someone's level of enjoyment, comfort and {10} when living in a particular place."},{sp:'Neil',t:"The noun liveability means the degree to which somewhere is a pleasant place to {11}."},{sp:'Martin Tillman',t:"It's certainly not a {12} and paste of what is good in Holland or Denmark, but the key is that we're looking for the {13}."},{sp:'Neil',t:"Dubai can't simply copy the Netherlands. Instead, it has introduced measures like water stations and shaded {14} areas."},{sp:'Becca',t:"Cycling isn't the perfect solution for everyone, everywhere, but in some places it can be a popular and {15} alternative."},{sp:'Becca',t:"I asked you roughly how many bikes there are in the Netherlands."},{sp:'Neil',t:"I said {16} million."},{sp:'Becca',t:"There are certainly a lot of bikes in the Netherlands, but the correct answer is {17} million."},{sp:'Becca',t:"Let's recap the vocabulary we've learned, starting with deeply ingrained, meaning well {18} and unlikely to change."},{sp:'Neil',t:"If something {19} off, it suddenly becomes popular or successful."},{sp:'Becca',t:"A {20} is an important event in the development of something or someone."},{sp:'Neil',t:"Quality of life describes a person's {21} in terms of enjoyment, comfort and health."},{sp:'Becca',t:"The noun {22} means the degree to which a place is pleasant to live in."},{sp:'Neil',t:"A {23} and paste is an exact copy of something which is then moved somewhere else."},{sp:'Becca',t:"Many older people now find cycling more {24} because of electric bikes."},{sp:'Neil',t:"The rise of bicycle manufacturing happened during the industrial {25}."},{sp:'Becca',t:"Cycling is firmly established in Dutch {26}."},{sp:'Neil',t:"Dubai hopes cycling will improve its global {27}."},{sp:'Becca',t:"Water stations and shaded rest areas help cyclists deal with the desert {28}."},{sp:'Neil',t:"Cycling supports both physical and {29} health."},{sp:'Becca',t:"The programme compares the Netherlands with the United Arab {30}."}];
+(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
+var compData=[{n:1,q:"Why has cycling become more popular in Britain?",opts:["Petrol is free.","It is good for health and the environment.","Cars are no longer available.","People are required to ride bikes."],ans:"B"},{n:2,q:"What does the phrase deeply ingrained mean?",opts:["Difficult to repair","Hidden underground","Firmly established and unlikely to change","Recently invented"],ans:"C"},{n:3,q:"What was an important milestone for cycling in the Netherlands?",opts:["The invention of electric bikes","Bicycle manufacturing becoming popular and affordable","Hosting the Olympic Games","Building roads for cars"],ans:"B"},{n:4,q:"According to Martin Tillman, what does Dubai want to improve through cycling?",opts:["Oil production","Quality of life and liveability","Population size","Airline travel"],ans:"B"},{n:5,q:"What does copy and paste mean in the programme?",opts:["Designing a new transport system","Making an exact copy of something and using it somewhere else","Building more bicycle factories","Improving road safety"],ans:"B"}];
+(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+function checkPodcast(){var rDict=0,rComp=0;Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');document.getElementById('ansKey7Body').innerHTML='<b>Dict:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comp:</b> '+compData.map(function(q){return q.n+'.'+q.ans;}).join(' ');document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkPodcast=checkPodcast;
+
+/* ===== TASK 8 ===== */
+var t8PrepWords=['fabulous','appalling','noticeable','spacious','comparable','disastrous','unspoiled','scenic'];
+var t8PrepAns={1:'D',2:'A',3:'G',4:'E',5:'C',6:'B',7:'H',8:'F'};
+(function buildT8Prep(){var wrap=document.getElementById('t8PrepList');var letters=['A','B','C','D','E','F','G','H'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t8PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t8p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+var t8OrderTopics=['The description of a holiday flat in Toronto','Rental flats in general','A rental in Barcelona','Long-distance phone calls','The weather in winter','Toronto neighbourhoods','The underground city','A house in the countryside'];
+var t8OrderAns={'The description of a holiday flat in Toronto':4,'Rental flats in general':2,'A rental in Barcelona':3,'Long-distance phone calls':1,'The weather in winter':7,'Toronto neighbourhoods':5,'The underground city':6,'A house in the countryside':8};
+(function buildT8Order(){var wrap=document.getElementById('t8OrderList');var html='<p class="instr">Write the number (1–8) to show the order in which each topic is mentioned.</p>';t8OrderTopics.forEach(function(topic,idx){html+='<div class="q-text">'+topic+': <input class="fill num" id="t8o'+idx+'"></div>';});wrap.innerHTML=html;})();
+
+var t8McqData=[{n:1,q:"If Dave was abroad and saw a phone call from someone at home, he ...",opts:["wouldn't answer it.","would be worried something had happened.","would think it was a work call."],ans:"A"},{n:2,q:"When he first arrived in Toronto, Dave was a bit worried about ...",opts:["contacting his uncle.","his accommodation.","being mugged."],ans:"B"},{n:3,q:"Jean's friend had a problem in her holiday flat, because ...",opts:["it didn't look like what was advertised.","the air conditioning didn't work.","the neighbours were really noisy."],ans:"A"},{n:4,q:"Dave's apartment was ...",opts:["small but modern, with spectacular views.","comfortable and with a roof garden with spectacular views.","big, light and with spectacular views."],ans:"C"},{n:5,q:"He particularly enjoyed the ...",opts:["green spaces.","shopping.","meeting of different cultures."],ans:"C"},{n:6,q:"Dave thought the PATH was particularly good ...",opts:["as a shortcut when walking around the city.","for tasting many different types of food all in one place.","for keeping warm."],ans:"C"},{n:7,q:"The temperature ...",opts:["can feel much lower because of the humidity.","can feel much lower because of the wind.","was unusually low for that time of year."],ans:"B"},{n:8,q:"Dave's uncle lives ...",opts:["in the suburbs of the city.","in an area that was more beautiful before it was affected by development work.","in a small house next to a lake."],ans:"C"}];
+(function buildT8Mcq(){var wrap=document.getElementById('t8McqList');var html='';t8McqData.forEach(function(q){html+='<div class="q-block" id="t8mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t8m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+function checkTask8(){
+  var rPrep=0,rOrder=0,rMcq=0;
+  for(var i=1;i<=8;i++){var sel=document.getElementById('t8p'+i);if(sel&&sel.value===t8PrepAns[i])rPrep++;}
+  t8OrderTopics.forEach(function(topic,idx){var inp=document.getElementById('t8o'+idx);if(inp&&parseInt(inp.value)===t8OrderAns[topic])rOrder++;});
+  t8McqData.forEach(function(q){var chosen=document.querySelector('input[name="t8m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t8mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  alert('Prep: '+rPrep+'/8\nTask 1 ordering: '+rOrder+'/8\nTask 2: '+rMcq+'/8');
+  document.getElementById('ansKey8Body').innerHTML='<b>Prep:</b> 1-D 2-A 3-G 4-E 5-C 6-B 7-H 8-F<br><b>Task 1 order:</b> Long-distance calls(1) Rental flats(2) Barcelona(3) Toronto flat(4) Neighbourhoods(5) Underground city(6) Weather(7) Countryside(8)<br><b>Task 2:</b> '+t8McqData.map(function(q){return q.n+'.'+q.ans;}).join(' ');
+  document.getElementById('ansKey8').classList.add('show');checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+
+/* ===== PERSISTENT HIGHLIGHT ===== */
+(function(){
+  var HL_KEY='sprint4_hl_day9';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+})();
+</script>
+</body>
+</html>
