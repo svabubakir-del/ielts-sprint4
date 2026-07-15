@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 11</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 11</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">sensory</span><span class="chip">influential</span><span class="chip">anatomist</span><span class="chip">redundant</span><span class="chip">receptor</span><span class="chip">devote</span><span class="chip">diluted</span><span class="chip">intimately</span><span class="chip">cognitive</span><span class="chip">rational</span><span class="chip">conscious</span><span class="chip">precision</span><span class="chip">capacity</span><span class="chip">olfactory</span><span class="chip">efficiently</span><span class="chip">evoke</span><span class="chip">stimuli</span><span class="chip">accurate</span><span class="chip">unpleasant</span><span class="chip">evolutionary</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then decide if each statement is True or False.</p></div>
+  <div class="card">
+    <h3>The olfactory pathway</h3>
+    <p class="passage-text">The human olfactory system is considerably more complex than scientists once believed. Unlike other sensory inputs such as sight and hearing, smell signals travel directly to the brain's emotional and memory centres without first passing through the thalamus. This means that scents can trigger emotional reactions and vivid memories almost instantaneously, before the conscious mind has had time to identify the source of the smell. Neuroscientists now recognise that the olfactory bulb — the structure that receives signals from receptor cells in the nasal cavity — has direct connections to the amygdala and the hippocampus, the regions responsible for emotional processing and memory consolidation respectively. Research has also shown that the sense of smell is not fixed; regular practice in identifying and categorising scents can lead to measurable changes in the physical structure of the brain, demonstrating a remarkable capacity for neuroplasticity.</p>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions inside the article page.</p></div>
+  <div class="card"><h3>The Hidden Machinery of the Olfactory System</h3><p class="instr">A background reading on the olfactory pathway, the Proustian Phenomenon, and neuroplasticity in sensory training — with a full vocabulary glossary and comprehension questions.</p><a class="btn link-out" href="article-day-11.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_11.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task — Film Reviews</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Match vocabulary to definitions</h4>
+    <div class="wordbank"><span class="chip">a. the second, third, fourth, etc. of a film or book</span><span class="chip">b. a person in a story</span><span class="chip">c. the story</span><span class="chip">d. to locate a film or book in a place</span><span class="chip">e. a large picture to advertise a film</span><span class="chip">f. to choose actors</span><span class="chip">g. the speed of the events of a story</span><span class="chip">h. computer graphics or other ways of making amazing scenes</span></div>
+    <div id="t5PrepList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card">
+    <h4>Task 1 — Write the descriptions in the correct group</h4>
+    <p class="instr">For each description, choose which film it applies to.</p>
+    <div id="t5GroupList" style="margin-top:6px;"></div>
+  </div>
+  <div class="card">
+    <h4>Task 2 — True or False?</h4>
+    <div id="t5TFList"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — How to Have Better Meetings</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/EvfhfGEq9c8" title="Better Meetings" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+  <div class="card"><h4>Part 2 — Gap fill</h4>
+    <div class="wordbank"><span class="chip">pointless</span><span class="chip">preparation</span><span class="chip">agenda</span><span class="chip">participating</span><span class="chip">extroverts</span><span class="chip">introverted</span><span class="chip">presence</span><span class="chip">hybrid</span><span class="chip">mindfulness</span><span class="chip">creativity</span><span class="chip">productive</span><span class="chip">breathers</span><span class="chip">refreshments</span><span class="chip">allocate</span><span class="chip">action</span></div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — Debt and Money</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening task — Working Internationally</h2><p class="task-sub">Listen and complete all three tasks below.</p></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task8.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Match vocabulary to definitions</h4>
+    <div class="wordbank"><span class="chip">a. to feel uncomfortable</span><span class="chip">b. to believe something is true without having any real proof</span><span class="chip">c. a team of people who are not in the same physical place</span><span class="chip">d. to agree about how something should be done</span><span class="chip">e. a difficult period of time</span><span class="chip">f. to promise that you will do something</span><span class="chip">g. to do more working hours than is agreed in your contract</span><span class="chip">h. the amount of space available</span></div>
+    <div id="t8PrepList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Task 1 — True or False?</h4><div id="t8TFList"></div></div>
+  <div class="card"><h4>Task 2 — Circle the best answer</h4><div id="t8McqList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check answers</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 11 of 30</div>
+  <h1>Congratulations — Day 11 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 12.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=11,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+var STATE_KEY='sprint4_day11_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;
+  if(id==='t4score'||id==='t4check')return 4;if(/^t5p|^t5g|^radio_t5tf/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;
+  if(/^t8p|^radio_t8tf|^t8m/.test(id))return 8;return 1;
+}
+function hookAutosave(){document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k='sprint4_day11_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
+var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById('t3check');return cb&&cb.checked;}if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}return true;}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segs=['The sense of smell is far more powerful than we once believed. From an','/*1*/','standpoint, olfaction evolved long before vision or hearing, making it our most ancient','/*2*/','system. For centuries, early','/*3*/','dismissed it as','/*4*/','— a biological relic with no further purpose. We now know this view was wrong. The','/*5*/','cells lining the nasal cavity are intimately connected to the brain\'s emotional centres. These cells act as the first point of contact for','/*6*/','— external signals such as chemical molecules that activate a sensory response. A single','/*7*/','scent can','/*8*/','powerful memories with remarkable','/*9*/','without any','/*10*/','or rational thought being involved. Smell processes information far more','/*11*/','than other senses precisely because it bypasses the brain\'s usual filtering systems. The','/*12*/','of the olfactory system to store and recognise thousands of distinct odours is extraordinary. Even heavily','/*13*/','concentrations of a familiar scent can be identified','/*14*/','by a trained nose. Because smell is','/*15*/','linked to emotion, an','/*16*/','odour can trigger an immediate and intense reaction. Scientists have now begun to seriously','/*17*/','time and resources to understanding olfaction. The','/*18*/','implications of this research are significant: it suggests that our sense of smell is','/*19*/','tied to our survival instincts, and that neglecting it as a field of study has left a major gap in our','/*20*/','understanding of the human mind.'];
+var vocabA_ans={1:'evolutionary',2:'sensory',3:'anatomists',4:'redundant',5:'receptor',6:'stimuli',7:'diluted',8:'evoke',9:'precision',10:'conscious',11:'efficiently',12:'capacity',13:'diluted',14:'accurately',15:'intimately',16:'unpleasant',17:'devote',18:'cognitive',19:'inherently',20:'rational'};
+
+// Fix duplicates - diluted appears twice in the text so adjust
+// Let me use a cleaner text
+var vocabA_segs2 = ['The sense of smell is far more powerful than we once believed. From an','/*1*/','standpoint, olfaction evolved long before vision or hearing, making it our most ancient','/*2*/','system. For centuries, early','/*3*/','dismissed the nose as','/*4*/','— a biological relic with no further purpose. We now know this view was wrong. The','/*5*/','cells lining the nasal cavity are','/*6*/','connected to the brain\'s emotional centres. These cells respond to','/*7*/','— external signals such as chemical molecules in the air. Even a heavily','/*8*/','concentration of a familiar scent can','/*9*/','powerful memories with remarkable','/*10*/','without any','/*11*/','thought being involved. The brain processes smell more','/*12*/','than other senses precisely because it bypasses the usual filtering systems. The','/*13*/','of the olfactory system to store thousands of distinct odours is extraordinary. Because smell is so','/*14*/','tied to emotion, an','/*15*/','odour can trigger an immediate and intense physiological reaction. Scientists are now beginning to','/*16*/','serious time and resources to olfactory research. The','/*17*/','implications of this work are significant: it suggests our sense of smell is','/*18*/','linked to our survival instincts. From an','/*19*/','perspective, this direct connection between smell and emotion was critical for early human survival. Understanding it fills a major gap in our','/*20*/','model of the human mind.'];
+var vocabA_ans2={1:'evolutionary',2:'sensory',3:'anatomists',4:'redundant',5:'receptor',6:'intimately',7:'stimuli',8:'diluted',9:'evoke',10:'precision',11:'conscious',12:'efficiently',13:'capacity',14:'intimately',15:'unpleasant',16:'devote',17:'cognitive',18:'inherently',19:'evolutionary',20:'rational'};
+
+// Use clean version
+var VA_segs=['The sense of smell is far more powerful than we once believed. From an','/*1*/','standpoint, olfaction evolved long before vision or hearing, making it our most ancient','/*2*/','system. For centuries, early','/*3*/','dismissed the nose as','/*4*/','— a biological relic with no further purpose. We now know this view was wrong. The','/*5*/','cells lining the nasal cavity respond to','/*6*/','— external chemical signals in the air. Even a heavily','/*7*/','scent can','/*8*/','powerful memories with remarkable','/*9*/','without any','/*10*/','thought being involved. Smell is processed more','/*11*/','than other senses because it bypasses the usual filtering systems. The','/*12*/','of the olfactory system to store and recognise thousands of distinct odours is extraordinary. The','/*13*/','bulb is','/*14*/','connected to the brain\'s emotional centres. Because smell is so','/*15*/','linked to our emotions, an','/*16*/','odour can trigger an immediate reaction. Researchers now','/*17*/','significant time and resources to olfactory science. The','/*18*/','implications are clear: smell is','/*19*/','tied to our survival instincts, and understanding it is vital to building an','/*20*/','picture of how the human mind works.'];
+var VA_ans={1:'evolutionary',2:'sensory',3:'anatomists',4:'redundant',5:'receptor',6:'stimuli',7:'diluted',8:'evoke',9:'precision',10:'conscious',11:'efficiently',12:'capacity',13:'olfactory',14:'intimately',15:'influential',16:'unpleasant',17:'devote',18:'cognitive',19:'inherently',20:'accurate'};
+
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;VA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB_words=['sensory','influential','receptor','devote','diluted','intimately','rational','conscious','precision','olfactory','efficiently','evoke','stimuli','accurate','unpleasant'];
+var vocabB_defs={A:'relating to the physical senses',B:'having a great effect on someone or something',C:'a specialised cell or protein that detects specific stimuli',D:'to give a large amount of time or effort to something',E:'made weaker or less concentrated',F:'in a way that is closely and deeply connected',G:'based on logic and reason rather than emotion',H:'aware of and responding to one\'s surroundings',I:'the quality of being exact and accurate',J:'relating to the sense of smell',K:'achieving maximum productivity with minimum wasted effort',L:'to bring a feeling, memory, or image into the mind',M:'things that cause a response in a person or organ',N:'correct in all details; free from error',O:'causing discomfort or displeasure'};
+var vocabB_ans={1:'A',2:'B',3:'C',4:'D',5:'E',6:'F',7:'G',8:'H',9:'I',10:'J',11:'K',12:'L',13:'M',14:'N',15:'O'};
+(function buildVB(){var wrap=document.getElementById('vocabB-list');var letters=Object.keys(vocabB_defs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr" style="margin-bottom:12px;">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vocabB_defs[l]+'<br>';});html+='</p>';vocabB_words.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="vb'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById('vb'+j);if(sel&&sel.value===vocabB_ans[j])rB++;}alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');document.getElementById('ansKey1Body').innerHTML='<b>A:</b><br>'+Object.keys(VA_ans).map(function(n){return n+'. '+VA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>B:</b><br>'+vocabB_words.map(function(w,i){return (i+1)+'. '+vocabB_ans[i+1];}).join(' &nbsp;•&nbsp; ');document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var miniReading=[{n:1,statement:'Smell signals pass through the thalamus before reaching the brain\'s emotional centres.',tf:'False'},{n:2,statement:'The olfactory bulb connects directly to both the amygdala and the hippocampus.',tf:'True'},{n:3,statement:'Scent-triggered emotional reactions always occur after the conscious mind has identified the smell.',tf:'False'},{n:4,statement:'The amygdala is responsible for memory consolidation, while the hippocampus processes emotion.',tf:'False'},{n:5,statement:'Research suggests that the brain can physically change in response to olfactory training.',tf:'True'}];
+(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5PrepWords=['a character','pace','a sequel','to set','a poster','special effects','to cast','the plot'];
+var t5PrepAns={1:'B',2:'G',3:'A',4:'D',5:'E',6:'H',7:'F',8:'C'};
+(function buildT5Prep(){var wrap=document.getElementById('t5PrepList');var letters=['A','B','C','D','E','F','G','H'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t5PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t5p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+var t5GroupItems=[{desc:'is the second in the story',ans:'First film'},{desc:'was what the reviewer expected',ans:'First film'},{desc:'has unrealistic characters',ans:'First film'},{desc:'The reviewer hated it.',ans:'First film'},{desc:'is a story a lot of people already know',ans:'Second film'},{desc:'was better than the reviewer expected',ans:'Second film'},{desc:'The reviewer felt sympathetic towards the characters.',ans:'Second film'},{desc:'made the reviewer feel like a child again',ans:'Second film'}];
+(function buildT5Group(){var wrap=document.getElementById('t5GroupList');var optHtml='<option value="">-- Select --</option><option value="First film">First film</option><option value="Second film">Second film</option>';var html='';t5GroupItems.forEach(function(item,idx){html+='<div class="q-text" style="margin-bottom:8px;">"'+item.desc+'" &rarr; <select class="fill" id="t5g'+idx+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+var t5TFData=[{n:1,statement:"The reviewer didn't think she was going to enjoy the first film.",tf:'True'},{n:2,statement:"The first scene of the first film is important for the rest of the film.",tf:'False'},{n:3,statement:"The reviewer was glad the first film was set in a different country.",tf:'False'},{n:4,statement:"There is another sequel planned for the first film.",tf:'False'},{n:5,statement:"The reviewer had some doubts about the actors who were chosen for the second film.",tf:'True'},{n:6,statement:"The second film made the reviewer think about her children.",tf:'False'}];
+(function buildT5TF(){var wrap=document.getElementById('t5TFList');var html='';t5TFData.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="t5tf'+q.n+'" value="True"> True</label><label><input type="radio" name="t5tf'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML=html;})();
+
+function checkTask5(){
+  var rPrep=0,rGroup=0,rTF=0;
+  for(var i=1;i<=8;i++){var sel=document.getElementById('t5p'+i);if(sel&&sel.value===t5PrepAns[i])rPrep++;}
+  t5GroupItems.forEach(function(item,idx){var sel=document.getElementById('t5g'+idx);if(sel&&sel.value===item.ans)rGroup++;});
+  t5TFData.forEach(function(q){var chosen=document.querySelector('input[name="t5tf'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)rTF++;});
+  alert('Prep: '+rPrep+'/8\nTask 1 grouping: '+rGroup+'/8\nTask 2 T/F: '+rTF+'/6');
+  document.getElementById('ansKey5Body').innerHTML='<b>Prep:</b> 1-b 2-g 3-a 4-d 5-e 6-h 7-f 8-c<br><br><b>Task 1:</b><br>First film: is the second in the story / was what the reviewer expected / has unrealistic characters / The reviewer hated it.<br>Second film: is a story a lot of people already know / was better than the reviewer expected / The reviewer felt sympathetic towards the characters / made the reviewer feel like a child again<br><br><b>Task 2:</b> 1-T 2-F 3-F 4-F 5-T 6-F';
+  document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();
+}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[{n:1,q:"According to the video, how many days a year does the average office worker spend in meetings they believe are pointless?",opts:["17 days","21 days","27 days","37 days"],ans:"C"},{n:2,q:"What is the first piece of advice for making meetings more effective?",opts:["Keep meetings short.","Preparation is key.","Always meet online.","Serve refreshments."],ans:"B"},{n:3,q:"What should a meeting chair send before the meeting?",opts:["A recording of the previous meeting","An agenda and possibly a question in advance","A list of everyone's phone numbers","A detailed financial report"],ans:"B"},{n:4,q:"Why should introverted participants be asked in advance to contribute?",opts:["To make the meeting longer","So they can prepare what they want to say","To reduce the number of attendees","To avoid asking questions"],ans:"B"},{n:5,q:"What advice from Sheryl Sandberg is mentioned?",opts:["Speak only at the end of the meeting.","Never interrupt others.","Say something early in the meeting to establish your presence.","Always volunteer to chair meetings."],ans:"C"},{n:6,q:"According to the video, which type of meeting is often less effective?",opts:["Face-to-face meetings","Online meetings","Hybrid meetings","Team-building meetings"],ans:"C"},{n:7,q:"What can a few moments of mindfulness at the beginning of a meeting help improve?",opts:["Attendance","Stress levels and creativity","Internet speed","Budget planning"],ans:"B"},{n:8,q:"Why is it recommended to finish meetings before the hour?",opts:["To save electricity","To avoid traffic","To give people time before their next meeting","To reduce paperwork"],ans:"C"},{n:9,q:"What does the video suggest providing during longer meetings?",opts:["Extra presentations","Tea breaks or short breathers","More action points","Background music"],ans:"B"},{n:10,q:"What should the meeting chair do after the meeting?",opts:["Schedule another meeting immediately","Delete all notes","Thank participants and send action points","Ask everyone to vote again"],ans:"C"}];
+(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+var vidGapData=[{n:1,t:"Many employees believe they spend too much time in ___ meetings.",ans:"pointless"},{n:2,t:"The speaker says ___ is the key to a successful meeting.",ans:"preparation"},{n:3,t:"A meeting chair should send an ___ before the meeting.",ans:"agenda"},{n:4,t:"Asking a question in advance helps people start ___ more quickly.",ans:"participating"},{n:5,t:"Good meeting leaders should prevent ___ from dominating the discussion.",ans:"extroverts"},{n:6,t:"More ___ participants should also be encouraged to share their ideas.",ans:"introverted"},{n:7,t:"Speaking early helps establish your voice and ___.",ans:"presence"},{n:8,t:"Research suggests ___ meetings are often less effective.",ans:"hybrid"},{n:9,t:"A few moments of ___ can reduce stress.",ans:"mindfulness"},{n:10,t:"It may also increase ___.",ans:"creativity"},{n:11,t:"Brain scans show that back-to-back meetings make people less ___.",ans:"productive"},{n:12,t:"Short ___ can help if a meeting becomes stressful.",ans:"breathers"},{n:13,t:"If possible, provide ___ during in-person meetings.",ans:"refreshments"},{n:14,t:"The chair should ___ time for following up after the meeting.",ans:"allocate"},{n:15,t:"Meeting notes should include clear ___ points.",ans:"action"}];
+(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+var vidMatchData=[{n:1,term:"pointless",ans:"C"},{n:2,term:"agenda",ans:"A"},{n:3,term:"chair",ans:"B"},{n:4,term:"participant",ans:"D"},{n:5,term:"extrovert",ans:"E"},{n:6,term:"introvert",ans:"F"},{n:7,term:"hybrid",ans:"G"},{n:8,term:"mindfulness",ans:"H"},{n:9,term:"creativity",ans:"I"},{n:10,term:"overrun",ans:"J"},{n:11,term:"productive",ans:"K"},{n:12,term:"breather",ans:"L"},{n:13,term:"refreshments",ans:"M"},{n:14,term:"allocate",ans:"N"},{n:15,term:"follow up",ans:"O"}];
+var vidMatchDefs={A:"a list of topics to be discussed in a meeting",B:"someone who leads or manages a meeting",C:"having no useful purpose",D:"a person who takes part in something",E:"someone who is confident and enjoys social interaction",F:"someone who is quieter and prefers less social interaction",G:"a combination of online and face-to-face participation",H:"focusing your attention calmly on the present moment",I:"the ability to produce original ideas",J:"to continue longer than planned",K:"able to achieve a lot of useful work",L:"a short break or period of rest",M:"light food and drinks served at an event",N:"to set aside or assign something for a particular purpose",O:"to take further action after an event or meeting"};
+(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkVideoTask(){var rMcq=0,rGap=0,rMatch=0;vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> '+vidMcqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><b>Gap:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><b>Match:</b> '+vidMatchData.map(function(m){return m.n+'.'+m.ans;}).join(' ');document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:'saving',2:'debt',3:'pay',4:'loans',5:'lottery',6:'off',7:'borrowed',8:'£2,200',9:'ends',10:'arrears',11:'expenses',12:'repaid',13:'never',14:'strain',15:'disconnected',16:'payments',17:'stress',18:'£2,200',19:'£4,232',20:'borrowed',21:'repay',22:'meet',23:'arrears',24:'payments',25:'strain',26:'out',27:'sociologist',28:'life',29:'debt',30:'stress'};
+var dictLines=[{sp:'Pippa',t:"Are you good at {1} money, Neil? Or do you like to spend it?"},{sp:'Pippa',t:"Whether you're a saver or a spender, being in {2} is common in the UK. Debt refers to money a person has borrowed and has to {3} back."},{sp:'Jason',t:"Whatever jobs there are aren't enough to provide for a family. Sometimes you need to take out {4}. I've done it a few times, but you can't ever pay it back. You can't see a way out other than winning the {5} or something. I'd like to think I could clear them all one day, even if it means five years paying them {6}."},{sp:'Neil',t:"Jason uses three phrases — pay back, pay off, and clear debt — which all mean to give back the money you've {7}."},{sp:'Pippa',t:"I'll say {8}."},{sp:'Ryan Davey',t:"My approach was to let people know that I was interested in learning about their lives and how they were making {9} meet. For many people in Woldham, debt was an ordinary feature of daily life. Beyond that, being in {10} was also part of daily life."},{sp:'Pippa',t:"To make ends meet means having just enough money to pay for basic living {11}."},{sp:'Neil',t:"If someone is in arrears, they still owe money that should already have been {12}."},{sp:'Ryan Davey',t:"Jason fluctuated between wanting to clear all of his debts and living on the {13}-never. Over the months I knew him, the financial {14} on him and his partner increased. They missed some bills and their internet was {15}."},{sp:'Neil',t:"Living on the never-never means buying things by making small regular {16} over a long period of time."},{sp:'Pippa',t:"Financial strain means emotional {17} caused by not having enough money."},{sp:'Pippa',t:"I guessed {18}."},{sp:'Neil',t:"The correct answer was approximately {19}."},{sp:'Neil',t:"Debt is money someone has {20} and needs to pay back."},{sp:'Pippa',t:"The phrases pay back, pay off, and clear a debt all mean to {21} borrowed money."},{sp:'Neil',t:"If you are making ends {22}, you have just enough money for basic living expenses."},{sp:'Pippa',t:"If you are in {23}, you still owe money that should already have been paid."},{sp:'Neil',t:"Buying something on the never-never means paying in small regular {24}."},{sp:'Pippa',t:"Financial {25} is emotional stress caused by money problems."},{sp:'Neil',t:"Jason couldn't see a way {26} of debt."},{sp:'Pippa',t:"Ryan Davey is a {27} who studied people living in a low-income housing estate."},{sp:'Neil',t:"Debt can become a normal feature of daily {28}."},{sp:'Pippa',t:"Support groups can help people who are struggling with {29}."},{sp:'Neil',t:"The programme reminds us that managing money carefully can reduce financial {30}."}];
+(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
+var compData=[{n:1,q:"According to the programme, what does debt mean?",opts:["Money you earn from work","Money you save for the future","Money you have borrowed and must repay","Money you give to charity"],ans:"C"},{n:2,q:"What does the phrase make ends meet mean?",opts:["Save as much money as possible","Earn a high salary","Have just enough money to cover basic living costs","Invest in a business"],ans:"C"},{n:3,q:"What does it mean if someone is in arrears?",opts:["They have paid all their bills early.","They still owe money that should already have been paid.","They have received a salary increase.","They have opened a new bank account."],ans:"B"},{n:4,q:"What is meant by buying something on the never-never?",opts:["Paying for something in cash immediately","Borrowing something from a friend","Buying something through small regular payments over a long period","Receiving something for free"],ans:"C"},{n:5,q:"Why did Jason experience financial strain?",opts:["He was saving too much money.","He had inherited a large amount of debt.","He struggled to repay debts and cover basic living expenses.","He was spending money on expensive holidays."],ans:"C"}];
+(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+function checkPodcast(){var rDict=0,rComp=0;Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');document.getElementById('ansKey7Body').innerHTML='<b>Dict:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comp:</b> '+compData.map(function(q){return q.n+'.'+q.ans;}).join(' ');document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkPodcast=checkPodcast;
+
+/* ===== TASK 8 ===== */
+var t8PrepWords=['to make an assumption','to get on the same page','to commit','to do overtime','to feel awkward','capacity','a virtual team','a rough patch'];
+var t8PrepAns={1:'B',2:'D',3:'F',4:'G',5:'A',6:'H',7:'C',8:'E'};
+(function buildT8Prep(){var wrap=document.getElementById('t8PrepList');var letters=['A','B','C','D','E','F','G','H'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t8PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t8p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+var t8TFData=[{n:1,statement:"Speaker A wanted to show respect by shaking somebody's hand.",tf:'True'},{n:2,statement:"Speaker A recommends always greeting people in the same way, no matter where you are.",tf:'False'},{n:3,statement:"For Speaker B, working in a virtual team is not so different from working in the same location.",tf:'False'},{n:4,statement:"Creating a team charter helped Speaker B's team to avoid misunderstandings and confusion.",tf:'True'},{n:5,statement:"Speaker C says the SMART acronym for goal setting stands for: Specific, Measurable, Achievable, Relevant and Timely.",tf:'True'},{n:6,statement:"If you're feeling stressed, Speaker C recommends just dropping the tasks that are overloading you.",tf:'False'},{n:7,statement:"According to Speaker D, flights at the end of each day have a higher chance of being delayed.",tf:'True'},{n:8,statement:"Speaker D suggests taking your time if your flight is cancelled, since the airline will have to rebook you on another flight anyway.",tf:'False'}];
+(function buildT8TF(){var wrap=document.getElementById('t8TFList');var html='';t8TFData.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="t8tf'+q.n+'" value="True"> True</label><label><input type="radio" name="t8tf'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML=html;})();
+
+var t8McqData=[{n:1,q:"How did Speaker A feel during the meeting?",opts:["offended","disappointed","unsure about what to do"],ans:"C"},{n:2,q:"How has Speaker A responded to this experience?",opts:["He has decided to copy the other man's way of greeting people.","He has reflected on it and realised something.","He has researched different ways of greeting people."],ans:"B"},{n:3,q:"How did Speaker B feel about the international project?",opts:["It was an entirely negative experience.","It was exhausting, but there were positives too.","It was challenging, but there were positives too."],ans:"C"},{n:4,q:"How does Speaker B feel now about working on international projects?",opts:["She would like to do it again in the future.","She wouldn't like to do it again.","She isn't sure whether it would be a positive or a negative experience."],ans:"A"},{n:5,q:"How did Speaker C feel during his difficult time at work?",opts:["stressed","embarrassed","calm"],ans:"A"},{n:6,q:"How does Speaker C feel now?",opts:["still overloaded","ready for a break","more in control"],ans:"C"},{n:7,q:"What did Speaker D do when the flight was cancelled?",opts:["She took time to consider her options.","She acted quickly.","She asked for someone's advice."],ans:"B"},{n:8,q:"How does Speaker D feel about what happened?",opts:["fortunate","annoyed","furious"],ans:"A"}];
+(function buildT8Mcq(){var wrap=document.getElementById('t8McqList');var html='';t8McqData.forEach(function(q){html+='<div class="q-block" id="t8mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t8m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+
+function checkTask8(){
+  var rPrep=0,rTF=0,rMcq=0;
+  for(var i=1;i<=8;i++){var sel=document.getElementById('t8p'+i);if(sel&&sel.value===t8PrepAns[i])rPrep++;}
+  t8TFData.forEach(function(q){var chosen=document.querySelector('input[name="t8tf'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)rTF++;});
+  t8McqData.forEach(function(q){var chosen=document.querySelector('input[name="t8m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t8mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  alert('Prep: '+rPrep+'/8\nTask 1 T/F: '+rTF+'/8\nTask 2: '+rMcq+'/8');
+  document.getElementById('ansKey8Body').innerHTML='<b>Prep:</b> 1-B 2-D 3-F 4-G 5-A 6-H 7-C 8-E<br><b>Task 1:</b> 1-T 2-F 3-F 4-T 5-T 6-F 7-T 8-F<br><b>Task 2:</b> '+t8McqData.map(function(q){return q.n+'.'+q.ans;}).join(' ');
+  document.getElementById('ansKey8').classList.add('show');checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+
+/* ===== PERSISTENT HIGHLIGHT ===== */
+(function(){
+  var HL_KEY='sprint4_hl_day11';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+})();
+</script>
+</body>
+</html>
