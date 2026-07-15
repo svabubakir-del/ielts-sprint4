@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — The Hidden Machinery of the Olfactory System</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.7;}
+  .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+  .topbar a{color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;}.topbar a:hover{text-decoration:underline;}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+  .kicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-size:12.5px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+  h1{font-size:32px;margin:0 0 8px;line-height:1.2;}
+  .byline{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:14px;margin-bottom:30px;}
+  .lede{font-size:18px;color:#333;margin-bottom:28px;}
+  p{margin:0 0 18px;font-size:17px;}
+  h2{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:22px;margin:36px 0 14px;color:var(--accent-dark);border-bottom:2px solid var(--border);padding-bottom:8px;}
+  .diagram{background:#f0f4f5;border:1px solid var(--border);border-radius:8px;padding:16px 20px;font-family:monospace;font-size:13px;margin:20px 0;color:var(--accent-dark);line-height:2;white-space:pre-wrap;}
+  ol,ul{margin:0 0 18px;font-size:16.5px;line-height:1.9;padding-left:22px;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14.5px;}
+  th,td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:#eef3f4;font-weight:700;}
+  td.term{font-weight:700;color:var(--accent-dark);}
+  .qs-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-top:36px;}
+  .qs-section h2{border:none;margin-top:0;padding-bottom:0;}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .q-block{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;}
+  .q-text{font-size:15px;margin-bottom:8px;}
+  .opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}
+  .opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 8px;width:180px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}
+  input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}.btn:hover{background:var(--accent-dark);}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:10px 14px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+  .answer-key summary::-webkit-details-marker{display:none;}
+  .answer-key-body{padding:12px 16px;background:#fff;font-size:14px;line-height:1.8;}
+  .footer-note{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:13px;margin-top:50px;border-top:1px solid var(--border);padding-top:16px;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<div class="topbar"><a href="javascript:window.close()">← Back to Day 11</a></div>
+<div class="wrap">
+  <div class="kicker">Background Reading // Neuroscience &amp; Sensory Biology</div>
+  <h1>The Hidden Machinery of the Olfactory System</h1>
+  <div class="byline">Prepared for IELTS Sprint4 — Day 11</div>
+
+  <p class="lede">For centuries, human beings have regarded the sense of smell as an evolutionary afterthought. Modern neurobiology is now completely overturning this dismissive view.</p>
+
+  <p>While we rely heavily on our eyes to navigate urban terrain and our ears to process complex linguistic communication, our noses seem relegated to the simple detection of a morning coffee or a hazardous gas leak. This cultural and scientific bias dates back to the 19th century, when early neurologists argued that as the human brain evolved to accommodate advanced reasoning and vision, the physical neural structures dedicated to smell shrank into evolutionary insignificance. However, by studying how scent signals bypass our conscious thoughts, how they connect directly to our emotional survival systems, and how they physically shape our brains, researchers are discovering that smell is actually our most structurally powerful, influential, and ancient sensory system.</p>
+
+  <h2>The Evolutionary Legacy of the Primitive Brain</h2>
+  <p>To understand why smell is so structurally unique, we must look at the physical pathway that a scent molecule takes once it enters the human nose. Every other sensory input — vision, hearing, and touch — must travel through a central relay station in the brain known as the thalamus. The thalamus acts like a neurological gatekeeper: it receives raw sensory signals, filters them for relevance, and only forwards them to the conscious cerebral cortex once it has processed the data. This is why you can "ignore" the physical sensation of your clothes touching your skin or the background hum of an air conditioner.</p>
+  <p>The sense of smell, however, bypasses this gatekeeper completely. When you inhale volatile chemical molecules (odorants), they bind to specialised receptor proteins located on the olfactory epithelium at the very top of your nasal cavity. These receptors instantly convert the chemical signal into electrical impulses that travel directly along the olfactory nerve into the olfactory bulb. From there, the signal is sent directly into two of the most primitive, deep-seated structures of the human brain:</p>
+  <ol>
+    <li><strong>The Amygdala:</strong> The brain's primary centre for processing raw emotion, fear, and survival instincts.</li>
+    <li><strong>The Hippocampus:</strong> The structure responsible for consolidating new experiences into long-term memories.</li>
+  </ol>
+
+  <div class="diagram">[Inhaled Odorants] ──> [Olfactory Epithelium] ──> [Olfactory Bulb]
+                                                       │
+                              ┌────────────────────────┴─────────────────────┐
+                              ▼                                               ▼
+                        [Amygdala]                                    [Hippocampus]
+                 (Immediate Emotion &amp; Fear)                   (Memory Consolidation)</div>
+
+  <p>Because smell has a direct, unfiltered connection to these emotional structures without passing through the conscious thalamus, scents can trigger immediate, intense emotional and physiological reactions before your conscious mind even registers what you are smelling. If you smell smoke, your heart rate spikes and your adrenaline flows before your conscious brain can identify the exact source of the fire.</p>
+
+  <h2>The Proustian Phenomenon: Scent and Autobiographical Memory</h2>
+  <p>This unique anatomical shortcut explains a famous psychological occurrence known as the <strong>Proustian Phenomenon</strong> (named after the French writer Marcel Proust, who wrote about how a bite of a tea-soaked Madeleine cake instantly unleashed a flood of vivid, emotional childhood memories). When scientists compare memories triggered by visual images or sounds to those triggered by unique scents, they find distinct differences:</p>
+  <ul>
+    <li><strong>Visual/Auditory Memories:</strong> These tend to be highly structured, detailed, and factual. You can recall the exact date, the names of the people present, and what they were wearing.</li>
+    <li><strong>Olfactory Memories:</strong> These are often less detailed in terms of facts, but they are incredibly rich in emotional intensity. A specific scent does not just make you remember a childhood kitchen; it makes you feel the exact sense of safety, warmth, or anxiety you experienced decades ago.</li>
+  </ul>
+  <p>From an evolutionary standpoint, this emotional connection was a vital survival mechanism. If an early human encountered a toxic plant, a dangerous predator, or a contaminated water source, associating that specific chemical scent with an immediate, intense feeling of disgust or fear ensured they would avoid it in the future. Furthermore, neurological research shows that the very first time our brain associates a novel smell with a specific object, it creates an exceptionally deep neural pathway. This "first-impression" mapping is far more permanent than subsequent exposures, which is why childhood scents remain emotionally potent even in late adulthood.</p>
+
+  <h2>Neuroplasticity and the Trained Nose</h2>
+  <p>Another major breakthrough in olfactory science is the discovery of neuroplasticity within our smelling centres. For a long time, scientists believed that brain structures were completely fixed in adulthood. However, studies on master perfumers and wine sommeliers show that the human brain can physically reorganise itself through olfactory training.</p>
+
+  <div class="diagram">[Daily Olfactory Training] ──> [Increased Neural Density in Olfactory Cortex] ──> [Enhanced Structural Brain Volume]</div>
+
+  <p>When an individual actively practises identifying, naming, and categorising subtle, complex mixtures of scents over several years, the physical volume of their olfactory cortex increases. The brain grows more grey matter and establishes denser neural connections to process these incoming signals more efficiently. This proves that our apparent lack of sensitivity to smell is not a permanent biological limitation, but rather a lack of conscious attention and training.</p>
+
+  <h2>Vocabulary Glossary</h2>
+  <table>
+    <tr><th>Word</th><th>Definition</th><th>Example</th></tr>
+    <tr><td class="term">sensory</td><td>Relating to the physical senses: sight, sound, smell, taste, and touch.</td><td>The olfactory system is a powerful sensory pathway.</td></tr>
+    <tr><td class="term">influential</td><td>Having a great effect on someone or something.</td><td>Smell is arguably our most influential and ancient sensory system.</td></tr>
+    <tr><td class="term">anatomist</td><td>A scientist who studies the structure of living organisms.</td><td>Early anatomists underestimated the complexity of the olfactory system.</td></tr>
+    <tr><td class="term">redundant</td><td>No longer needed or useful; superfluous.</td><td>The sense of smell was once considered biologically redundant in modern humans.</td></tr>
+    <tr><td class="term">receptor</td><td>A specialised cell or protein that detects and responds to specific stimuli.</td><td>Olfactory receptor proteins bind to airborne chemical molecules in the nasal cavity.</td></tr>
+    <tr><td class="term">devote</td><td>To give a large amount of time, effort, or resources to something.</td><td>Master perfumers devote years to training their sense of smell.</td></tr>
+    <tr><td class="term">diluted</td><td>Made weaker or less concentrated by adding another substance.</td><td>Even highly diluted scent molecules can trigger vivid emotional memories.</td></tr>
+    <tr><td class="term">intimately</td><td>In a way that is closely and deeply connected.</td><td>The olfactory system is intimately linked to the brain's emotional centres.</td></tr>
+    <tr><td class="term">cognitive</td><td>Relating to thought, memory, reasoning, and other mental processes.</td><td>Scent-triggered memories have a unique cognitive and emotional quality.</td></tr>
+    <tr><td class="term">rational</td><td>Based on logic and reason rather than emotion.</td><td>Smell bypasses the rational cortex and connects directly to emotional structures.</td></tr>
+    <tr><td class="term">conscious</td><td>Aware of and responding to one's surroundings; awake and alert.</td><td>Scents trigger reactions before our conscious mind identifies the source.</td></tr>
+    <tr><td class="term">precision</td><td>The quality of being exact and accurate.</td><td>Trained sommeliers identify wine varieties with remarkable precision.</td></tr>
+    <tr><td class="term">capacity</td><td>The maximum amount that something can contain or the ability to do something.</td><td>The human nose has an extraordinary capacity for detecting subtle chemical differences.</td></tr>
+    <tr><td class="term">olfactory</td><td>Relating to the sense of smell.</td><td>The olfactory bulb connects directly to the amygdala and hippocampus.</td></tr>
+    <tr><td class="term">efficiently</td><td>In a way that achieves maximum productivity with minimum wasted effort.</td><td>The brain processes scent signals efficiently through direct neural pathways.</td></tr>
+    <tr><td class="term">evoke</td><td>To bring a feeling, memory, or image into the mind.</td><td>A single scent can evoke vivid memories from decades ago.</td></tr>
+    <tr><td class="term">stimuli</td><td>Things that cause a response in a person, animal, or organ.</td><td>Odorants are chemical stimuli that activate olfactory receptors.</td></tr>
+    <tr><td class="term">accurate</td><td>Correct in all details; precise and free from error.</td><td>Visual memories tend to be more factually accurate than olfactory ones.</td></tr>
+    <tr><td class="term">unpleasant</td><td>Causing discomfort, displeasure, or distress.</td><td>Early humans associated unpleasant smells with dangerous or toxic substances.</td></tr>
+    <tr><td class="term">evolutionary</td><td>Relating to the gradual development of organisms over long periods of time.</td><td>The deep link between smell and emotion has clear evolutionary advantages.</td></tr>
+  </table>
+
+  <!-- COMPREHENSION QUESTIONS -->
+  <div class="qs-section">
+    <h2>Comprehension Questions</h2>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:18px 0 8px;color:var(--accent-dark);">Academic Vocabulary Enhancement</h3>
+    <p class="instr">Find the words or phrases within the article that match the following formal definitions.</p>
+    <div class="q-block"><div class="q-text">1. (adj. — Paragraph 1): Left or pushed to a lower, less important position or rank.</div><input class="fill" id="vq1"></div>
+    <div class="q-block"><div class="q-text">2. (n. — Paragraph 2): Airborne chemical molecules that stimulate the sense of smell.</div><input class="fill" id="vq2"></div>
+    <div class="q-block"><div class="q-text">3. (v. — Paragraph 2): To combine, strengthen, or merge multiple elements into a single, stable whole.</div><input class="fill" id="vq3"></div>
+    <div class="q-block"><div class="q-text">4. (n. — Paragraph 5): The brain's ability to reorganise itself by forming new neural connections throughout life.</div><input class="fill" id="vq4"></div>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:24px 0 8px;color:var(--accent-dark);">Multiple Choice (Questions 1–4)</h3>
+    <p class="instr">Choose the correct letter, A, B, C or D.</p>
+    <div class="q-block" id="aq1Block"><div class="q-text">1. According to the article, how does the pathway of smell differ from that of other senses?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq1" value="A"> A) It requires physical contact with solid objects before being processed.</label><label class="opt-row" data-val="B"><input type="radio" name="aq1" value="B"> B) It completely bypasses the thalamus, routing directly to emotional centres.</label><label class="opt-row" data-val="C"><input type="radio" name="aq1" value="C"> C) It is processed exclusively by the logical cerebral cortex.</label><label class="opt-row" data-val="D"><input type="radio" name="aq1" value="D"> D) It travels through the spinal cord before reaching the brain.</label></div></div>
+    <div class="q-block" id="aq2Block"><div class="q-text">2. The "Proustian Phenomenon" refers to the scientific observation that scent-triggered memories are …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq2" value="A"> A) significantly more accurate and detailed than visual memories.</label><label class="opt-row" data-val="B"><input type="radio" name="aq2" value="B"> B) exceptionally emotional, even if they lack specific factual details.</label><label class="opt-row" data-val="C"><input type="radio" name="aq2" value="C"> C) only experienced by individuals with advanced musical training.</label><label class="opt-row" data-val="D"><input type="radio" name="aq2" value="D"> D) highly volatile and easily forgotten within a few seconds.</label></div></div>
+    <div class="q-block" id="aq3Block"><div class="q-text">3. From an evolutionary perspective, the strong link between smell and unpleasant emotions served to …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq3" value="A"> A) help early humans identify beautiful landscapes for settlement.</label><label class="opt-row" data-val="B"><input type="radio" name="aq3" value="B"> B) protect early humans by warning them of toxic or dangerous elements.</label><label class="opt-row" data-val="C"><input type="radio" name="aq3" value="C"> C) allow tribes to communicate silently over long distances.</label><label class="opt-row" data-val="D"><input type="radio" name="aq3" value="D"> D) encourage early humans to develop complex language systems.</label></div></div>
+    <div class="q-block" id="aq4Block"><div class="q-text">4. Studies on professional perfumers demonstrate that the human brain …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq4" value="A"> A) physically shrinks as a result of constant chemical exposure.</label><label class="opt-row" data-val="B"><input type="radio" name="aq4" value="B"> B) can physically adapt and grow denser neural networks through sensory practice.</label><label class="opt-row" data-val="C"><input type="radio" name="aq4" value="C"> C) is genetically incapable of distinguishing between more than ten smells.</label><label class="opt-row" data-val="D"><input type="radio" name="aq4" value="D"> D) processes visual data more slowly than auditory data.</label></div></div>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:24px 0 8px;color:var(--accent-dark);">Summary Completion (Questions 5–7)</h3>
+    <p class="instr">Complete the summary. Choose NO MORE THAN TWO WORDS from the article for each answer.</p>
+    <div style="background:#f7f8fa;border:1px solid var(--border);border-radius:8px;padding:16px 18px;line-height:2;font-size:15.5px;margin-bottom:14px;">
+      For generations, the human sense of smell was considered functionally unimportant. However, neurobiological research reveals that inhaled <input class="fill" id="aq5" style="width:140px;"> travel directly to primitive brain regions like the amygdala and the hippocampus. This direct connection explains why smells evoke highly <input class="fill" id="aq6" style="width:140px;"> memories of our past. Additionally, scientists now know that through training, the brain displays <input class="fill" id="aq7" style="width:180px;">, physically altering its structure to identify complex scents with greater precision.
+    </div>
+
+    <button class="btn" onclick="checkArticleComprehension()">Check answers</button>
+    <details class="answer-key" id="artAnsKey"><summary>Answer key</summary>
+      <div class="answer-key-body">
+        <b>Vocab finding:</b> 1. relegated &nbsp;•&nbsp; 2. odorants &nbsp;•&nbsp; 3. consolidating &nbsp;•&nbsp; 4. neuroplasticity<br>
+        <b>MCQ:</b> 1. B &nbsp;•&nbsp; 2. B &nbsp;•&nbsp; 3. B &nbsp;•&nbsp; 4. B<br>
+        <b>Summary:</b> 5. odorants &nbsp;•&nbsp; 6. emotional &nbsp;•&nbsp; 7. neuroplasticity
+      </div>
+    </details>
+  </div>
+
+  <div class="footer-note">Background Reading — IELTS Sprint4 Day 11 &nbsp;•&nbsp; Neuroscience &amp; Sensory Biology</div>
+</div>
+<script>
+var vocabAns={vq1:'relegated',vq2:'odorants',vq3:'consolidating',vq4:'neuroplasticity'};
+var mcqAns={aq1:'B',aq2:'B',aq3:'B',aq4:'B'};
+var sumAns={aq5:'odorants',aq6:'emotional',aq7:'neuroplasticity'};
+function checkArticleComprehension(){
+  var right=0,total=11;
+  Object.keys(vocabAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===vocabAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  Object.keys(mcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===mcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===mcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  Object.keys(sumAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===sumAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  alert('You got '+right+' / '+total+' correct.');
+  document.getElementById('artAnsKey').classList.add('show');
+}
+(function(){
+  var HL_KEY='sprint4_hl_art11';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+</script>
+</body>
+</html>
