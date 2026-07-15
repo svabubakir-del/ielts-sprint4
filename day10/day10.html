@@ -1,1 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 10</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text p{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  audio{width:100%;max-width:480px;}
+  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 10</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
 
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">starvation</span><span class="chip">scarcity</span><span class="chip">advent</span><span class="chip">subsistence</span><span class="chip">specialise</span><span class="chip">surplus</span><span class="chip">displaced</span><span class="chip">significance</span><span class="chip">inherently</span><span class="chip">unsustainable</span><span class="chip">paradoxically</span><span class="chip">fertilizer</span><span class="chip">congestion</span><span class="chip">obstruction</span><span class="chip">erosion</span><span class="chip">revert</span><span class="chip">abundant</span><span class="chip">depletion</span><span class="chip">sustainable</span><span class="chip">logistics</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Complete each sentence</h4><p class="instr">Complete each sentence with ONE word from the box.</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then decide if each statement is True or False.</p></div>
+  <div class="card">
+    <h3>Food, transport and vulnerability</h3>
+    <p class="passage-text">Modern food distribution systems depend on an intricate web of transport and supply chains that most consumers rarely consider. Before the development of efficient road and rail networks, food production was necessarily local: communities had to grow whatever their immediate environment could support, regardless of whether that land was well suited to a particular crop. The result was widespread vulnerability to local crop failures, which could quickly escalate into regional famines. The introduction of long-distance transportation networks in the nineteenth century transformed this picture dramatically, allowing regions to specialise in the crops best suited to their soil and climate, while importing other necessities from elsewhere. This not only reduced the frequency of famine but also allowed marginal farmland to be returned to its natural state, as food could now be sourced from more productive locations. However, critics argue that the reliance on global supply chains has created new forms of vulnerability, since disruptions — caused by pandemics, conflicts, or extreme weather — can now affect food security across entire continents simultaneously.</p>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions below.</p></div>
+  <div class="card"><h3>The Great Horse Manure Crisis</h3><p class="instr">A background reading on the ecological reality of 19th-century cities, the 1898 planning conference, and why petrol power was celebrated as a green revolution — with a full vocabulary glossary.</p><a class="btn link-out" href="article-day-10.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check" onchange="revealArticleQs()"><label for="t3check">I have read the article</label></div>
+  <div id="articleQs" style="display:none;margin-top:18px;">
+    <div class="card">
+      <h4>Section 1 — True / False</h4>
+      <div class="q-block"><div class="q-text">1. In 1880, London's streets were used by more than 300,000 horses.</div><div class="tf-toggle"><label><input type="radio" name="aq1" value="True"> True</label><label><input type="radio" name="aq1" value="False"> False</label></div></div>
+      <div class="q-block"><div class="q-text">2. The average working life of a streetcar horse was typically more than five years.</div><div class="tf-toggle"><label><input type="radio" name="aq2" value="True"> True</label><label><input type="radio" name="aq2" value="False"> False</label></div></div>
+      <div class="q-block"><div class="q-text">3. By the early 20th century, approximately 25% of all US agricultural land was used to grow feed for draft animals.</div><div class="tf-toggle"><label><input type="radio" name="aq3" value="True"> True</label><label><input type="radio" name="aq3" value="False"> False</label></div></div>
+      <div class="q-block"><div class="q-text">4. The article states that early automobiles were completely pollution-free.</div><div class="tf-toggle"><label><input type="radio" name="aq4" value="True"> True</label><label><input type="radio" name="aq4" value="False"> False</label></div></div>
+      <div class="q-block"><div class="q-text">5. According to the article, the transition to petroleum power was initially celebrated as an environmental improvement.</div><div class="tf-toggle"><label><input type="radio" name="aq5" value="True"> True</label><label><input type="radio" name="aq5" value="False"> False</label></div></div>
+    </div>
+    <div class="card">
+      <h4>Section 2 — Short answer (no more than three words from the article)</h4>
+      <div class="passage-text">
+        <p>6. Approximately how much manure did each horse produce per day?<br><input class="fill" id="aq6"></p>
+        <p>7. In which city did the world's first international urban planning conference take place?<br><input class="fill" id="aq7"></p>
+        <p>8. By how much did France's forest area expand between 1830 and 1960, according to the article?<br><input class="fill short" id="aq8"></p>
+        <p>9. What happened to former hay fields once horses were replaced by cars?<br><input class="fill" id="aq9"></p>
+      </div>
+    </div>
+    <div class="check-row"><button class="btn secondary" onclick="checkArticleQs()">Check answers</button></div>
+    <details class="answer-key" id="ansKey3"><summary>Answer key</summary><div class="answer-key-body" id="ansKey3Body"></div></details>
+  </div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_10.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 14 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task — Study Group</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
+  <div class="card">
+    <h4>Preparation task — Match vocabulary to definitions</h4>
+    <div class="wordbank"><span class="chip">a. a piece of work given to someone, normally as part of their studies or job</span><span class="chip">b. an agreement where people reduce what they're asking for in order to agree</span><span class="chip">c. an informal expression used to give someone permission to start</span><span class="chip">d. irritated, angry</span><span class="chip">e. to learn something so that you can say it from memory</span><span class="chip">f. a manager of a public discussion</span></div>
+    <div id="t5PrepList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Task 1 — Circle the best answer</h4><div id="t5McqList"></div></div>
+  <div class="card">
+    <h4>Task 2 — Match the "way" expressions (1–5) with their meanings (a–e)</h4>
+    <div class="wordbank"><span class="chip">a. it's impossible</span><span class="chip">b. make something possible</span><span class="chip">c. leave</span><span class="chip">d. very much</span><span class="chip">e. a long time from now</span></div>
+    <div id="t5WayList" style="margin-top:10px;"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — Are Zoos Good or Bad?</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
+  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/aQDYxTCIVRE" title="Are Zoos Good or Bad?" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+  <div class="card"><h4>Part 2 — Gap fill</h4>
+    <div class="wordbank"><span class="chip">recognition</span><span class="chip">barren</span><span class="chip">specimen</span><span class="chip">intelligence</span><span class="chip">conservation</span><span class="chip">captivity</span><span class="chip">extinction</span><span class="chip">legislation</span><span class="chip">welfare</span><span class="chip">revenue</span><span class="chip">documentary</span><span class="chip">virtual</span><span class="chip">sustainable</span><span class="chip">habitat</span><span class="chip">insurance</span></div>
+    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+  </div>
+  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — The Polyglot Brain</h2></div>
+  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening test</h2><p class="task-sub">Open the test in a new tab, complete it, then come back and tick the box. The walkthrough video will appear below.</p></div>
+  <div class="card"><a class="btn link-out" href="Listening-10.html" target="_blank" rel="noopener">🎧 Open full listening test</a></div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t8check" onchange="revealListeningWalkthrough()"><label for="t8check">I have completed the full listening test</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After finishing, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
+  <div id="listeningWalkthrough" style="display:none;margin-top:18px;">
+    <div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
+      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/kbDvDLkUdyQ" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+    </div>
+  </div>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 10 of 30</div>
+  <h1>Congratulations — Day 10 complete! 🎉</h1>
+  <p>All 8 tasks done. You've completed the first 10 days!</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=10,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+var STATE_KEY='sprint4_day10_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(/^aq/.test(id))return 3;
+  if(id==='t4score'||id==='t4check')return 4;if(/^t5p|^t5m|^t5w/.test(id))return 5;
+  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;
+  if(id==='t8score'||id==='t8check')return 8;return 1;
+}
+function hookAutosave(){document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k='sprint4_day10_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
+var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);if(n===8){var cb=document.getElementById('t8check');return cb&&cb.checked;}var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}return true;}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
+function revealListeningWalkthrough(){var cb=document.getElementById('t8check');var wt=document.getElementById('listeningWalkthrough');if(cb&&cb.checked&&wt)wt.style.display='block';refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var vocabA_segs=['In the centuries before modern transportation, many communities faced periodic','/*1*/','The','/*2*/','of food during lean seasons forced families to make difficult choices. The','/*3*/','of coal-powered railways changed everything. Before the railways, most people lived as','/*4*/','farmers, growing only what they needed to survive. Once transport improved, farmers could','/*5*/','in a single crop, producing a','/*6*/','that could be sold or traded across great distances. Millions of people were','/*7*/','from the countryside as cities grew. Few grasped the true','/*8*/','of this transformation. Urban life was','/*9*/','difficult — the cities of the 19th century were filthy, noisy, and dangerous. The reliance on horses proved','/*10*/','and','/*11*/','the invention of the petrol engine was initially celebrated as an environmental salvation rather than a disaster. Before tractors arrived, farmers relied on manure as a','/*12*/','to replenish soil. But in cities, horse manure created terrible','/*13*/','and every collapsed horse became an','/*14*/','blocking the road. Heavy farming on poor soils caused severe','/*15*/','When land was no longer needed for agriculture, it could','/*16*/','to its natural state. Water, once scarce in some regions, became more','/*17*/','thanks to better distribution networks. The','/*18*/','of natural resources that had seemed inevitable was gradually reversed. Today, we recognise that truly','/*19*/','farming must balance productivity with environmental care. Modern','/*20*/','systems — the networks that move food around the world — are what make this possible.'];
+var vocabA_ans={1:'starvation',2:'scarcity',3:'advent',4:'subsistence',5:'specialise',6:'surplus',7:'displaced',8:'significance',9:'inherently',10:'unsustainable',11:'paradoxically',12:'fertilizer',13:'congestion',14:'obstruction',15:'erosion',16:'revert',17:'abundant',18:'depletion',19:'sustainable',20:'logistics'};
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;vocabA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB=[
+  {n:1,t:'The ___ of the printing press changed communication forever.',ans:'advent'},
+  {n:2,t:'Nomadic peoples were ___ from their traditional lands by new settlers.',ans:'displaced'},
+  {n:3,t:'The historical ___ of the transport revolution is often overlooked.',ans:'significance'},
+  {n:4,t:'Large cities are ___ dependent on complex supply chains.',ans:'inherently'},
+  {n:5,t:'Continued reliance on fossil fuels is widely considered ___.',ans:'unsustainable'},
+  {n:6,t:'___, the introduction of the car was first seen as a clean, green solution.',ans:'Paradoxically'},
+  {n:7,t:'Nitrogen-based ___ dramatically increased crop yields in the 20th century.',ans:'fertilizer'},
+  {n:8,t:'Traffic ___ in major cities costs billions of dollars each year.',ans:'congestion'},
+  {n:9,t:'A fallen tree across the road was a serious ___ to emergency vehicles.',ans:'obstruction'},
+  {n:10,t:'Coastal ___ threatens to destroy many historic sites.',ans:'erosion'},
+  {n:11,t:'Once farming ceases, fields can gradually ___ to their natural state.',ans:'revert'},
+  {n:12,t:'The region has ___ rainfall, making it ideal for agriculture.',ans:'abundant'},
+  {n:13,t:'The ___ of fish stocks threatens the livelihoods of coastal communities.',ans:'depletion'},
+  {n:14,t:'___ agriculture aims to produce food without harming the environment.',ans:'Sustainable'},
+  {n:15,t:'Efficient ___ are essential for delivering humanitarian aid to remote areas.',ans:'logistics'}
+];
+(function buildVB(){var wrap=document.getElementById('vocabB-list');var html='';vocabB.forEach(function(s){html+='<p>'+s.n+'. '+s.t.replace('___','<input class="fill short" id="vb'+s.n+'">')+'</p>';});wrap.innerHTML=html;})();
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);var ok=inp.value.trim().toLowerCase()===vocabA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}var rB=0;vocabB.forEach(function(s){var inp=document.getElementById('vb'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');document.getElementById('ansKey1Body').innerHTML='<b>A:</b><br>'+Object.keys(vocabA_ans).map(function(n){return n+'. '+vocabA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>B:</b><br>'+vocabB.map(function(s){return s.n+'. '+s.ans;}).join(' &nbsp;•&nbsp; ');document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var miniReading=[{n:1,statement:'Before efficient transport networks, food production was necessarily local.',tf:'True'},{n:2,statement:'Long-distance transport networks allowed all agricultural land to be abandoned.',tf:'False'},{n:3,statement:'The development of transport networks helped reduce the frequency of famine.',tf:'True'},{n:4,statement:'According to the passage, global supply chains have eliminated all vulnerability to food crises.',tf:'False'},{n:5,statement:'Critics suggest that global supply chains can spread food security problems across continents.',tf:'True'}];
+(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 3 ===== */
+function revealArticleQs(){var cb=document.getElementById('t3check');var qs=document.getElementById('articleQs');if(cb&&cb.checked&&qs)qs.style.display='block';refreshDoneButton();}window.revealArticleQs=revealArticleQs;
+var aqTFAns={aq1:'True',aq2:'False',aq3:'True',aq4:'False',aq5:'True'};
+var aqShortAns={aq6:'10-15 kilograms',aq7:'New York City',aq8:'one third',aq9:'reverted to natural forests'};
+function checkArticleQs(){var right=0,total=9;Object.keys(aqTFAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');if(chosen&&chosen.value===aqTFAns[name])right++;});['aq6','aq7','aq8','aq9'].forEach(function(id){var el=document.getElementById(id);if(!el)return;var ans=aqShortAns[id];var ok=el.value.trim().toLowerCase().split(' ').some(function(w){return ans.toLowerCase().indexOf(w)>=0&&w.length>3;});if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});alert('Article: '+right+'/'+total+' correct.');document.getElementById('ansKey3Body').innerHTML='<b>T/F:</b> 1.True 2.False 3.True 4.False 5.True<br><b>Short answer:</b> 6. 10–15 kilograms &nbsp;•&nbsp; 7. New York City &nbsp;•&nbsp; 8. one third &nbsp;•&nbsp; 9. reverted to natural forests';document.getElementById('ansKey3').classList.add('show');checkedTasks[3]=true;refreshDoneButton();}window.checkArticleQs=checkArticleQs;
+
+/* ===== TASK 5 ===== */
+var t5PrepWords=['to learn something by heart','annoyed','go ahead','an assignment','a moderator','a compromise'];
+var t5PrepAns={1:'E',2:'D',3:'C',4:'A',5:'F',6:'B'};
+(function buildT5Prep(){var wrap=document.getElementById('t5PrepList');var letters=['A','B','C','D','E','F'];var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='';t5PrepWords.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="t5p'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+var t5McqData=[{n:1,q:"There are ___ who can do the first meeting of the study group.",opts:["four students","three students","five students"],ans:"A"},{n:2,q:"They don't want to meet in their current place because …",opts:["they aren't allowed to be there.","they don't want to talk to other people.","they might disturb other people."],ans:"C"},{n:3,q:"They decide to meet …",opts:["next to the cafeteria.","in the library.","next to the study hall."],ans:"A"},{n:4,q:"They have another seminar …",opts:["at the same time as study group.","every week on a Thursday.","every two weeks on a Thursday."],ans:"C"},{n:5,q:"How long will their study group be?",opts:["one hour","one hour and a half","two hours"],ans:"B"},{n:6,q:"Their final exam …",opts:["is very soon.","has passed.","isn't for some time."],ans:"C"}];
+(function buildT5Mcq(){var wrap=document.getElementById('t5McqList');var html='';t5McqData.forEach(function(q){html+='<div class="q-block" id="t5mcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['a','b','c'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="t5m'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+var t5WayData=[{n:1,expr:'find a way',ans:'B'},{n:2,expr:'way off',ans:'E'},{n:3,expr:"there's no way",ans:'A'},{n:4,expr:'go away',ans:'C'},{n:5,expr:'in a big way',ans:'D'}];
+(function buildT5Way(){var wrap=document.getElementById('t5WayList');var optHtml='<option value="">--</option><option value="A">a</option><option value="B">b</option><option value="C">c</option><option value="D">d</option><option value="E">e</option>';var html='';t5WayData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.expr+' &rarr; <select class="fill" id="t5w'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkTask5(){var rPrep=0,rMcq=0,rWay=0;for(var i=1;i<=6;i++){var sel=document.getElementById('t5p'+i);if(sel&&sel.value===t5PrepAns[i])rPrep++;}t5McqData.forEach(function(q){var chosen=document.querySelector('input[name="t5m'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('t5mcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});t5WayData.forEach(function(m){var sel=document.getElementById('t5w'+m.n);if(sel&&sel.value===m.ans)rWay++;});alert('Prep: '+rPrep+'/6\nTask 1: '+rMcq+'/6\nTask 2: '+rWay+'/5');document.getElementById('ansKey5Body').innerHTML='<b>Prep:</b> 1-E 2-D 3-C 4-A 5-F 6-B<br><b>Task 1:</b> 1.a 2.c 3.a 4.c 5.b 6.c<br><b>Task 2:</b> 1-b 2-e 3-a 4-c 5-d';document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[{n:1,q:"According to the video, why did powerful rulers keep wild animals in the past?",opts:["To protect endangered species","To study animal behaviour","To demonstrate their power and status","To educate children"],ans:"C"},{n:2,q:"What was unusual about Queen Charlotte's gifts?",opts:["She gave away lions.","She gave people kangaroos.","She donated elephants to zoos.","She collected rare birds."],ans:"B"},{n:3,q:"How were animals typically kept in early zoos?",opts:["In natural habitats","In large open spaces","In barren enclosures with little concern for welfare","In mixed-species environments"],ans:"C"},{n:4,q:"According to the video, what has changed in modern views about animals?",opts:["Animals are less intelligent than previously believed.","Animals do not experience emotions.","Scientists now recognise animals' intelligence and emotional lives.","Zoos no longer study animals."],ans:"C"},{n:5,q:"Why are zoos considered important by many conservationists?",opts:["They increase tourism.","They educate the public and support conservation projects.","They help people become hunters.","They reduce food waste."],ans:"B"},{n:6,q:"What are 'insurance populations' in zoos?",opts:["Animals that are insured against illness","Animals bred only for tourism","Captive populations that help prevent species extinction","Animals waiting to be sold"],ans:"C"},{n:7,q:"According to Robert Young, what problem exists in the United States?",opts:["There are too few zoos.","Animal welfare laws are not always strict enough.","Zoos receive no funding.","Wild animals cannot be kept legally."],ans:"B"},{n:8,q:"What percentage of zoo revenue reportedly goes back into conservation?",opts:["2%","4%","10%","20%"],ans:"B"},{n:9,q:"Which technology is suggested as a possible alternative to traditional zoos?",opts:["Space travel","Artificial islands","Virtual reality wildlife experiences","Underwater hotels"],ans:"C"},{n:10,q:"What is the speaker's hope for the future?",opts:["Every city will build larger zoos.","All animals will live in captivity.","Sustainable cities will allow people to experience wildlife naturally.","Zoos will replace national parks."],ans:"C"}];
+(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+var vidGapData=[{n:1,t:"Zoos have changed out of all ___ over the years.",ans:"recognition"},{n:2,t:"Early zoo animals often lived in ___ enclosures.",ans:"barren"},{n:3,t:"Animals were displayed almost like a museum ___.",ans:"specimen"},{n:4,t:"Modern science recognises each animal's unique ___.",ans:"intelligence"},{n:5,t:"Many zoos help fund wildlife ___ programmes.",ans:"conservation"},{n:6,t:"Some endangered species may survive only through ___ breeding.",ans:"captivity"},{n:7,t:"Zoos sometimes act as ___ populations to protect species.",ans:"insurance"},{n:8,t:"Certain animals are brought into captivity to prevent ___.",ans:"extinction"},{n:9,t:"The UK has stricter animal ___ than some other countries.",ans:"legislation"},{n:10,t:"Animal ___ is much more important in modern zoos than it was in the past.",ans:"welfare"},{n:11,t:"Official statistics suggest that only 4% of zoo ___ goes back into conservation.",ans:"revenue"},{n:12,t:"Wildlife ___ can inspire people without keeping animals in cages.",ans:"documentary"},{n:13,t:"___ reality may allow people to experience wildlife in the future.",ans:"virtual"},{n:14,t:"The speaker hopes cities will become more ___.",ans:"sustainable"},{n:15,t:"Earlier zoos often ignored the animals' natural ___.",ans:"habitat"}];
+(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
+var vidMatchData=[{n:1,term:"recognition",ans:"L"},{n:2,term:"barren",ans:"C"},{n:3,term:"specimen",ans:"D"},{n:4,term:"habitat",ans:"A"},{n:5,term:"intelligence",ans:"E"},{n:6,term:"conservation",ans:"F"},{n:7,term:"captivity",ans:"G"},{n:8,term:"extinction",ans:"H"},{n:9,term:"legislation",ans:"I"},{n:10,term:"welfare",ans:"J"},{n:11,term:"revenue",ans:"K"},{n:12,term:"harness",ans:"B"},{n:13,term:"documentary",ans:"M"},{n:14,term:"virtual reality",ans:"N"},{n:15,term:"sustainable",ans:"O"}];
+var vidMatchDefs={A:"the natural environment where an animal lives",B:"to use something effectively",C:"empty and lacking life or features",D:"an individual example of something for study",E:"the ability to think, understand and solve problems",F:"the protection of wildlife and nature",G:"being kept confined rather than living freely",H:"the complete disappearance of a species",I:"laws made by a government",J:"health, happiness and well-being",K:"money earned by an organisation",L:"to acknowledge or identify something",M:"a factual film or television programme",N:"a computer-generated immersive environment",O:"able to continue without harming the environment"};
+(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkVideoTask(){var rMcq=0,rGap=0,rMatch=0;vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> '+vidMcqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><b>Gap:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><b>Match:</b> '+vidMatchData.map(function(m){return m.n+'.'+m.ans;}).join(' ');document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:'languages',2:'polyglot',3:'intimidated',4:'recognised',5:'Zimbabwe',6:'research',7:'health',8:'tune into',9:'ignore',10:'switch',11:'dementia',12:'boost',13:'workout',14:'juggle',15:'stronger',16:'necessity',17:'five',18:'Norway',19:'pick up',20:'environment',21:'fifties',22:'soldiered',23:'along',24:'tongue',25:'Kinyarwanda',26:'immerse',27:'37',28:'me',29:'attention',30:'soldier'};
+var dictLines=[{sp:'Hannah',t:"Well, someone who knows multiple {1} is a polyglot."},{sp:'Neil',t:"I couldn't say that I'm a {2}."},{sp:'Neil',t:"I feel really impressed and a bit {3}!"},{sp:'Neil',t:"Which country has the most official languages {4} by the government?"},{sp:'Hannah',t:"I would guess {5}."},{sp:'Hannah',t:"There's been lots of {6} about how knowing more than one language can change your brain."},{sp:'Hannah',t:"This might have some {7} benefits too."},{sp:'Frederique',t:"Babies even before they speak have to {8} the languages around them."},{sp:'Frederique',t:"They have to focus on one language and {9} another one when they're speaking."},{sp:'Frederique',t:"They have to be able to {10} from one language to the other."},{sp:'Frederique',t:"When adults have {11}, they seem to show symptoms later when they're bilinguals."},{sp:'Frederique',t:"Juggling several languages has helped them {12} this brain efficiency."},{sp:'Frederique',t:"It's like a brain {13}!"},{sp:'Hannah',t:"If you {14} several things, that means you deal with them all at the same time."},{sp:'Neil',t:"A brain workout is exercise for your brain that can make it {15}."},{sp:'Hannah',t:"I didn't have to learn these languages out of {16}."},{sp:'Hannah',t:"She speaks {17} languages and she understands eight."},{sp:'Hannah',t:"Her family moved from Rwanda, to Kenya and then to {18} when she was a teenager."},{sp:'Hannah',t:"Victoria says she was able to {19} Norwegian quite easily."},{sp:'Neil',t:"It means you learn it, usually by being in the {20} where that thing happens."},{sp:'Victoria',t:"These are people in their {21}, you know."},{sp:'Victoria',t:"They {22} on because if you want to work, you want to live there, you have to learn."},{sp:'Victoria',t:"We were also helping them {23} the way."},{sp:'Victoria',t:"To keep our mother {24}."},{sp:'Hannah',t:"Vic's parents helped them keep their mother tongue, which is {25}."},{sp:'Hannah',t:"She recommended trying to {26} yourself in the language."},{sp:'Neil',t:"Bolivia, which recognises {27} languages."},{sp:'Hannah',t:"Polyglot, someone who knows lots of languages, like {28}."},{sp:'Neil',t:"If you tune into something, you listen or pay {29} to it."},{sp:'Neil',t:"If you {30} on, you continue doing something even though it is difficult."}];
+(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
+var compData=[{n:1,q:"According to Hannah, what is a polyglot?",opts:["Someone who studies languages at university","Someone who knows multiple languages","Someone who translates texts professionally","Someone who teaches foreign languages"],ans:"B"},{n:2,q:"What does Professor Liegeois say about bilingual adults with dementia?",opts:["They develop dementia earlier than monolinguals","They are less likely to develop dementia","They show symptoms of dementia later than monolinguals","They recover from dementia more quickly"],ans:"C"},{n:3,q:"What does it mean to 'juggle' languages, according to the programme?",opts:["To mix languages together when speaking","To forget your mother tongue","To deal with several languages at the same time","To perform languages on stage"],ans:"C"},{n:4,q:"How did Victoria's family come to learn Norwegian?",opts:["They studied it at school in Rwanda","They moved to Norway as a family and needed it to work and live","They hired a Norwegian language tutor","They watched Norwegian television programmes"],ans:"B"},{n:5,q:"Which country has the most officially recognised languages?",opts:["Zimbabwe","Switzerland","Norway","Bolivia"],ans:"D"}];
+(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+function checkPodcast(){var rDict=0,rComp=0;Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');document.getElementById('ansKey7Body').innerHTML='<b>Dict:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comp:</b> '+compData.map(function(q){return q.n+'.'+q.ans;}).join(' ');document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkPodcast=checkPodcast;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+
+/* ===== PERSISTENT HIGHLIGHT ===== */
+(function(){
+  var HL_KEY='sprint4_hl_day10';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+})();
+</script>
+</body>
+</html>
