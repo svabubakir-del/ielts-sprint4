@@ -1,326 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IELTS Sprint4 — Day 12</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS Reading - Passage 2 | Understanding and Protecting Elephants</title>
 <style>
-  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
-  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
-  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
-  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
-  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
-  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
-  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
-  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
-  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
-  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
-  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
-  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
-  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
-  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
-  .passage-text p{line-height:1.85;font-size:15.5px;}
-  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
-  input.fill.short{width:90px;}input.fill.med{width:160px;}
-  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
-  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
-  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
-  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
-  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
-  .tf-toggle{display:flex;gap:10px;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
-  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
-  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
-  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
-  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
-  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
-  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
-  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
-  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
-  audio{width:100%;max-width:480px;}
-  .video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
-  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
-  .dictation p{line-height:2;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
-  .notes-table{width:100%;border-collapse:collapse;font-size:15px;}
-  .notes-table td,.notes-table th{border:1px solid var(--border);padding:10px 12px;vertical-align:top;}
-  .notes-table th{background:var(--accent-light);color:var(--accent-dark);font-size:15px;text-align:center;}
-  .notes-table .section-label{font-weight:800;font-size:14px;color:var(--accent-dark);}
-  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
-  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
-  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
-  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
-  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
-  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
-  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
-  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
-  .hl{background:#ffe45c;border-radius:2px;}
-  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
-  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
-  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+:root{--bg:#fff;--fg:#1b1b1b;--muted:#606060;--line:#d8d8d8;--panel:#f2f3f4;--red:#cf3e45;--blue:#2563a8;--hl:#ffe45c;--ok:#168a46;--bad:#c73535;--okbg:#e8f6ee;--badbg:#fdecec;--scale:1}
+body.theme-wob{--bg:#000;--fg:#fff;--muted:#ccc;--line:#444;--panel:#171717;--hl:#7a6a00}
+body.theme-yob{--bg:#000;--fg:#ffd400;--muted:#e3c200;--line:#5a4d00;--panel:#141400;--hl:#665200}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:Arial,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg);font-size:calc(16px*var(--scale));display:flex;flex-direction:column;min-height:100vh}
+.top{height:52px;border-bottom:1px solid var(--line);display:flex;justify-content:flex-end;align-items:center;padding:0 18px;gap:16px}
+.icon{border:0;background:none;color:var(--fg);cursor:pointer;padding:5px}.icon svg{width:25px;height:25px}
+.banner{margin:14px 16px 0;padding:12px 18px;background:var(--panel);border:1px solid var(--line);border-radius:6px}.banner h2{margin:0 0 4px;font-size:18px}.banner p{margin:0}
+.split{flex:0 0 auto;height:82vh;display:flex;margin:12px 16px 0;border-top:1px solid var(--line)}.pane{overflow:auto;padding:18px 26px 60px;min-width:180px}.left{width:50%;flex:0 0 auto}.right{flex:1;min-width:0}.divider{border-left:2px solid #999;cursor:col-resize}
+h1{font-size:25px;margin:0 0 18px}h2{font-size:21px}h3{font-size:18px;margin:28px 0 8px}p{line-height:1.6}
+.qgroup{margin-bottom:30px}.qgroup h3{margin:0 0 8px;font-size:20px}.instr{line-height:1.5;margin:0 0 16px}
+.qnum{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1px solid var(--line);border-radius:5px;font-weight:700;margin-right:10px;background:var(--bg)}
+.qmatch h3{font-size:25px;margin-bottom:8px}.qmatch .instr{font-size:22px;line-height:1.4;margin:0 0 28px}.qmatch .nb{font-size:22px;margin:34px 0 18px}.match-wrap{overflow-x:auto;border:1px solid #d6d6d6;border-radius:6px 6px 0 0;background:var(--bg);padding:26px 28px 0}.match-table{border-collapse:collapse;min-width:940px;background:var(--bg);font-size:21px}.match-table th,.match-table td{border:0;border-right:2px solid #777;border-bottom:2px solid #777;text-align:center;vertical-align:middle}.match-table th{height:54px;font-size:21px;font-weight:700}.match-table th:first-child,.match-table td:first-child{width:390px;text-align:left;line-height:1.45;border-right:3px solid #333}.match-table th:last-child,.match-table td:last-child{border-right:0}.match-table td{height:118px;padding:12px 10px}.qcell{display:grid;grid-template-columns:52px 1fr;align-items:start}.mnum{font-weight:700;text-align:center}.match-table input{appearance:none;width:22px;height:22px;border:2px solid #dedede;border-radius:50%;background:#fff;vertical-align:middle;cursor:pointer}.match-table input:checked{border-color:#c98292;box-shadow:inset 0 0 0 5px #fff;background:#c98292}
+.multi h3{font-size:25px;margin-bottom:16px}.multi .lead{font-size:22px;line-height:1.45;margin:0 0 22px}.multi .prompt{font-size:22px;line-height:1.45;margin:0 0 32px;font-style:italic}.bookmark{float:right;width:26px;height:34px;margin-top:-54px}.bookmark svg{width:100%;height:100%}.choice-options{display:flex;flex-direction:column;gap:24px}.choice-option{display:flex;align-items:center;gap:16px;font-size:22px;line-height:1.35;padding:8px 14px;border-radius:3px}.choice-option:hover{background:#f3f3f3}.choice-option input{appearance:none;width:22px;height:22px;border:2px solid #d86f79;border-radius:5px;background:#fff;flex:0 0 auto;cursor:pointer}.choice-option input:checked{background:#d86f79;box-shadow:inset 0 0 0 4px #fff}
+.gap{font:inherit;border:1px solid #999;border-radius:5px;background:var(--bg);color:var(--fg);padding:5px 8px;width:145px;text-align:center}
+.tools{position:absolute;z-index:50;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px #0005}.tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px}.sw{display:inline-block;width:13px;height:13px;background:#ffe45c;border-radius:3px;margin-right:5px}.hl{background:var(--hl);border-radius:2px}
+.bar{height:51px;border-top:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:8px 16px}.tiles{display:flex;gap:6px;flex-wrap:wrap}.tile{min-width:30px;height:28px;border:1px solid #bbb;background:var(--bg);color:var(--fg);border-radius:3px;cursor:pointer}.tile.answered{background:#2b2b2b;color:#fff}.tile.current{outline:2px solid var(--blue)}.review{margin-left:auto;width:40px;height:34px;background:#ddd;border:0;border-radius:4px;cursor:pointer}
+.overlay{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column;overflow:auto}.overlay.show{display:flex}.ovh{position:relative;padding:22px}.ovh h2{text-align:center;margin:0}.close{position:absolute;right:24px;top:18px;border:0;background:none;color:var(--fg);font-size:26px}.back{position:absolute;left:18px;top:18px;border:0;background:none;color:var(--fg);font-size:20px}.ovlist{max-width:830px;width:90%;margin:10px auto}.ovrow{width:100%;padding:18px 22px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit;text-align:left;cursor:pointer}.submit{background:var(--red);color:#fff;border-color:var(--red);border-radius:6px;margin-bottom:18px;font-weight:700}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:1px 8px;border-radius:4px;margin-left:8px}.ok{background:var(--okbg)!important;color:var(--ok)!important;border-color:var(--ok)!important;font-weight:700}.no{background:var(--badbg)!important;color:var(--bad)!important;border-color:var(--bad)!important;font-weight:700}.corr{color:var(--ok);font-weight:700;margin-left:8px}.score{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 22px;margin-bottom:18px}.score b{font-size:30px}
 </style>
 </head>
 <body>
-<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
-<header class="topbar">
-  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
-  <div class="brand">IELTS <span>Sprint4</span></div>
-  <div class="daylabel">Day 12</div>
-  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
-  <div class="dots" id="dots"></div>
-</header>
-<main class="content"><div class="wrap">
-
-<!-- TASK 1 -->
-<section class="task" id="task1" data-task="1">
-  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
-  <div class="card"><h3>Word list</h3><div class="wordbank">
-    <span class="chip">evolution</span><span class="chip">ancestors</span><span class="chip">diversification</span><span class="chip">artefacts</span><span class="chip">remains</span><span class="chip">occupation</span><span class="chip">expansion</span><span class="chip">colonise</span><span class="chip">reconstruct</span><span class="chip">investigate</span><span class="chip">trajectory</span><span class="chip">adapt</span><span class="chip">sustained</span><span class="chip">habitat</span><span class="chip">survive</span><span class="chip">multidisciplinary</span><span class="chip">intrinsic</span><span class="chip">habitable</span><span class="chip">fossil</span><span class="chip">diversify</span>
-  </div></div>
-  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
-  <div class="card"><h4>Exercise B — Complete each sentence</h4><p class="instr">Complete each sentence with ONE word from the box.</p><div id="vocabB-list"></div></div>
-  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
-  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
-</section>
-
-<!-- TASK 2 -->
-<section class="task" id="task2" data-task="2">
-  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the text, then decide if each statement is True or False.</p></div>
-  <div class="card">
-    <h3>Human evolution and migration</h3>
-    <p class="passage-text">The study of human evolution has been transformed in recent decades by advances in both genetics and archaeological science. Modern researchers now adopt a multidisciplinary approach, combining evidence from fossil remains, ancient artefacts, and DNA analysis to reconstruct the trajectory of human migration across the globe. It is now widely accepted that our earliest ancestors originated in Africa and gradually began to colonise other continents around 70,000 years ago, adapting to radically different habitats as they expanded into new territories. The occupation of diverse environments — from tropical forests to Arctic tundra — required early humans to diversify their diets, tools, and social structures. This remarkable capacity to adapt is widely regarded as intrinsic to the evolutionary success of our species. The fossil record, though incomplete, provides sustained evidence of this diversification, offering insights into how early human populations survived and thrived across an increasingly habitable planet.</p>
-  </div>
-  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
-  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
-  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
-</section>
-
-<!-- TASK 3 -->
-<section class="task" id="task3" data-task="3">
-  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article, tick the box, then answer the comprehension questions inside the article page.</p></div>
-  <div class="card"><h3>The Giants of Memory</h3><p class="instr">A background reading on elephant neurology, matriarchal social structures, and bee-fence conservation — with a full vocabulary glossary and comprehension questions.</p><a class="btn link-out" href="article-day-12.html" target="_blank" rel="noopener">📄 Open article</a></div>
-  <div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
-</section>
-
-<!-- TASK 4 -->
-<section class="task" id="task4" data-task="4">
-  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
-  <div class="card"><a class="btn link-out" href="passage_day_12.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
-  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
-  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
-  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
-</section>
-
-<!-- TASK 5 -->
-<section class="task" id="task5" data-task="5">
-  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening mini task — Arts Festival</h2></div>
-  <div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
-  <div class="card">
-    <h4>Note completion</h4>
-    <p class="instr">Complete the notes below. Write ONE OR TWO WORDS for each answer.</p>
-    <table class="notes-table">
-      <tr><th colspan="2">A</th></tr>
-      <tr><td class="section-label">Living <input class="fill short" id="t5g1"> – Week</td><td></td></tr>
-      <tr><td colspan="2">
-        <ul style="margin:6px 0;padding-left:20px;font-size:15px;line-height:2;">
-          <li>Talks</li>
-          <li><input class="fill short" id="t5g2"> lunches</li>
-          <li>Book <input class="fill short" id="t5g3"></li>
-          <li><input class="fill short" id="t5g4"> for children</li>
-          <li>This year's <input class="fill short" id="t5g5"> is Island Life</li>
-        </ul>
-      </td></tr>
-      <tr><th colspan="2">The <input class="fill short" id="t5g6"> Arts</th></tr>
-      <tr><td colspan="2">
-        <ul style="margin:6px 0;padding-left:20px;font-size:15px;line-height:2;">
-          <li>A painting <input class="fill short" id="t5g7"></li>
-          <li>Discussion of the <input class="fill short" id="t5g8"> process</li>
-          <li>Workshops at local <input class="fill short" id="t5g9"></li>
-          <li>Display of local <input class="fill short" id="t5g10"></li>
-        </ul>
-      </td></tr>
-      <tr><th colspan="2"><input class="fill short" id="t5g11"> of Voices</th></tr>
-      <tr><td colspan="2">
-        <ul style="margin:6px 0;padding-left:20px;font-size:15px;line-height:2;">
-          <li>Several performances will be <input class="fill short" id="t5g12"></li>
-          <li><input class="fill short" id="t5g13"> theatre</li>
-          <li>Free <input class="fill short" id="t5g14"></li>
-        </ul>
-      </td></tr>
-    </table>
-  </div>
-  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
-  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
-</section>
-
-<!-- TASK 6 -->
-<section class="task" id="task6" data-task="6">
-  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — How Playing Music Changes the Brain</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
-  <div class="video-wrap"><iframe src="https://www.youtube.com/embed/R0JKCYZ8hng" title="How Playing Music Changes the Brain" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
-  <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
-  <div class="card"><h4>Part 2 — Gap fill</h4>
-    <div class="wordbank"><span class="chip">fireworks</span><span class="chip">neuroscientists</span><span class="chip">melody</span><span class="chip">workout</span><span class="chip">visual</span><span class="chip">motor</span><span class="chip">corpus</span><span class="chip">hemispheres</span><span class="chip">creatively</span><span class="chip">executive</span><span class="chip">strategizing</span><span class="chip">memories</span><span class="chip">contextual</span><span class="chip">aesthetic</span><span class="chip">enhancement</span></div>
-    <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
-  </div>
-  <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
-  <div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
-  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
-</section>
-
-<!-- TASK 7 -->
-<section class="task" id="task7" data-task="7">
-  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast — Extremophiles</h2></div>
-  <div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
-  <div class="card dictation"><h4>Dictation — complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
-  <div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
-  <div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
-  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
-</section>
-
-<!-- TASK 8 -->
-<section class="task" id="task8" data-task="8">
-  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening test</h2><p class="task-sub">Open the test in a new tab, complete it, then come back and tick the box. The walkthrough will appear below.</p></div>
-  <div class="card"><a class="btn link-out" href="Listening-12.html" target="_blank" rel="noopener">🎧 Open full listening test</a></div>
-  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t8check" onchange="revealListeningWalkthrough()"><label for="t8check">I have completed the full listening test</label></div>
-  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">Record your score after finishing.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
-  <div id="listeningWalkthrough" style="display:none;margin-top:18px;">
-    <div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
-      <div class="video-wrap"><iframe src="https://www.youtube.com/embed/0u2ecdJr9CA" title="Listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+<header class="top"><a href="day12.html" style="position:absolute;left:14px;top:14px;font-weight:700;font-size:13px;color:#2563a8;text-decoration:none;z-index:5;">← Day 12</a><button class="icon" title="Connection"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 18a2 2 0 110 4 2 2 0 010-4zm0-5c1.7 0 3.2.7 4.3 1.8l-1.5 1.5A4 4 0 0012 16a4 4 0 00-2.8 1.1L7.7 15.6A6 6 0 0112 13zm0-5c3 0 5.8 1.2 7.8 3.2l-1.5 1.5A8.5 8.5 0 0012 11a8.5 8.5 0 00-6.3 2.7L4.2 12.2A11 11 0 0112 8z"/></svg></button><button class="icon" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></button><button class="icon" id="menu" title="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button></header>
+<div class="banner"><h2>Part 2</h2><p>Read the text and answer questions 14-26.</p></div>
+<div class="split" id="split"><section class="pane left" id="left"><div id="passage">
+<h1>Understanding and Protecting Elephants</h1>
+<h3>A</h3><p>The future of the African elephant is at risk. They are often shot by poachers for their ivory and this is responsible for most of the decline in elephant numbers. But habitat loss is important too, and not just the changing of bush into farmland. Roads, railways and fences stop elephants moving around, and an elephant needs a lot of room. According to George Wittemyer of Save the Elephants, an average elephant ranges over 1,500 square kilometres over a year and may travel as much as 60 kilometres a day.</p>
+<h3>B</h3><p>The question is whether elephants and people can ever coexist peacefully. People who worry that the answer may be "no" fear the loss of more than just another species of animal. Elephants seem to have evolved intelligence, and possibly even consciousness. Though they may not be alone in this (similar claims are made for certain whales, some carnivores like lions and hyenas, and some birds), they are certainly part of a small group. Self-awareness is one indication of the vast capacity for thinking and intellect that exists in the elephant. They can, in fact, identify themselves in a mirror, something that is extremely rare in the animal kingdom. Another example of superior intellect is the elephant's ability to have fun and display a sense of humour. Elephants in zoos have even been seen stealing onlookers' caps and hiding them in playful teasing. Losing even one example of how intelligence develops would reduce the ability of biologists to understand the process of how intelligence has evolved in animals.</p>
+<h3>C</h3><p>Apart from people, no species on Earth has a more complex society than elephants. Their social arrangements centre around groups of four or five females and their young that are led by a matriarch who is mother, grandmother, great-grandmother, sister or aunt to most of them. Though males are forced to depart their birth group when they mature, females usually remain in it their entire lives. Elephant families are part of bigger "kinship" groups that come together and separate at will. Moreover, each kinship group is part of what is called a clan. Clans gather in the dry season, when the resources capable of supporting elephants are limited. All clan members know each other and, since a clan will usually have 100 to 200 adult members, this means an adult female can recognise and have meaningful social relations with that many other individuals. A figure of between 100 and 200 acquaintances is similar to the number of people a human being can maintain meaningful social relationships with - a value known as Dunbar's number. Dunbar's number for people is about 150.</p>
+<h3>D</h3><p>Being able to recall details of such large numbers of individuals means elephants require enormous mental powers. Details of how their brains work are not known, but one thing which is known is that they have big hippocampuses. These structures, one in each hemisphere of the brain, are involved in the formation of long-term recall. Compared with the size of its brain, an elephant's hippocampuses are about 40 per cent larger than those of a human being.</p>
+<h3>E</h3><p>Elephants can seemingly solve problems by thinking about them in abstract terms. Experiments conducted on domesticated Asian elephants show that they are able to manipulate nearby objects, such as branches, as tools to get food which is out of reach. This is something some other species, such as great apes, can do, but which most animals find impossible. For all of these reasons then, elephants are of great scientific interest. But the focus of almost all elephant researchers has shifted from understanding the animals to trying to preserve them.</p>
+<h3>F</h3><p>Another, though secondary, cause of elephant decline is changes in land use in Africa. The human inhabitants of areas around African elephant reserves have traditionally survived by moving herds of cattle from one grazing place to another. One source of conflict with elephants has been competition for pasture, as the herders' populations have grown. But, additionally, some herders have begun to settle down. Buildings and fences are appearing on land which elephants have traditionally crossed as they travel from one place to another. Elephants have places where they prefer to live and, when travelling between these, which they often do at night, they tend to follow narrow corridors. Keeping these corridors clear of development is essential to the well-being of elephants.</p>
+<h3>G</h3><p>Understanding elephants' behaviour also permits it to be changed in ways that help reduce direct conflict between elephants and people. One such project uses elephants' fear of bees. Bees are the only animals, apart from humans, that elephants seem truly afraid of. This is because, although a bee's sting cannot penetrate most parts of an elephant's hide, groups of bees tend to attack the eyes and the tips of the trunks, an elephant's most sensitive parts. Elephants cannot protect themselves from the bees - not even by swinging their tails and flapping their ears.</p>
+<h3>H</h3><p>Knowing this, scientists developed the idea of protecting farms with bee fences. The sort of fence most African farmers can afford is too weak to keep an elephant away from their crops, but a bee fence, though even weaker, will achieve this. The fence consists of pairs of poles placed at three-metre intervals, between which beehives are hung. This fence is enough to stop elephants immediately. They are so scared that half the hives can be fake, and the fence still keeps the elephants out. Bee-fenced farms suffer far fewer elephant attacks than those with conventional protection. As a bonus, the farmers earn extra income from the honey the bees produce.</p>
+</div></section><div class="divider" id="div"></div><section class="pane right" id="right">
+<div class="qgroup qmatch"><h3>Questions 14-20</h3><p class="instr"><i>Reading Passage 2 has eight paragraphs. Which paragraph contains the following information?</i></p><p class="nb"><b><i>NB</i></b> <i>You may use any letter more than once.</i></p><div class="match-wrap"><table class="match-table" id="matchTable"><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th></tr></thead><tbody>
+<tr id="q14"><td><div class="qcell"><span class="mnum">14.</span><span>an explanation of why elephants have such good memories</span></div></td><td><input type="radio" name="q14" value="A"></td><td><input type="radio" name="q14" value="B"></td><td><input type="radio" name="q14" value="C"></td><td><input type="radio" name="q14" value="D"></td><td><input type="radio" name="q14" value="E"></td><td><input type="radio" name="q14" value="F"></td><td><input type="radio" name="q14" value="G"></td><td><input type="radio" name="q14" value="H"></td></tr>
+<tr id="q15"><td><div class="qcell"><span class="mnum">15.</span><span>a mention of the possible consequence of elephant extinction on scientific knowledge</span></div></td><td><input type="radio" name="q15" value="A"></td><td><input type="radio" name="q15" value="B"></td><td><input type="radio" name="q15" value="C"></td><td><input type="radio" name="q15" value="D"></td><td><input type="radio" name="q15" value="E"></td><td><input type="radio" name="q15" value="F"></td><td><input type="radio" name="q15" value="G"></td><td><input type="radio" name="q15" value="H"></td></tr>
+<tr id="q16"><td><div class="qcell"><span class="mnum">16.</span><span>a comparison of human and elephant abilities to interact with others</span></div></td><td><input type="radio" name="q16" value="A"></td><td><input type="radio" name="q16" value="B"></td><td><input type="radio" name="q16" value="C"></td><td><input type="radio" name="q16" value="D"></td><td><input type="radio" name="q16" value="E"></td><td><input type="radio" name="q16" value="F"></td><td><input type="radio" name="q16" value="G"></td><td><input type="radio" name="q16" value="H"></td></tr>
+<tr id="q17"><td><div class="qcell"><span class="mnum">17.</span><span>a detail about when elephants most frequently move between different areas</span></div></td><td><input type="radio" name="q17" value="A"></td><td><input type="radio" name="q17" value="B"></td><td><input type="radio" name="q17" value="C"></td><td><input type="radio" name="q17" value="D"></td><td><input type="radio" name="q17" value="E"></td><td><input type="radio" name="q17" value="F"></td><td><input type="radio" name="q17" value="G"></td><td><input type="radio" name="q17" value="H"></td></tr>
+<tr id="q18"><td><div class="qcell"><span class="mnum">18.</span><span>reference to the biggest cause of the decrease in the world's elephant population</span></div></td><td><input type="radio" name="q18" value="A"></td><td><input type="radio" name="q18" value="B"></td><td><input type="radio" name="q18" value="C"></td><td><input type="radio" name="q18" value="D"></td><td><input type="radio" name="q18" value="E"></td><td><input type="radio" name="q18" value="F"></td><td><input type="radio" name="q18" value="G"></td><td><input type="radio" name="q18" value="H"></td></tr>
+<tr id="q19"><td><div class="qcell"><span class="mnum">19.</span><span>a mention of the fact that climate affects the time when elephants group together</span></div></td><td><input type="radio" name="q19" value="A"></td><td><input type="radio" name="q19" value="B"></td><td><input type="radio" name="q19" value="C"></td><td><input type="radio" name="q19" value="D"></td><td><input type="radio" name="q19" value="E"></td><td><input type="radio" name="q19" value="F"></td><td><input type="radio" name="q19" value="G"></td><td><input type="radio" name="q19" value="H"></td></tr>
+<tr id="q20"><td><div class="qcell"><span class="mnum">20.</span><span>reference to how some elephants can use items in their environment to feed themselves</span></div></td><td><input type="radio" name="q20" value="A"></td><td><input type="radio" name="q20" value="B"></td><td><input type="radio" name="q20" value="C"></td><td><input type="radio" name="q20" value="D"></td><td><input type="radio" name="q20" value="E"></td><td><input type="radio" name="q20" value="F"></td><td><input type="radio" name="q20" value="G"></td><td><input type="radio" name="q20" value="H"></td></tr>
+</tbody></table></div></div>
+<div class="qgroup multi" id="q21"><h3>Questions 21-22</h3><p class="lead">Choose <b>TWO</b> correct answers.</p><div class="bookmark" aria-hidden="true"><svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h14v25l-7-4-7 4z"/></svg></div><p class="prompt">Which <b>TWO</b> of these examples are mentioned by the writer of the text?</p><div class="choice-options" id="q22">
+<label class="choice-option"><input type="checkbox" name="q21_22" value="A">Elephants can identify potentially dangerous foods.</label>
+<label class="choice-option"><input type="checkbox" name="q21_22" value="B">Elephants are capable of learning new skills throughout their lives.</label>
+<label class="choice-option"><input type="checkbox" name="q21_22" value="C">Elephants are able to share a habitat with other animal species.</label>
+<label class="choice-option"><input type="checkbox" name="q21_22" value="D">Elephants have the ability to recognise their own reflection.</label>
+<label class="choice-option"><input type="checkbox" name="q21_22" value="E">Elephants demonstrate a capacity for playful behaviour.</label>
+</div></div>
+<div class="qgroup"><h3>Questions 23-26</h3><p class="instr">Complete the summary below. Choose <b>ONE WORD ONLY</b> from the passage for each answer.</p><h2>Elephants and Bees</h2><p>Even though most of an elephant's skin is too thick for a bee to sting through, elephants fear bees greatly. This is because the insects sting elephants in their eyes or on their <span id="q23"></span><span class="qnum" style="vertical-align:middle;margin-right:4px">23</span><input class="gap" id="gap23" autocomplete="off" spellcheck="false">, which are easily hurt.</p><p>Farmers in Africa use bee fences to stop elephants from coming on to their property and damaging <span id="q24"></span><span class="qnum" style="vertical-align:middle;margin-right:4px">24</span><input class="gap" id="gap24" autocomplete="off" spellcheck="false">. These bee fences are simple constructions of regularly spaced <span id="q25"></span><span class="qnum" style="vertical-align:middle;margin-right:4px">25</span><input class="gap" id="gap25" autocomplete="off" spellcheck="false"> from which hives are hung. The elephants are so scared of bees that even using some beehives which are <span id="q26"></span><span class="qnum" style="vertical-align:middle;margin-right:4px">26</span><input class="gap" id="gap26" autocomplete="off" spellcheck="false"> will frighten elephants away.</p><p>The honey collected from these beehives can also provide additional income for farmers.</p></div>
+</section></div>
+<footer class="bar"><b>Part 2</b><div class="tiles" id="tiles"></div><button class="review" id="review" title="Go to submission page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg></button></footer>
+<div class="tools" id="tools"><button data-act="hl"><span class="sw"></span>Highlight</button><button data-act="clear">Clear</button></div>
+<div class="overlay" id="opts"><div class="ovh"><h2>Options</h2><button class="close" data-close>&times;</button></div><div class="ovlist"><button class="ovrow submit" id="goto">Go to submission page &gt;</button><button class="ovrow" id="contrast">Contrast &gt;</button><button class="ovrow" id="textsize">Text size &gt;</button></div></div>
+<div class="overlay" id="con"><div class="ovh"><button class="back" data-back>&lt; Options</button><h2>Contrast</h2><button class="close" data-close>&times;</button></div><div class="ovlist"><button class="ovrow theme" data-theme="">Black on white</button><button class="ovrow theme" data-theme="theme-wob">White on black</button><button class="ovrow theme" data-theme="theme-yob">Yellow on black</button></div></div>
+<div class="overlay" id="size"><div class="ovh"><button class="back" data-back>&lt; Options</button><h2>Text size</h2><button class="close" data-close>&times;</button></div><div class="ovlist"><button class="ovrow scale" data-size="1">Regular</button><button class="ovrow scale" data-size="1.18">Large</button><button class="ovrow scale" data-size="1.36">Extra large</button></div></div>
+<div class="overlay" id="submit"><div class="ovh"><h2>Submission page</h2><button class="close" data-close>&times;</button></div><div class="ovlist" id="subwrap"></div></div>
+<script>
+(function(){var MATCH=[{n:14,a:'D'},{n:15,a:'B'},{n:16,a:'C'},{n:17,a:'F'},{n:18,a:'A'},{n:19,a:'C'},{n:20,a:'E'}],CHOICES=['D','E'],GAPS={23:'trunks',24:'crops',25:'poles',26:'fake'},done=false;
+var tiles=document.getElementById('tiles');for(var i=14;i<=26;i++){var b=document.createElement('button');b.className='tile';b.dataset.tile=i;b.textContent=i;b.onclick=(function(n){return function(){scroll(n)}})(i);tiles.appendChild(b)}
+function picked(){return Array.from(document.querySelectorAll('input[name="q21_22"]:checked')).map(function(x){return x.value})}document.querySelectorAll('input[name="q21_22"]').forEach(function(x){x.addEventListener('change',function(){if(picked().length>2)x.checked=false;refresh()})});
+function ans(n){if(n<=20)return !!document.querySelector('input[name="q'+n+'"]:checked');if(n<=22)return picked().length>=n-20;return document.getElementById('gap'+n).value.trim()!==''}function refresh(){document.querySelectorAll('.tile').forEach(function(t){var n=+t.dataset.tile;t.classList.toggle('answered',ans(n))})}function scroll(n){var e=document.getElementById('q'+n);if(e)e.scrollIntoView({behavior:'smooth',block:'center'});document.querySelectorAll('.tile').forEach(function(t){t.classList.toggle('current',+t.dataset.tile===n)})}document.addEventListener('change',refresh);document.addEventListener('input',refresh);
+var split=document.getElementById('split'),div=document.getElementById('div'),left=document.getElementById('left'),drag=false;div.onmousedown=function(){drag=true;document.body.style.userSelect='none'};window.onmouseup=function(){drag=false;document.body.style.userSelect=''};window.onmousemove=function(e){if(!drag)return;var r=split.getBoundingClientRect(),w=e.clientX-r.left;left.style.width=Math.max(200,Math.min(r.width-220,w))+'px'};
+var markArea=document.getElementById('split'),tools=document.getElementById('tools');markArea.onmouseup=function(){setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return}var r=s.getRangeAt(0);if(!markArea.contains(r.commonAncestorContainer)||!r.toString().trim()){tools.style.display='none';return}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px'},1)};document.addEventListener('mousedown',function(e){if(!tools.contains(e.target)&&!e.target.closest('#split'))tools.style.display='none'});tools.onclick=function(e){var b=e.target.closest('button');if(!b)return;var s=getSelection();if(!s.rangeCount)return;var r=s.getRangeAt(0);if(b.dataset.act==='clear'){markArea.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize()}})}else{try{var span=document.createElement('span');span.className='hl';r.surroundContents(span)}catch(_){document.execCommand('hiliteColor',false,'#ffe45c')}}s.removeAllRanges();tools.style.display='none'};
+var overlays=[opts,con,size,submit];function show(o){overlays.forEach(function(x){x.classList.remove('show')});o.classList.add('show')}function hide(){overlays.forEach(function(x){x.classList.remove('show')})}menu.onclick=function(){show(opts)};contrast.onclick=function(){show(con)};textsize.onclick=function(){show(size)};document.querySelectorAll('[data-close]').forEach(function(b){b.onclick=hide});document.querySelectorAll('[data-back]').forEach(function(b){b.onclick=function(){show(opts)}});document.querySelectorAll('.theme').forEach(function(b){b.onclick=function(){document.body.className=b.dataset.theme}});document.querySelectorAll('.scale').forEach(function(b){b.onclick=function(){document.documentElement.style.setProperty('--scale',b.dataset.size)}});
+goto.onclick=review.onclick=render;function render(){var a=0;for(var n=14;n<=26;n++)if(ans(n))a++;var g='';for(var i=14;i<=26;i++)g+='<button class="tile '+(ans(i)?'answered':'')+'" data-jump="'+i+'">'+i+'</button>';subwrap.innerHTML='<p>You have answered <b>'+a+'</b> of 13 questions.</p><div class="tiles">'+g+'</div><p><button class="submit-test-btn submit" id="final">Submit test</button></p>';subwrap.querySelectorAll('[data-jump]').forEach(function(b){b.onclick=function(){hide();scroll(+b.dataset.jump)}});final.onclick=grade;show(submit)}
+function clean(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,' ')}function tag(el,ok,msg){el.insertAdjacentHTML('beforeend','<span class="tag '+(ok?'ok':'no')+'">'+msg+'</span>')}function grade(){if(done)return;done=true;var score=0;MATCH.forEach(function(q){var c=document.querySelector('input[name="q'+q.n+'"]:checked'),v=c&&c.value,ok=v===q.a;if(ok)score++;var row=document.getElementById('q'+q.n);row.querySelectorAll('input').forEach(function(r){r.disabled=true;if(r.value===q.a)r.parentNode.classList.add('ok');if(v===r.value&&!ok)r.parentNode.classList.add('no')});tag(row.cells[0],ok,ok?'Correct':(v?'Incorrect':'No answer'))});var selected=picked(),choiceScore=0;document.querySelectorAll('input[name="q21_22"]').forEach(function(c){c.disabled=true;var label=c.closest('label');if(CHOICES.indexOf(c.value)>-1)label.classList.add('ok');if(c.checked&&CHOICES.indexOf(c.value)===-1)label.classList.add('no')});CHOICES.forEach(function(a){if(selected.indexOf(a)>-1){score++;choiceScore++}});tag(document.querySelector('.multi h3'),choiceScore===2,'Answers: D, E');Object.keys(GAPS).forEach(function(n){var x=document.getElementById('gap'+n),ok=clean(x.value)===GAPS[n];if(ok)score++;x.disabled=true;x.classList.add(ok?'ok':'no');if(!ok)x.insertAdjacentHTML('afterend','<span class="corr">-&gt; '+GAPS[n]+'</span>')});var b=document.createElement('div');b.className='score';b.innerHTML='Your score: <b>'+score+' / 13</b><br><span style="color:var(--muted)">Correct answers are shown in green.</span>';right.insertBefore(b,right.firstChild);hide();right.scrollTop=0;refresh()}refresh();})();
+</script>
+<section id="walkthroughBlock" style="display:none;padding:36px 28px 60px;background:#f2f3f4;border-top:2px solid #d0d0d0;">
+  <div style="max-width:960px;margin:0 auto;">
+    <h2 style="font-family:Arial,sans-serif;font-size:24px;margin:0 0 8px;">Walkthrough</h2>
+    <p style="font-family:Arial,sans-serif;color:#606060;margin:0 0 18px;">Great work — now watch this walkthrough of the passage and questions.</p>
+    <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 10px 32px rgba(0,0,0,.22);">
+      <iframe src="https://www.youtube.com/embed/0xg1jF3rot8" title="Walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
     </div>
   </div>
 </section>
-
-</div></main>
-<footer class="navbar">
-  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
-  <span class="nav-info" id="navInfo">Task 1 of 8</span>
-  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
-</footer>
-<div class="completion-screen" id="completionScreen">
-  <div class="big-check">✓</div><div class="eyebrow">Day 12 of 30</div>
-  <h1>Congratulations — Day 12 complete! 🎉</h1>
-  <p>All 8 tasks done. Come back tomorrow for Day 13.</p>
-  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
-</div>
-<canvas id="confettiCanvas"></canvas>
-<script src="../supabase-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
-"use strict";
-var DAY=12,TOTAL_TASKS=8,current=1;
-var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
-var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
-var checkedTasks={};
-if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
-var STATE_KEY='sprint4_day12_state';
-function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
-function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
-restoreState();
-var _sb=null;
-function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
-var studentSession=null;
-try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
-var debTimers={};
-function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
-function getTaskForField(id){
-  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;
-  if(id==='t4score'||id==='t4check')return 4;if(/^t5g/.test(id))return 5;
-  if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;
-  if(id==='t8score'||id==='t8check')return 8;return 1;
-}
-function hookAutosave(){document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});document.querySelectorAll('input[type=checkbox]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){autosaveField('check_'+el.id,el.checked?'1':'0');});});}
-async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){if(el.type==='checkbox')el.checked=row.value==='1';else el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
-function saveProgress(t,c){try{var k='sprint4_day12_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
-var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
-function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
-function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
-function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
-function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
-function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
-function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
-function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById('t3check');return cb&&cb.checked;}if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);if(n===8){var cb8=document.getElementById('t8check');return cb8&&cb8.checked;}var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].tagName==='INPUT'&&texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}return true;}
-document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
-var task4MessageReceived=false;
-window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
-function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
-function revealListeningWalkthrough(){var cb=document.getElementById('t8check');var wt=document.getElementById('listeningWalkthrough');if(cb&&cb.checked&&wt)wt.style.display='block';refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
-function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
-
-/* ===== TASK 1 VOCAB ===== */
-var VA_segs=['The','/*1*/','of the human species is one of the most fascinating stories in natural history. Our','/*2*/','were small-brained primates who lived in Africa millions of years ago. A process of biological','/*3*/','produced many different hominin species over time. Today, researchers','/*4*/','this process using a','/*5*/','approach — combining genetics, archaeology, and geology. By examining','/*6*/','bones and ancient','/*7*/','they attempt to','/*8*/','how early humans lived. The physical','/*9*/','of these ancient people provide','/*10*/','evidence of our origins. The','/*11*/','of human migration out of Africa began around 70,000 years ago. This','/*12*/','took humans across continents. As groups began to','/*13*/','new territories, they were forced to','/*14*/','to unfamiliar','/*15*/','conditions. The','/*16*/','of different environments required early humans to','/*17*/','their diets and tools. The ability to','/*18*/','in hostile conditions is','/*19*/','to our species. Over time, much of the Earth became more','/*20*/'];
-var VA_ans={1:'evolution',2:'ancestors',3:'diversification',4:'investigate',5:'multidisciplinary',6:'fossil',7:'artefacts',8:'reconstruct',9:'remains',10:'sustained',11:'trajectory',12:'expansion',13:'colonise',14:'adapt',15:'habitat',16:'occupation',17:'diversify',18:'survive',19:'intrinsic',20:'habitable'};
-(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;VA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
-
-var vocabB=[
-  {n:1,t:'Archaeologists have discovered ancient ___ at the site, including stone tools and pottery fragments.',ans:'artefacts'},
-  {n:2,t:'Scientists continue to ___ the links between climate change and early human migration.',ans:'investigate'},
-  {n:3,t:'The ___ of early humans across Asia took thousands of years.',ans:'expansion'},
-  {n:4,t:'Certain bacteria can ___ in extremely cold or acidic environments.',ans:'survive'},
-  {n:5,t:'The research team adopted a ___ approach, combining biology, geology, and archaeology.',ans:'multidisciplinary'},
-  {n:6,t:'The ___ of the comet was tracked by astronomers for several months.',ans:'trajectory'},
-  {n:7,t:'After the fire, archaeologists carefully examined the ___ of the ancient building.',ans:'remains'},
-  {n:8,t:'To ___ to life at high altitude, the body produces more red blood cells.',ans:'adapt'},
-  {n:9,t:'Early settlers began to ___ the uninhabited islands in the 16th century.',ans:'colonise'},
-  {n:10,t:'The ___ of the forest provided shelter and food for hundreds of species.',ans:'habitat'},
-  {n:11,t:'The ___ of the town by foreign forces lasted for three years.',ans:'occupation'},
-  {n:12,t:'The ability to use language is considered ___ to human social development.',ans:'intrinsic'},
-  {n:13,t:'Scientists hope to ___ the ancient city from the ruins that remain.',ans:'reconstruct'},
-  {n:14,t:'The ___ funding allowed the research team to continue their work for a decade.',ans:'sustained'},
-  {n:15,t:'As technology advances, businesses must ___ their products to remain competitive.',ans:'diversify'}
-];
-(function buildVB(){var wrap=document.getElementById('vocabB-list');var html='';vocabB.forEach(function(s){html+='<p>'+s.n+'. '+s.t.replace('___','<input class="fill short" id="vb'+s.n+'">')+'</p>';});wrap.innerHTML=html;})();
-function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}var rB=0;vocabB.forEach(function(s){var inp=document.getElementById('vb'+s.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');document.getElementById('ansKey1Body').innerHTML='<b>A:</b><br>'+Object.keys(VA_ans).map(function(n){return n+'. '+VA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>B:</b><br>'+vocabB.map(function(s){return s.n+'. '+s.ans;}).join(' &nbsp;•&nbsp; ');document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
-
-/* ===== TASK 2 ===== */
-var miniReading=[{n:1,statement:'The study of human evolution now combines genetics, fossil evidence, and archaeological findings.',tf:'True'},{n:2,statement:'According to the passage, early human ancestors first emerged in Asia.',tf:'False'},{n:3,statement:'Early humans began to colonise other continents approximately 70,000 years ago.',tf:'True'},{n:4,statement:'The passage states that early humans maintained identical diets and tools across all environments.',tf:'False'},{n:5,statement:'The ability to adapt to different environments is described as intrinsic to human evolutionary success.',tf:'True'}];
-(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
-function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
-
-/* ===== TASK 5 NOTE COMPLETION ===== */
-var t5Ans={t5g1:"Writers'",t5g2:'Literary',t5g3:'fair',t5g4:'Activities',t5g5:'theme',t5g6:'Visual',t5g7:'exhibition',t5g8:'creative',t5g9:'galleries',t5g10:'crafts',t5g11:'Festival',t5g12:'interactive',t5g13:'Musical',t5g14:'concerts'};
-function checkTask5(){var right=0;Object.keys(t5Ans).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===t5Ans[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});alert('You got '+right+'/14 correct.');document.getElementById('ansKey5Body').innerHTML='1. Writers\' &nbsp;2. Literary &nbsp;3. fair &nbsp;4. Activities &nbsp;5. theme<br>6. Visual &nbsp;7. exhibition &nbsp;8. creative &nbsp;9. galleries &nbsp;10. crafts<br>11. Festival &nbsp;12. interactive &nbsp;13. Musical &nbsp;14. concerts';document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
-
-/* ===== TASK 6 VIDEO ===== */
-var vidMcqData=[{n:1,q:"According to the video, what happens inside a musician's brain while playing an instrument?",opts:["Only the memory centre becomes active.","The brain becomes less active.","Multiple areas of the brain become active simultaneously.","Only the motor cortex is used."],ans:"C"},{n:2,q:"Which technologies have helped neuroscientists study the brain in real time?",opts:["X-rays and ultrasound","MRI and PET scanners","ECG machines","Telescopes"],ans:"B"},{n:3,q:"What happens when people simply listen to music?",opts:["Only the auditory cortex is activated.","The brain shuts down unnecessary functions.","Multiple brain regions process melody, rhythm, and sound together.","Only the right hemisphere becomes active."],ans:"C"},{n:4,q:"The video compares playing music to which activity?",opts:["Reading a novel","Solving a puzzle","A full-body workout for the brain","Watching television"],ans:"C"},{n:5,q:"Which three cortices are especially engaged when playing a musical instrument?",opts:["Visual, auditory, and motor cortices","Frontal, temporal, and occipital cortices","Sensory, emotional, and memory cortices","Left, right, and central cortices"],ans:"A"},{n:6,q:"What important brain structure becomes stronger through musical training?",opts:["Cerebellum","Brain stem","Corpus callosum","Hippocampus"],ans:"C"},{n:7,q:"According to the video, what does a stronger corpus callosum allow?",opts:["Slower reactions","Better eyesight","Faster communication between the brain's hemispheres","Improved hearing only"],ans:"C"},{n:8,q:"Which of the following is included in executive function?",opts:["Sleeping and dreaming","Planning, strategizing, and attention to detail","Digestion and breathing","Balance and coordination only"],ans:"B"},{n:9,q:"How do musicians appear to organise memories?",opts:["By storing only visual information","By repeating information aloud","By giving each memory multiple tags","By forgetting unnecessary details"],ans:"C"},{n:10,q:"What did randomized studies find about people who learned music?",opts:["They became physically stronger.","They showed enhancement in multiple brain areas.","They became better athletes.","They had no measurable brain changes."],ans:"B"}];
-(function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
-var vidGapData=[{n:1,t:"The speaker compares activity inside a musician's brain to ___.",ans:"fireworks"},{n:2,t:"___ have made major breakthroughs in understanding the brain.",ans:"neuroscientists"},{n:3,t:"While listening to music, the brain processes elements such as rhythm and ___.",ans:"melody"},{n:4,t:"Playing music is described as the brain's equivalent of a full-body ___.",ans:"workout"},{n:5,t:"Playing an instrument especially activates the ___ cortex.",ans:"visual"},{n:6,t:"Fine motor skills are controlled by the ___ cortex.",ans:"motor"},{n:7,t:"Musical training increases the activity of the ___ callosum.",ans:"corpus"},{n:8,t:"This structure connects the two brain ___.",ans:"hemispheres"},{n:9,t:"Stronger brain connections may help musicians solve problems more ___.",ans:"creatively"},{n:10,t:"Musicians often have higher levels of ___ function.",ans:"executive"},{n:11,t:"Executive function includes planning and ___.",ans:"strategizing"},{n:12,t:"Musicians can create, store, and retrieve ___ more efficiently.",ans:"memories"},{n:13,t:"Each memory may include a ___ tag alongside other types of tags.",ans:"contextual"},{n:14,t:"Researchers found that the artistic and ___ aspects of music are unique.",ans:"aesthetic"},{n:15,t:"Music learning resulted in noticeable ___ in several brain regions.",ans:"enhancement"}];
-(function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
-var vidMatchData=[{n:1,term:"neuroscientist",ans:"A"},{n:2,term:"melody",ans:"B"},{n:3,term:"cortex",ans:"C"},{n:4,term:"motor skills",ans:"D"},{n:5,term:"hemisphere",ans:"E"},{n:6,term:"corpus callosum",ans:"F"},{n:7,term:"executive function",ans:"G"},{n:8,term:"strategize",ans:"H"},{n:9,term:"retrieve",ans:"I"},{n:10,term:"interconnected",ans:"J"},{n:11,term:"cognitive",ans:"K"},{n:12,term:"auditory",ans:"L"},{n:13,term:"aesthetic",ans:"M"},{n:14,term:"enhancement",ans:"N"},{n:15,term:"simultaneously",ans:"O"}];
-var vidMatchDefs={A:"a scientist who studies the brain and nervous system",B:"a sequence of musical notes forming a tune",C:"the outer layer of the brain",D:"the ability to make controlled physical movements",E:"one half of the brain",F:"the bundle of nerve fibres connecting the two brain hemispheres",G:"mental skills used for planning, decision-making, and attention",H:"to plan carefully in order to achieve a goal",I:"to bring back information from memory",J:"closely linked or connected together",K:"related to thinking, learning, and understanding",L:"related to hearing",M:"related to beauty or artistic appreciation",N:"an improvement or increase in quality or ability",O:"happening at the same time"};
-(function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
-function checkVideoTask(){var rMcq=0,rGap=0,rMatch=0;vidMcqData.forEach(function(q){var chosen=document.querySelector('input[name="vq'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById('vmcq'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> '+vidMcqData.map(function(q){return q.n+'.'+q.ans;}).join(' ')+'<br><b>Gap:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' &nbsp;•&nbsp; ')+'<br><b>Match:</b> '+vidMatchData.map(function(m){return m.n+'.'+m.ans;}).join(' ');document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkVideoTask=checkVideoTask;
-
-/* ===== TASK 7 PODCAST ===== */
-var dictAns={1:'hammock',2:'species',3:'extremophiles',4:'hostile',5:'Yellowstone',6:'microorganisms',7:'bacteria',8:'eukaryotes',9:'plant',10:'animal',11:'eukaryote',12:'thriving',13:'well',14:'hydrothermal',15:'ice',16:'iron',17:'adaptation',18:'2',19:'1',20:'newer',21:'Yellowstone',22:'right',23:'microorganisms',24:'hostile',25:'geyser',26:'plants',27:'animals',28:'thriving',29:'ocean',30:'life'};
-var dictLines=[{sp:'Neil',t:"For me, lying in a {1} under a palm tree on a tropical beach with a cool breeze."},{sp:'Alice',t:"The subject of today's show is {2} – microorganisms that have adapted to live in extreme conditions. The subject of today's show is {3} – microorganisms that have adapted to live in extreme conditions."},{sp:'Alice',t:"What sounds {4} to us are perfect environments for extremophiles."},{sp:'Neil',t:"I'm going to say {5}."},{sp:'Alice',t:"Extremophiles belong to an entirely different group of living things from animals and plants. They are {6} – they're really tiny."},{sp:'Ian Crawford',t:"There are really only three major groups in life: the archaea, the {7}, and the {8}, which include all complex life."},{sp:'Neil',t:"Botany is the study of {9} life, and zoology is the study of {10} life."},{sp:'Alice',t:"A {11} is an organism with a larger and more complex type of cell."},{sp:'Alice',t:"They've been living on Earth for billions of years and are still {12} in many different environments today."},{sp:'Neil',t:"When something is thriving, it means it's doing {13}."},{sp:'Alice',t:"Some extremophiles live in {14} vents on the ocean floor where there is enormous pressure and no sunlight."},{sp:'Alice',t:"Scientists have also found extremophiles in hidden lakes trapped beneath {15} sheets in Antarctica."},{sp:'Alice',t:"These microbes get energy from minerals like {16} and sulphur found in the water."},{sp:'Alice',t:"It isn't about cleverness — it's about {17}. Extremophiles are extremely well adapted to their environment."},{sp:'Nick Lane',t:"The origin of the Eukaryotic cell happened once. It took about {18} billion years before that happened. Then another {19} billion years passed before animals appeared."},{sp:'Neil',t:"So the animal kingdom is much {20} than the archaean kingdom."},{sp:'Neil',t:"I answered {21}."},{sp:'Alice',t:"And you were {22}!"},{sp:'Neil',t:"Extremophiles are {23} that live in extreme environments."},{sp:'Alice',t:"Something {24} is unfriendly or dangerous."},{sp:'Neil',t:"A {25} is a hot spring that shoots hot water and steam into the air."},{sp:'Alice',t:"Botany is the study of {26}."},{sp:'Neil',t:"Zoology is the study of {27}."},{sp:'Alice',t:"If something is {28}, it is growing or doing very well."},{sp:'Neil',t:"Hydrothermal vents are holes in the {29} floor where hot mineral-rich water comes out."},{sp:'Alice',t:"Scientists study extremophiles because they may help us understand the earliest {30} on Earth."}];
-(function buildDict(){var el=document.getElementById('dictation-text');var html='';dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return '<input class="fill short" id="dict'+num+'">';});html+='<p><span class="speaker">'+line.sp+'</span>'+t+'</p>';});el.innerHTML=html;})();
-var compData=[{n:1,q:"What are extremophiles?",opts:["Large sea animals","Plants that grow in deserts","Microorganisms that live in extreme environments","Birds that migrate long distances"],ans:"C"},{n:2,q:"According to the programme, what does the word hostile mean?",opts:["Warm and comfortable","Friendly and welcoming","Unfriendly or dangerous","Wet and cold"],ans:"C"},{n:3,q:"Which group do extremophiles belong to?",opts:["Mammals","Fungi","Archaea","Insects"],ans:"C"},{n:4,q:"Where can extremophiles be found?",opts:["Only in deserts","Only in forests","In extreme places such as hydrothermal vents and Antarctic lakes","Only inside volcanoes"],ans:"C"},{n:5,q:"Why are scientists interested in studying extremophiles?",opts:["They are useful as household pets.","They can predict earthquakes.","They may provide clues about the earliest life on Earth and have applications in medicine, agriculture, and energy.","They are the largest microorganisms in the world."],ans:"C"}];
-(function buildComp(){var wrap=document.getElementById('comp-list');var html='';compData.forEach(function(q){html+='<div class="q-block" id="compBlock'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="comp'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
-function checkPodcast(){var rDict=0,rComp=0;Object.keys(dictAns).forEach(function(n){var inp=document.getElementById('dict'+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});compData.forEach(function(q){var chosen=document.querySelector('input[name="comp'+q.n+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById('compBlock'+q.n);if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});alert('Dictation: '+rDict+'/30\nComprehension: '+rComp+'/5');document.getElementById('ansKey7Body').innerHTML='<b>Dict:</b><br>'+Object.keys(dictAns).map(function(n){return n+'. '+dictAns[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>Comp:</b> '+compData.map(function(q){return q.n+'.'+q.ans;}).join(' ');document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkPodcast=checkPodcast;
-
-/* ===== INIT ===== */
-var t4checkEl=document.getElementById('t4check');
-if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
-if(taskDone[4])task4MessageReceived=true;
-(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
-showTask(current);
-
-/* ===== PERSISTENT HIGHLIGHT ===== */
-(function(){
-  var HL_KEY='sprint4_hl_day12';
-  var tools=document.getElementById('hlTools');
-  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
-  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
-  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
-  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
-  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
-  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
-  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
-  restoreHighlights();
-})();
+  var rightPane = document.getElementById('right');
+  if(!rightPane) return;
+  var observer = new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      m.addedNodes.forEach(function(node){
+        if(node.nodeType===1 && node.className==='score'){
+          var wt = document.getElementById('walkthroughBlock');
+          if(wt){ wt.style.display='block'; setTimeout(function(){ wt.scrollIntoView({behavior:'smooth',block:'start'}); },500); }
+          var scoreEl = node.querySelector('b');
+          var score = scoreEl ? (parseInt(scoreEl.textContent)||0) : 0;
+          var msg = {type:'sprint4-task-done',task:4,score:score,total:13};
+          if(window.opener) window.opener.postMessage(msg,'*');
+          else if(window.parent&&window.parent!==window) window.parent.postMessage(msg,'*');
+          observer.disconnect();
+        }
+      });
+    });
+  });
+  observer.observe(rightPane, {childList:true, subtree:false});
 })();
 </script>
+
 </body>
 </html>
