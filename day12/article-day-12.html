@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — The Giants of Memory</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.7;}
+  .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+  .topbar a{color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;}.topbar a:hover{text-decoration:underline;}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+  .kicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-size:12.5px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+  h1{font-size:30px;margin:0 0 8px;line-height:1.2;}
+  .byline{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:14px;margin-bottom:30px;}
+  .lede{font-size:18px;color:#333;margin-bottom:28px;}
+  p{margin:0 0 18px;font-size:17px;}
+  h2{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:21px;margin:36px 0 14px;color:var(--accent-dark);border-bottom:2px solid var(--border);padding-bottom:8px;}
+  .diagram{background:#f0f4f5;border:1px solid var(--border);border-radius:8px;padding:16px 20px;font-family:monospace;font-size:12.5px;margin:20px 0;color:var(--accent-dark);line-height:2;white-space:pre-wrap;}
+  ul,ol{margin:0 0 18px;font-size:16.5px;line-height:1.9;padding-left:22px;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14.5px;}
+  th,td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:#eef3f4;font-weight:700;}td.term{font-weight:700;color:var(--accent-dark);}
+  .qs-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-top:36px;}
+  .qs-section h2{border:none;margin-top:0;padding-bottom:0;}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .q-block{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;}
+  .q-text{font-size:15px;margin-bottom:8px;}
+  .opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}
+  .opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 8px;width:200px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}
+  input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}.btn:hover{background:var(--accent-dark);}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:10px 14px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+  .answer-key summary::-webkit-details-marker{display:none;}
+  .answer-key-body{padding:12px 16px;background:#fff;font-size:14px;line-height:1.8;}
+  .footer-note{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:13px;margin-top:50px;border-top:1px solid var(--border);padding-top:16px;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<div class="topbar"><a href="javascript:window.close()">← Back to Day 12</a></div>
+<div class="wrap">
+  <div class="kicker">Background Reading // Zoology &amp; Cognitive Neurology</div>
+  <h1>The Giants of Memory</h1>
+  <p style="font-family:sans-serif;font-size:13.5px;color:var(--muted);margin-bottom:30px;">Cognitive Neurology and Social Complexity in Proboscideans — IELTS Sprint4 Day 12</p>
+
+  <p class="lede">To fully appreciate the survival and conservation dilemmas of the African elephant, we must explore the evolutionary and neurological systems that govern their lives. Preserving elephants is ultimately a task of protecting a highly sophisticated collective intellect.</p>
+
+  <h2>The Neurological Architecture of Remembrance</h2>
+  <p>In the animal kingdom, brain size is often balanced against body size using a metric known as the Encephalization Quotient (EQ). While humans possess an exceptionally high EQ, elephants possess the largest absolute brain mass of any terrestrial mammal, weighing up to five kilograms. However, it is not merely the physical volume of the elephant brain that is remarkable, but the specialised enlargement of its temporal lobes — specifically the hippocampus.</p>
+
+  <div class="diagram">[Sensory Stimuli / Olfactory Signatures]
+              │
+              ▼
+     [Olfactory Bulb]
+              │
+              ▼
+     [Temporal Lobe] ──(Enlarged 40% vs. Humans)──> [Hippocampus]
+                                                          │
+                                                          ▼
+                                               [Long-Term Spatial &amp;]
+                                               [Social Memory Banks]</div>
+
+  <p>In humans, the hippocampus is crucial for converting short-term experiences into long-term spatial and declarative memories. In the elephant, the hippocampus is proportionally 40 percent larger than that of a human. This structural amplification serves a critical evolutionary purpose: environmental mapping. Because African savannahs are characterised by extreme resource <strong>volatility</strong>, an elephant herd cannot survive by wandering randomly. They rely on a mental map of watering holes, migratory corridors, and feeding grounds across thousands of square kilometres — stored in the temporal lobe, allowing elder matriarchs to recall the precise location of a remote water source visited only once decades prior.</p>
+
+  <h2>Matriarchal Leadership and Fission-Fusion Dynamics</h2>
+  <p>The survival of elephant herds is entirely dependent on a social structure known as <strong>fission-fusion dynamics</strong>. Rather than remaining in static, permanent groups, elephant society is fluid. Small, closely related <strong>matrilineal</strong> family units constantly split apart (fission) to forage and reunite (fusion) into massive clans containing hundreds of individuals when resources allow.</p>
+
+  <div class="diagram">       [The Matriarch] (Preserver of the Clan's Collective Memory)
+              │
+      ┌───────┴───────┐
+      ▼               ▼
+ [Family Unit A]   [Family Unit B]  ← (Fission: split to forage)
+      │               │
+      └───────┬───────┘
+              ▼
+         [The Clan]                 ← (Fusion: gather during dry season)</div>
+
+  <p>Managing these complex, shifting relationships requires immense cognitive power. An adult female must not only identify her immediate offspring but also recognise the vocalisations, scent signatures, and social status of up to 200 other individuals. This social cognitive load is comparable to human social limits — famously defined by anthropologist Robin Dunbar as <strong>Dunbar's Number</strong> (approximately 150 individuals).</p>
+  <p>Because male elephants are exiled from matrilineal groups upon reaching sexual maturity, the preservation of social knowledge falls entirely on the oldest female — the matriarch. When a matriarch is killed by poachers, the group loses not just a member but their collective library of survival strategies and social histories, leading to severe behavioural trauma across the surviving family.</p>
+
+  <h2>The Apian Deterrent: Sensory Biology in Conservation</h2>
+  <p>One of the most fascinating developments in modern ecological engineering is the discovery of the deep-seated evolutionary fear elephants harbour toward the African honeybee. While an elephant's hide is <strong>impenetrable</strong> to most insect stings, several areas remain highly vulnerable:</p>
+  <ul>
+    <li><strong>The Trunk Tip:</strong> Packed with thousands of delicate sensory nerve endings used for tactile exploration.</li>
+    <li><strong>The Eyes and Behind the Ears:</strong> Areas where the skin is exceptionally thin and vascular.</li>
+    <li><strong>The Interior of the Trunk:</strong> If a bee crawls inside and stings, the resulting swelling can restrict breathing, potentially proving fatal.</li>
+  </ul>
+  <p>Over evolutionary time, elephants developed a specific behavioural response to the sound of buzzing bees — emitting a distinct low-frequency, infrasonic "rumble" that warns surrounding family groups, initiating an immediate retreat. By strategically hanging active beehives along agricultural boundaries, conservationists exploit this ancient evolutionary defence. The resulting <strong>bee fences</strong> create a highly effective, non-violent biological barrier that deters crop-raiding elephants while simultaneously providing smallholder farmers with a secondary income through honey production.</p>
+
+  <h2>Vocabulary Glossary</h2>
+  <table>
+    <tr><th>Word</th><th>Definition</th><th>Example</th></tr>
+    <tr><td class="term">evolution</td><td>The gradual development of species over time through natural selection.</td><td>The evolution of the elephant brain reflects millions of years of adaptation.</td></tr>
+    <tr><td class="term">ancestors</td><td>Animals or people from whom a species or individual is descended.</td><td>The ancestors of modern elephants roamed much wider territories.</td></tr>
+    <tr><td class="term">diversification</td><td>The process of developing a greater variety of types or forms.</td><td>The diversification of elephant species occurred over millennia.</td></tr>
+    <tr><td class="term">artefacts</td><td>Objects made by humans, especially those of historical or cultural interest.</td><td>Archaeological artefacts help us understand ancient human migration.</td></tr>
+    <tr><td class="term">remains</td><td>Parts of a dead organism or object that have survived.</td><td>The fossil remains of early humans were found in East Africa.</td></tr>
+    <tr><td class="term">occupation</td><td>The act of living in or using a place.</td><td>Evidence of human occupation at the site dates back 40,000 years.</td></tr>
+    <tr><td class="term">expansion</td><td>The process of increasing in size, number, or scope.</td><td>The expansion of elephant herds depends on available habitat.</td></tr>
+    <tr><td class="term">colonise</td><td>To move into and establish control or settlement in a new area.</td><td>Early humans began to colonise new continents around 70,000 years ago.</td></tr>
+    <tr><td class="term">reconstruct</td><td>To build or create something again after it has been destroyed or damaged.</td><td>Scientists attempt to reconstruct ancient migration routes from fossil evidence.</td></tr>
+    <tr><td class="term">investigate</td><td>To examine, study, or inquire into something systematically.</td><td>Researchers investigate elephant behaviour using satellite tracking.</td></tr>
+    <tr><td class="term">trajectory</td><td>The curved path followed by a moving object; also the course of development over time.</td><td>The trajectory of elephant population decline is deeply concerning.</td></tr>
+    <tr><td class="term">adapt</td><td>To change or adjust in order to suit a new environment or situation.</td><td>Elephants must adapt their behaviour as habitats shrink.</td></tr>
+    <tr><td class="term">sustained</td><td>Maintained continuously over a long period of time.</td><td>Sustained conservation efforts are needed to protect elephant populations.</td></tr>
+    <tr><td class="term">habitat</td><td>The natural environment in which an organism lives.</td><td>The destruction of savannah habitat threatens elephant survival.</td></tr>
+    <tr><td class="term">survive</td><td>To continue to live or exist, especially in difficult conditions.</td><td>Without their matriarch's knowledge, young elephants struggle to survive.</td></tr>
+    <tr><td class="term">multidisciplinary</td><td>Involving several different academic disciplines or fields of study.</td><td>Elephant conservation requires a multidisciplinary approach combining biology, ecology, and sociology.</td></tr>
+    <tr><td class="term">intrinsic</td><td>Belonging naturally; essential.</td><td>The matriarch's role is intrinsic to the functioning of the herd.</td></tr>
+    <tr><td class="term">habitable</td><td>Suitable for living in.</td><td>Climate change is reducing the area of habitable land for wildlife.</td></tr>
+    <tr><td class="term">fossil</td><td>The preserved remains or impression of a prehistoric organism found in rock.</td><td>A fossil skull found in Ethiopia provided clues about early human ancestors.</td></tr>
+    <tr><td class="term">diversify</td><td>To develop a wider range of forms, types, or activities.</td><td>As humans spread across continents, they began to diversify in diet and culture.</td></tr>
+  </table>
+
+  <!-- COMPREHENSION QUESTIONS -->
+  <div class="qs-section">
+    <h2>Comprehension Questions</h2>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:18px 0 8px;color:var(--accent-dark);">Academic Vocabulary Enhancement</h3>
+    <p class="instr">Find the words or phrases within the article that match the following formal definitions.</p>
+    <div class="q-block"><div class="q-text">1. (n. — Introduction): A group of mammals characterised by having a long, flexible snout or trunk, such as elephants.</div><input class="fill" id="vq1"></div>
+    <div class="q-block"><div class="q-text">2. (n. — Paragraph 2): Unpredictability, instability, or the liability of an environment to change rapidly and unexpectedly.</div><input class="fill" id="vq2"></div>
+    <div class="q-block"><div class="q-text">3. (adj. — Paragraph 3): Inherited, traced, or run through the female line of a family.</div><input class="fill" id="vq3"></div>
+    <div class="q-block"><div class="q-text">4. (adj. — Paragraph 4): Incapable of being pierced, entered, or passed through.</div><input class="fill" id="vq4"></div>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:24px 0 8px;color:var(--accent-dark);">Multiple Choice (Questions 1–4)</h3>
+    <p class="instr">Choose the correct letter, A, B, C or D.</p>
+    <div class="q-block" id="aq1Block"><div class="q-text">1. According to the article, the structural enlargement of the elephant's hippocampus is evolutionarily significant because it …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq1" value="A"> A) allows them to process complex visual data faster than humans.</label><label class="opt-row" data-val="B"><input type="radio" name="aq1" value="B"> B) stores vital geographic information required to locate scarce resources.</label><label class="opt-row" data-val="C"><input type="radio" name="aq1" value="C"> C) regulates their body temperature in volatile weather conditions.</label><label class="opt-row" data-val="D"><input type="radio" name="aq1" value="D"> D) helps males maintain permanent dominance over family units.</label></div></div>
+    <div class="q-block" id="aq2Block"><div class="q-text">2. The social structure known as "fission-fusion dynamics" is characterised by …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq2" value="A"> A) young males permanently leading large territorial clans.</label><label class="opt-row" data-val="B"><input type="radio" name="aq2" value="B"> B) family groups constantly changing size and composition based on resource availability.</label><label class="opt-row" data-val="C"><input type="radio" name="aq2" value="C"> C) the total isolation of female elephants during the dry season.</label><label class="opt-row" data-val="D"><input type="radio" name="aq2" value="D"> D) violent territorial conflicts between unrelated matriarchal groups.</label></div></div>
+    <div class="q-block" id="aq3Block"><div class="q-text">3. Why does the death of a matriarch pose such a severe threat to the survival of an entire herd?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq3" value="A"> A) She is the only individual physically capable of defending the herd from predators.</label><label class="opt-row" data-val="B"><input type="radio" name="aq3" value="B"> B) Her absence causes the younger male elephants to return to the group prematurely.</label><label class="opt-row" data-val="C"><input type="radio" name="aq3" value="C"> C) She possesses the collective, irreplaceable memory of survival paths and social networks.</label><label class="opt-row" data-val="D"><input type="radio" name="aq3" value="D"> D) Her death triggers a biological decline in the fertility rates of other females.</label></div></div>
+    <div class="q-block" id="aq4Block"><div class="q-text">4. Which of the following explains why elephants are deeply afraid of African honeybees?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq4" value="A"> A) Bee venom is highly corrosive to the outer layer of an elephant's legs.</label><label class="opt-row" data-val="B"><input type="radio" name="aq4" value="B"> B) Bees target the most delicate and highly vascular facial features of the elephant.</label><label class="opt-row" data-val="C"><input type="radio" name="aq4" value="C"> C) The sound of buzzing disrupts the elephant's internal sonar navigation system.</label><label class="opt-row" data-val="D"><input type="radio" name="aq4" value="D"> D) Swarms of bees consume the vegetation that elephants rely on for food.</label></div></div>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:24px 0 8px;color:var(--accent-dark);">Summary Completion (Questions 5–7)</h3>
+    <p class="instr">Complete the summary. Choose NO MORE THAN TWO WORDS from the article for each answer.</p>
+    <div style="background:#f7f8fa;border:1px solid var(--border);border-radius:8px;padding:16px 18px;line-height:2.2;font-size:15.5px;margin-bottom:14px;">
+      Because elephants have to travel across large, unstable landscapes, they rely on specialised brain structures to navigate. Their larger <input class="fill" id="aq5" style="width:160px;"> allows them to build mental maps of their environment. Socially, they live in flexible groups where a female must remember up to 200 distinct individuals, a cognitive challenge comparable to <input class="fill" id="aq6" style="width:180px;"> in humans. Today, researchers use their natural fear of insects to build <input class="fill" id="aq7" style="width:150px;"> around farms, keeping the elephants safe from human conflict while providing farmers with extra income.
+    </div>
+
+    <button class="btn" onclick="checkArticleComprehension()">Check answers</button>
+    <details class="answer-key" id="artAnsKey"><summary>Answer key</summary>
+      <div class="answer-key-body">
+        <b>Vocab finding:</b> 1. Proboscideans &nbsp;•&nbsp; 2. volatility &nbsp;•&nbsp; 3. matrilineal &nbsp;•&nbsp; 4. impenetrable<br>
+        <b>MCQ:</b> 1. B &nbsp;•&nbsp; 2. B &nbsp;•&nbsp; 3. C &nbsp;•&nbsp; 4. B<br>
+        <b>Summary:</b> 5. hippocampus &nbsp;•&nbsp; 6. Dunbar's Number &nbsp;•&nbsp; 7. bee fences
+      </div>
+    </details>
+  </div>
+
+  <div class="footer-note">Background Reading — IELTS Sprint4 Day 12 &nbsp;•&nbsp; Zoology &amp; Cognitive Neurology</div>
+</div>
+<script>
+var vocabAns={vq1:'Proboscideans',vq2:'volatility',vq3:'matrilineal',vq4:'impenetrable'};
+var mcqAns={aq1:'B',aq2:'B',aq3:'C',aq4:'B'};
+var sumAns={aq5:'hippocampus',aq6:"Dunbar's Number",aq7:'bee fences'};
+function checkArticleComprehension(){
+  var right=0,total=11;
+  Object.keys(vocabAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===vocabAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  Object.keys(mcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===mcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===mcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  Object.keys(sumAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===sumAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  alert('You got '+right+' / '+total+' correct.');
+  document.getElementById('artAnsKey').classList.add('show');
+}
+(function(){
+  var HL_KEY='sprint4_hl_art12';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+</script>
+</body>
+</html>
