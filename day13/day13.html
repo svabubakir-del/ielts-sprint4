@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 13</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}input.fill.med{width:170px;}input.fill.wide{width:260px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";transition:transform .15s;}.answer-key[open] summary::before{transform:rotate(90deg);}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}
+  .wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}
+  .wf-table th{background:var(--accent-light);color:var(--accent-dark);font-weight:700;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 13</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">evolution</span><span class="chip">ancestors</span><span class="chip">diversification</span><span class="chip">artefacts</span><span class="chip">remains</span><span class="chip">occupation</span><span class="chip">expansion</span><span class="chip">colonise</span><span class="chip">reconstruct</span><span class="chip">investigate</span><span class="chip">trajectory</span><span class="chip">adapt</span><span class="chip">sustained</span><span class="chip">habitat</span><span class="chip">survive</span><span class="chip">multidisciplinary</span><span class="chip">intrinsic</span><span class="chip">habitable</span><span class="chip">fossil</span><span class="chip">diversify</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word or phrase from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+  <div class="card">
+    <h3>Climate and human migration</h3>
+    <div class="passage-text">Modern understanding of early human migration patterns has been significantly shaped by palaeoclimatological research. Scientists now know that the African continent experienced repeated cycles of dramatic environmental change over the past 200,000 years, alternating between arid periods — during which vast deserts expanded and human populations were confined to isolated refuges — and humid phases, during which rainfall increased dramatically and lush vegetation spread across previously barren regions. These humid periods, known as African Humid Periods, created fertile corridors that allowed human populations to expand rapidly into new territories. Genetic research supports this model, showing that patterns of genetic diversity in modern human populations correspond closely to the timing of these climatic cycles. The most significant dispersal event, which saw human populations spread rapidly into Asia, Europe, and eventually the Americas and Australia, appears to have coincided with a major shift in the Earth's orbital cycle approximately 70,000 years ago.</div>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside the article page.</p></div>
+  <div class="card"><h3>The Green Sahara and the Aquatic Horizons of East Africa</h3><p class="instr">A background reading on orbital forcing, the Aquatic Foraging Theory, and the microlithic revolution — with full vocabulary glossary and comprehension questions.</p><a class="btn link-out" href="article-day-13.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_13.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After submitting, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 10"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the longer passage, then answer all questions below.</p></div>
+  <div class="card">
+    <h3>Out of Africa: The Scientific Consensus on Human Origins</h3>
+    <div class="passage-text">For decades, anthropologists debated whether modern humans originated in a single region of Africa or emerged simultaneously in multiple locations across the globe. The multiregional hypothesis, once supported by a number of influential researchers, proposed that populations of Homo erectus who had already colonised Europe and Asia gradually evolved into modern humans independently, with sustained gene flow between regions preventing excessive divergence. This model was largely dismantled by genetic evidence in the 1980s and 1990s, which demonstrated conclusively that all living humans share a common maternal ancestor — popularly known as "Mitochondrial Eve" — who lived in Africa approximately 150,000 to 200,000 years ago.
+    <br><br>
+    Today, the scientific consensus firmly supports the "Out of Africa" hypothesis, also known as the Recent African Origin (RAO) model. According to this framework, anatomically modern humans — Homo sapiens — evolved on the African continent and subsequently expanded outward in a series of dispersal events, the most significant of which began approximately 70,000 years ago. This expansion was likely triggered by dramatic environmental changes, including volcanic supereruptions and the resulting global cooling that reduced habitable land across the tropics.
+    <br><br>
+    Archaeological evidence supports this trajectory. Stone artefacts, personal ornaments, and fossilised human remains found at coastal sites in South Africa, Ethiopia, and Morocco predate any comparable finds outside the continent by tens of thousands of years. As these populations colonised new territories, they encountered and in some cases interbred with archaic human relatives such as Neanderthals and Denisovans, leaving genetic traces that persist in modern non-African populations today.
+    <br><br>
+    The study of this extraordinary migration is necessarily multidisciplinary, drawing on genetics, geology, palaeoclimatology, and archaeology to reconstruct the complex journey by which a small population of African ancestors gave rise to all eight billion people alive today.</div>
+  </div>
+  <div class="card">
+    <h4>Section 1 — True / False / Not Given (5 questions)</h4>
+    <p class="instr">Write True, False, or Not Given based on the passage above.</p>
+    <div id="t5TFList"></div>
+  </div>
+  <div class="card">
+    <h4>Section 2 — Short answer (3 questions)</h4>
+    <p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+    <div class="passage-text">
+      <p>6. What is the alternative name for the "Out of Africa" hypothesis?<br><input class="fill med" id="t5s6"></p>
+      <p>7. Approximately how long ago did the most significant dispersal event begin?<br><input class="fill short" id="t5s7"></p>
+      <p>8. Name ONE type of archaic human that modern humans interbred with.<br><input class="fill short" id="t5s8"></p>
+    </div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage carefully and answer the comprehension questions.</p></div>
+
+  <div class="card">
+    <h3>Passage A — Fossil Evidence and Dating</h3>
+    <div class="passage-text">The study of early human fossils has been transformed by advances in radiometric dating techniques. Before the development of methods such as uranium-series dating and electron spin resonance, archaeologists relied almost entirely on stratigraphic position — the principle that objects found deeper in the soil are older — to assign approximate dates to hominin remains. Modern dating techniques have since revealed that many sites previously assumed to be of similar age actually span tens of thousands of years, fundamentally altering our understanding of the timeline of human evolution. In particular, fossils from sites in Morocco, such as those found at Jebel Irhoud, have been dated to approximately 300,000 years ago — pushing back the known age of anatomically modern Homo sapiens by more than 100,000 years.</div>
+    <h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+    <div id="t6aMcqList"></div>
+  </div>
+
+  <div class="card">
+    <h3>Passage B — Tool Technology and Cognitive Development</h3>
+    <div class="passage-text">The relationship between toolmaking and cognitive development in early humans has been a subject of intense debate. The Oldowan tool tradition, which produced simple stone flakes and choppers, dates back approximately 2.6 million years and is associated with Homo habilis — the first member of the genus Homo. By contrast, the later Acheulean tradition, characterised by large, symmetrical handaxes, required considerably more planning and spatial reasoning, suggesting a marked increase in cognitive capacity. The most dramatic cognitive leap, however, appears to be associated with the Middle Stone Age, when Homo sapiens began producing microlith-based composite tools, engraving abstract patterns onto ochre, and trading shell ornaments across distances of hundreds of kilometres — behaviours that imply a sophisticated symbolic communication system almost certainly linked to the development of complex language.</div>
+    <h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+    <div id="t6bMcqList"></div>
+  </div>
+
+  <div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+
+  <div class="card">
+    <h3>Passage 1 — Climate and Migration Corridors</h3>
+    <div class="passage-text">Palaeoclimatic data indicates that major episodes of human migration out of Africa corresponded closely with periods of increased rainfall and the formation of "green corridors" — vegetated pathways across otherwise inhospitable desert regions such as the Sahara and the Arabian Peninsula. During humid phases, these corridors allowed populations to move northward and eastward with relative ease, following seasonal water sources and the grazing animals that depended on them. When dry conditions returned and the corridors closed, isolated populations were left to adapt to their new environments independently, driving regional diversification.</div>
+    <div id="t7p1List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Passage 2 — The First Australians</h3>
+    <div class="passage-text">The colonisation of Australia represents one of the most remarkable feats of early human migration. Genetic and archaeological evidence now places the first arrival of modern humans on the Australian continent at between 50,000 and 65,000 years ago — a period when sea levels were lower but a significant open-water crossing of at least 90 kilometres was still required. This implies that these early colonisers possessed not only the navigational skills to undertake a planned sea voyage but also the organisational capacity to sustain a founding population large enough to survive and thrive in an entirely new continent with no prior human occupation.</div>
+    <div id="t7p2List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Passage 3 — Genetic Diversity and the Founder Effect</h3>
+    <div class="passage-text">One of the most striking findings of modern population genetics is that African populations exhibit far greater genetic diversity than populations on any other continent. This pattern is consistent with the Out of Africa hypothesis: since all non-African populations descend from a relatively small founding group that left Africa around 70,000 years ago, they carry only a subset of the genetic variation present in their ancestral homeland. With each successive migration — from Africa to the Middle East, from Asia to the Americas — populations became progressively less diverse, a phenomenon known as the "serial founder effect".</div>
+    <div id="t7p3List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Passage 4 — Coastal Migration</h3>
+    <div class="passage-text">A growing body of evidence supports the theory that early modern humans expanded out of Africa by following coastlines rather than moving through the continental interior. This "coastal migration hypothesis" is supported by the discovery of ancient shell middens — refuse heaps of discarded shellfish — at sites along the southern coast of Africa, the Arabian Peninsula, and the Indian subcontinent, all dating to the period of the initial dispersal. Coastal environments offered a reliable and diverse food supply, and the absence of large predators in intertidal zones made foraging far less dangerous than hunting in the interior savannah.</div>
+    <div id="t7p4List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Vocabulary recap</h2><p class="task-sub">Five different vocabulary exercises using all 20 words from today.</p></div>
+
+  <div class="card">
+    <h4>Task A — Match the word to its definition (10 words)</h4>
+    <p class="instr">Match each word to the correct definition below.</p>
+    <div class="wordbank" style="margin-bottom:12px;"><span class="chip">A. the gradual development of species through natural selection</span><span class="chip">B. the path or course of development of something over time</span><span class="chip">C. the natural environment in which a species lives</span><span class="chip">D. preserved remains of a prehistoric organism found in rock</span><span class="chip">E. belonging naturally; essential to the nature of something</span><span class="chip">F. objects made by humans, of historical interest</span><span class="chip">G. maintained continuously over a long period</span><span class="chip">H. to move into and establish a population in a new area</span><span class="chip">I. involving several different academic fields</span><span class="chip">J. suitable for living in</span></div>
+    <div id="t8aList"></div>
+  </div>
+
+  <div class="card">
+    <h4>Task B — Gap fill (10 sentences)</h4>
+    <p class="instr">Complete each sentence with ONE word from the box.</p>
+    <div class="wordbank" style="margin-bottom:12px;"><span class="chip">investigate</span><span class="chip">remains</span><span class="chip">expansion</span><span class="chip">habitable</span><span class="chip">diversification</span><span class="chip">ancestors</span><span class="chip">reconstruct</span><span class="chip">survive</span><span class="chip">diversify</span><span class="chip">adapt</span></div>
+    <div id="t8bList" class="passage-text"></div>
+  </div>
+
+  <div class="card">
+    <h4>Task C — Choose the correct word</h4>
+    <p class="instr">Circle the correct option (A or B) in each sentence.</p>
+    <div id="t8cList"></div>
+  </div>
+
+  <div class="card">
+    <h4>Task D — Word families</h4>
+    <p class="instr">Complete the table with the correct form of each word.</p>
+    <table class="wf-table">
+      <tr><th>Noun</th><th>Verb</th><th>Adjective</th></tr>
+      <tr><td>evolution</td><td>evolve</td><td><input class="fill short" id="wf1"></td></tr>
+      <tr><td><input class="fill short" id="wf2"></td><td>adapt</td><td>adaptive</td></tr>
+      <tr><td>diversification</td><td><input class="fill short" id="wf3"></td><td>diverse</td></tr>
+      <tr><td>investigation</td><td>investigate</td><td><input class="fill short" id="wf4"></td></tr>
+      <tr><td><input class="fill short" id="wf5"></td><td>colonise</td><td>colonial</td></tr>
+      <tr><td>expansion</td><td><input class="fill short" id="wf6"></td><td>expansive</td></tr>
+      <tr><td>survival</td><td>survive</td><td><input class="fill short" id="wf7"></td></tr>
+      <tr><td>reconstruction</td><td><input class="fill short" id="wf8"></td><td>reconstructed</td></tr>
+      <tr><td>occupation</td><td>occupy</td><td><input class="fill short" id="wf9"></td></tr>
+      <tr><td><input class="fill short" id="wf10"></td><td>inhabit</td><td>habitable</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h4>Task E — Error correction</h4>
+    <p class="instr">Each sentence contains ONE incorrect vocabulary word. Write the correct word in the box.</p>
+    <div id="t8eList" class="passage-text"></div>
+  </div>
+
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check all vocab tasks</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 13 of 30</div>
+  <h1>Congratulations — Day 13 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 14.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=13,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get('teacher')==='true';
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById('teacherBadge').style.display='inline-block';
+var STATE_KEY='sprint4_day13_state';
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosaveField(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from('answers').upsert({student_id:studentSession.id,day:DAY,task:getTaskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:'student_id,day,field_id'}).then(function(){});},600);}
+function getTaskForField(id){
+  if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;
+  if(id==='t4score'||id==='t4check')return 4;if(/^t5/.test(id))return 5;
+  if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(/^t8|^wf/.test(id))return 8;return 1;
+}
+function hookAutosave(){document.querySelectorAll('input.fill,select.fill').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('input',function(){autosaveField(el.id,el.value);});el.addEventListener('change',function(){autosaveField(el.id,el.value);});});document.querySelectorAll('input[type=radio]').forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked='1';el.addEventListener('change',function(){if(el.checked)autosaveField('radio_'+el.name,el.value);});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from('answers').select('field_id,value').eq('student_id',studentSession.id).eq('day',DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith('radio_')){var n=row.field_id.replace('radio_','');var r=document.querySelector('input[name="'+n+'"][value="'+row.value+'"]');if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k='sprint4_day13_progress';var d=JSON.parse(localStorage.getItem(k)||'{}');d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from('progress').upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:'student_id,day,task'}).then(function(){});}
+var dotsWrap=document.getElementById('dots');for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement('div');d.className='dot';d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll('.dot').forEach(function(d){var n=+d.dataset.dot;d.classList.toggle('done',!!taskDone[n]);d.classList.toggle('current',n===current);});}
+function showTask(n){document.querySelectorAll('.task').forEach(function(t){t.classList.remove('active');});document.getElementById('task'+n).classList.add('active');document.getElementById('navInfo').textContent='Task '+n+' of '+TOTAL_TASKS;document.getElementById('prevBtn').disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById('completionScreen').classList.add('show');fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById('completionScreen').classList.remove('show');current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById('doneBtn').disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById('t3check');return cb&&cb.checked;}if(n===4)return taskDone[4]||task4MessageReceived||(document.getElementById('t4check')&&document.getElementById('t4check').checked);var container=document.getElementById('task'+n);var texts=container.querySelectorAll('input.fill');for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==='')return false;}var selects=container.querySelectorAll('select');for(var s=0;s<selects.length;s++){if(selects[s].value==='')return false;}var radioNames={};container.querySelectorAll('input[type=radio]').forEach(function(r){if(!(r.name in radioNames))radioNames[r.name]=false;if(r.checked)radioNames[r.name]=true;});for(var g in radioNames){if(!radioNames[g])return false;}return true;}
+document.addEventListener('input',refreshDoneButton);document.addEventListener('change',refreshDoneButton);
+var task4MessageReceived=false;
+window.addEventListener('message',function(e){if(e.data&&e.data.type==='sprint4-task-done'&&e.data.task===4){task4MessageReceived=true;taskDone[4]=true;saveState();var s=document.getElementById('task4Status');s.textContent='✅ Passage submitted — score '+e.data.score+' / '+e.data.total+'.';s.classList.add('complete');refreshDoneButton();refreshDots();}});
+function openTask4(){var s=document.getElementById('task4Status');if(!task4MessageReceived)s.textContent='📖 Passage opened — submit there, then come back here.';}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById('confettiCanvas');var ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=['#E8542D','#1F9D55','#1A2238','#F2B705','#0F5C6B'];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){var elapsed=Date.now()-start;ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(elapsed<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var VA_segs=['The','/*1*/','of the human species is one of the most fascinating stories in natural history. Our','/*2*/','were small-brained primates who lived in Africa millions of years ago. A process of biological','/*3*/','produced many different hominin species over time. Today, researchers','/*4*/','this process using a','/*5*/','approach combining genetics, archaeology, and geology. By examining','/*6*/','bones and ancient','/*7*/','they attempt to','/*8*/','how early humans lived. The physical','/*9*/','of these ancient people provide','/*10*/','evidence of our origins. The','/*11*/','of human migration out of Africa began around 70,000 years ago. This','/*12*/','took humans across continents. As groups began to','/*13*/','new territories, they were forced to','/*14*/','to unfamiliar','/*15*/','conditions. The','/*16*/','of different environments required early humans to','/*17*/','their diets and tools. The ability to','/*18*/','in hostile conditions is','/*19*/','to our species. Over time, much of the Earth became more','/*20*/'];
+var VA_ans={1:'evolution',2:'ancestors',3:'diversification',4:'investigate',5:'multidisciplinary',6:'fossil',7:'artefacts',8:'reconstruct',9:'remains',10:'sustained',11:'trajectory',12:'expansion',13:'colonise',14:'adapt',15:'habitat',16:'occupation',17:'diversify',18:'survive',19:'intrinsic',20:'habitable'};
+(function buildVA(){var el=document.getElementById('vocabA-text');var html='<p>';var g=1;VA_segs.forEach(function(s){if(s.startsWith('/*')){html+=' <input class="fill short" id="va'+g+'"> ';g++;}else{html+=s;}});html+='</p>';el.innerHTML=html;})();
+
+var vocabB_words=['evolution','trajectory','habitat','fossil','intrinsic','artefacts','sustained','colonise','multidisciplinary','habitable','ancestors','remains','occupation','expansion','reconstruct'];
+var vocabB_defs={A:'the gradual development of species through natural selection',B:'the path or course of development of something over time',C:'the natural environment in which a species lives',D:'preserved remains of a prehistoric organism found in rock',E:'belonging naturally; essential to the nature of something',F:'objects made by humans, of historical interest',G:'maintained continuously over a long period',H:'to move into and establish a population in a new area',I:'involving several different academic disciplines or fields',J:'suitable for living in',K:'people or animals from whom a species or individual is descended',L:'parts of a dead organism or object that have survived',M:'the act of living in or using a particular place',N:'the process of increasing in size, number, or scope',O:'to create an accurate picture of something from available evidence'};
+var vocabB_ans={1:'A',2:'B',3:'C',4:'D',5:'E',6:'F',7:'G',8:'H',9:'I',10:'J',11:'K',12:'L',13:'M',14:'N',15:'O'};
+(function buildVB(){var wrap=document.getElementById('vocabB-list');var letters=Object.keys(vocabB_defs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr" style="margin-bottom:12px;">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vocabB_defs[l]+'<br>';});html+='</p>';vocabB_words.forEach(function(w,idx){var n=idx+1;html+='<div class="q-text">'+n+'. '+w+' &rarr; <select class="fill" id="vb'+n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById('va'+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById('vb'+j);if(sel&&sel.value===vocabB_ans[j])rB++;}alert('Exercise A: '+rA+'/20\nExercise B: '+rB+'/15');document.getElementById('ansKey1Body').innerHTML='<b>A:</b><br>'+Object.keys(VA_ans).map(function(n){return n+'. '+VA_ans[n];}).join(' &nbsp;•&nbsp; ')+'<br><br><b>B:</b><br>'+vocabB_words.map(function(w,i){return (i+1)+'. '+vocabB_ans[i+1];}).join(' &nbsp;•&nbsp; ');document.getElementById('ansKey1').classList.add('show');checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var miniReading=[{n:1,statement:"Africa's environment has remained largely stable over the past 200,000 years.",tf:'False'},{n:2,statement:'African Humid Periods were characterised by increased rainfall and expanding vegetation.',tf:'True'},{n:3,statement:"According to the passage, patterns of genetic diversity in modern populations have no connection to ancient climate cycles.",tf:'False'},{n:4,statement:'The most significant human dispersal event occurred approximately 70,000 years ago.',tf:'True'},{n:5,statement:'During arid periods, human populations expanded rapidly across the continent.',tf:'False'}];
+(function buildMR(){var wrap=document.getElementById('miniReadingQs');var html='';miniReading.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle"><label><input type="radio" name="mr'+q.n+'" value="True"> True</label><label><input type="radio" name="mr'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;miniReading.forEach(function(q){var chosen=document.querySelector('input[name="mr'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});alert('You got '+right+'/5 correct.');document.getElementById('ansKey2Body').innerHTML=miniReading.map(function(q){return q.n+'. <b>'+q.tf+'</b>';}).join('<br>');document.getElementById('ansKey2').classList.add('show');checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[{n:1,statement:'The multiregional hypothesis proposed that modern humans emerged independently in several regions simultaneously.',tf:'True',options:['True','False','Not Given']},{n:2,statement:'Genetic evidence in the 1980s strongly supported the multiregional hypothesis.',tf:'False',options:['True','False','Not Given']},{n:3,statement:'Mitochondrial Eve is believed to have lived in East Africa approximately 50,000 years ago.',tf:'False',options:['True','False','Not Given']},{n:4,statement:'According to the passage, the Out of Africa expansion was possibly triggered by volcanic activity and climate change.',tf:'True',options:['True','False','Not Given']},{n:5,statement:'Modern non-African populations carry no genetic traces of archaic human relatives.',tf:'False',options:['True','False','Not Given']}];
+(function buildT5TF(){var wrap=document.getElementById('t5TFList');var html='';t5TFData.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.statement+'</div><div class="tf-toggle">';q.options.forEach(function(opt){html+='<label><input type="radio" name="t5tf'+q.n+'" value="'+opt+'"> '+opt+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
+var t5ShortAns={t5s6:'recent african origin',t5s7:'70,000 years ago',t5s8:'neanderthals'};
+function checkTask5(){var rTF=0,rShort=0;t5TFData.forEach(function(q){var chosen=document.querySelector('input[name="t5tf'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)rTF++;});Object.keys(t5ShortAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(t5ShortAns[id].split(' ')[0])>=0;if(ok)rShort++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});alert('T/F/NG: '+rTF+'/5\nShort answer: '+rShort+'/3');document.getElementById('ansKey5Body').innerHTML='<b>T/F/NG:</b><br>1.True 2.False 3.False 4.True 5.False<br><br><b>Short answer:</b><br>6. Recent African Origin (RAO) model<br>7. 70,000 years ago<br>8. Neanderthals (or Denisovans)';document.getElementById('ansKey5').classList.add('show');checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[{n:1,q:"Before modern dating techniques, how did archaeologists primarily date hominin remains?",opts:["By analysing the chemical composition of bones","By their position in soil layers","By comparing skull size with known species","By examining surrounding plant fossils"],ans:"B",id:"t6a1"},{n:2,q:"What did modern dating techniques reveal about previously studied sites?",opts:["They were all the same age as originally believed.","They contained no meaningful fossil evidence.","Many sites spanned far greater time periods than originally thought.","All fossils were younger than expected."],ans:"C",id:"t6a2"},{n:3,q:"Where were fossils dated to approximately 300,000 years ago discovered?",opts:["Ethiopia","South Africa","Kenya","Morocco"],ans:"D",id:"t6a3"},{n:4,q:"By how much did the Jebel Irhoud discovery push back the known age of Homo sapiens?",opts:["More than 50,000 years","More than 100,000 years","Exactly 200,000 years","Less than 50,000 years"],ans:"B",id:"t6a4"},{n:5,q:"What is 'stratigraphic position'?",opts:["A chemical analysis method used in laboratories","The principle that deeper objects in the soil are older","A technique for measuring radioactive decay","A method of comparing DNA sequences"],ans:"B",id:"t6a5"}];
+var t6bData=[{n:1,q:"The Oldowan tool tradition is associated with which early human species?",opts:["Homo sapiens","Homo erectus","Homo habilis","Homo neanderthalensis"],ans:"C",id:"t6b1"},{n:2,q:"What distinguishes Acheulean tools from Oldowan tools?",opts:["They were made from softer materials.","They were simpler and required less skill.","They were larger and showed more sophisticated design.","They were exclusively used for fishing."],ans:"C",id:"t6b2"},{n:3,q:"According to the passage, which period saw the most dramatic leap in cognitive development?",opts:["The Oldowan period","The Acheulean period","The Middle Stone Age","The Upper Palaeolithic period"],ans:"C",id:"t6b3"},{n:4,q:"What evidence from the Middle Stone Age suggests the existence of symbolic communication?",opts:["The discovery of written texts on stone tablets","Abstract engravings, composite tools, and traded ornaments","Evidence of permanent settlements near water sources","The first use of fire for cooking"],ans:"B",id:"t6b4"},{n:5,q:"What does the trading of shell ornaments across hundreds of kilometres imply?",opts:["Early humans were primarily interested in coastal environments.","Transport networks were highly developed at this time.","A sophisticated system of symbolic communication likely existed.","Early humans frequently migrated in search of food."],ans:"C",id:"t6b5"}];
+function buildMcqBlock(data,prefix){var html='';data.forEach(function(q){html+='<div class="q-block" id="'+prefix+q.n+'Block"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="'+q.id+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});return html;}
+document.getElementById('t6aMcqList').innerHTML=buildMcqBlock(t6aData,'t6a');
+document.getElementById('t6bMcqList').innerHTML=buildMcqBlock(t6bData,'t6b');
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var chosen=document.querySelector('input[name="'+q.id+'"]:checked');var ok=chosen&&chosen.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+'Block');if(block){block.querySelectorAll('input[type=radio]').forEach(function(r){r.disabled=true;});block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===q.ans)row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,'t6a');var rB=checkMcqSet(t6bData,'t6b');alert('Passage A: '+rA+'/5\nPassage B: '+rB+'/5');document.getElementById('ansKey6Body').innerHTML='<b>Passage A:</b> 1.B 2.C 3.D 4.B 5.B<br><b>Passage B:</b> 1.C 2.C 3.C 4.B 5.C';document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,questions:[{n:1,s:"Human migrations out of Africa tended to occur during periods of drought.",tf:'False'},{n:2,s:"Green corridors were pathways of vegetation that crossed desert regions.",tf:'True'},{n:3,s:"When dry conditions returned, isolated populations had no choice but to return to Africa.",tf:'False'}]},
+  {pid:2,questions:[{n:1,s:"The first humans arrived in Australia when sea levels were higher than today.",tf:'False'},{n:2,s:"At least 90 kilometres of open water had to be crossed to reach Australia.",tf:'True'},{n:3,s:"The evidence suggests the first Australians arrived by accident, drifting on rafts.",tf:'False'}]},
+  {pid:3,questions:[{n:1,s:"African populations have the lowest genetic diversity of any group on Earth.",tf:'False'},{n:2,s:"Non-African populations carry only a subset of the genetic variation found in Africa.",tf:'True'},{n:3,s:"The serial founder effect describes how populations became more diverse with each migration.",tf:'False'}]},
+  {pid:4,questions:[{n:1,s:"The coastal migration hypothesis suggests early humans moved inland rather than along coastlines.",tf:'False'},{n:2,s:"Shell middens provide evidence of ancient human diet and settlement patterns.",tf:'True'},{n:3,s:"Coastal environments were more dangerous than interior savannahs due to large predators.",tf:'False'}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById('t7p'+p.pid+'List');var html='<p class="instr">True or False?</p>';p.questions.forEach(function(q){html+='<div class="q-block"><div class="q-text">'+q.n+'. '+q.s+'</div><div class="tf-toggle"><label><input type="radio" name="t7p'+p.pid+'q'+q.n+'" value="True"> True</label><label><input type="radio" name="t7p'+p.pid+'q'+q.n+'" value="False"> False</label></div></div>';});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.questions.forEach(function(q){total++;var chosen=document.querySelector('input[name="t7p'+p.pid+'q'+q.n+'"]:checked');if(chosen&&chosen.value===q.tf)right++;});});alert('You got '+right+'/'+total+' correct.');var key='';t7Data.forEach(function(p){key+='<b>Passage '+p.pid+':</b> ';key+=p.questions.map(function(q){return q.n+'.'+q.tf;}).join(' ');key+='<br>';});document.getElementById('ansKey7Body').innerHTML=key;document.getElementById('ansKey7').classList.add('show');checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== TASK 8 ===== */
+// Task A matching
+var t8aWords=['evolution','trajectory','habitat','fossil','intrinsic','artefacts','sustained','colonise','multidisciplinary','habitable'];
+var t8aAns={t8a1:'A',t8a2:'B',t8a3:'C',t8a4:'D',t8a5:'E',t8a6:'F',t8a7:'G',t8a8:'H',t8a9:'I',t8a10:'J'};
+(function buildT8A(){var wrap=document.getElementById('t8aList');var optHtml='<option value="">--</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option>';var html='';t8aWords.forEach(function(w,idx){html+='<div class="q-text">'+w+' &rarr; <select class="fill" id="t8a'+(idx+1)+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
+
+// Task B gap fill
+var t8bSents=[{n:1,t:"Scientists continue to ___ how early humans crossed open stretches of ocean.",ans:'investigate',id:'t8b1'},{n:2,t:"The physical ___ of early humans, including bones and teeth, were preserved in cave sediments.",ans:'remains',id:'t8b2'},{n:3,t:"The ___ of the human population out of Africa began approximately 70,000 years ago.",ans:'expansion',id:'t8b3'},{n:4,t:"Without access to water, no region can be considered truly ___.",ans:'habitable',id:'t8b4'},{n:5,t:"The ___ of tool types in the Middle Stone Age reflects a significant leap in cognitive ability.",ans:'diversification',id:'t8b5'},{n:6,t:"Our ___ who lived near lake shores benefited from a rich and reliable food supply.",ans:'ancestors',id:'t8b6'},{n:7,t:"Scientists attempt to ___ ancient migration routes using genetic and archaeological evidence.",ans:'reconstruct',id:'t8b7'},{n:8,t:"The ability to ___ in hostile environments is what sets Homo sapiens apart from other species.",ans:'survive',id:'t8b8'},{n:9,t:"As food sources changed, early humans were forced to ___ their diet and survival strategies.",ans:'diversify',id:'t8b9'},{n:10,t:"To ___ to life at high altitude, the body produces more red blood cells.",ans:'adapt',id:'t8b10'}];
+(function buildT8B(){var wrap=document.getElementById('t8bList');var html='';t8bSents.forEach(function(s){html+='<p>'+s.n+'. '+s.t.replace('___','<input class="fill short" id="'+s.id+'">')+'</p>';});wrap.innerHTML=html;})();
+
+// Task C choose correct word
+var t8cData=[{n:1,t:'The early humans who settled along the coast were able to [A:colonise/B:investigate] the surrounding territory within a few generations.',opts:['colonise','investigate'],ans:'A',id:'t8c1'},{n:2,t:'The bone fragments found at the site were the [A:remains/B:fossils] of an animal that lived just 5,000 years ago.',opts:['remains','fossils'],ans:'A',id:'t8c2'},{n:3,t:'Studying human origins requires a [A:multidisciplinary/B:sustained] approach that combines genetics, archaeology, and geology.',opts:['multidisciplinary','sustained'],ans:'A',id:'t8c3'},{n:4,t:'The ability to [A:adapt/B:diversify] to new climates was critical for early human survival in hostile regions.',opts:['adapt','diversify'],ans:'A',id:'t8c4'},{n:5,t:'Understanding why certain regions were more [A:habitable/B:intrinsic] than others helps explain human migration patterns.',opts:['habitable','intrinsic'],ans:'A',id:'t8c5'}];
+(function buildT8C(){var wrap=document.getElementById('t8cList');var html='';t8cData.forEach(function(q){var display=q.t.replace('[A:'+q.opts[0]+'/B:'+q.opts[1]+']','<b>A: '+q.opts[0]+'</b> / <b>B: '+q.opts[1]+'</b>');html+='<div class="q-block"><div class="q-text">'+q.n+'. '+display+'</div><div class="tf-toggle"><label><input type="radio" name="'+q.id+'" value="A"> A: '+q.opts[0]+'</label><label><input type="radio" name="'+q.id+'" value="B"> B: '+q.opts[1]+'</label></div></div>';});wrap.innerHTML=html;})();
+
+// Task D word families answers
+var wfAns={wf1:'evolutionary',wf2:'adaptation',wf3:'diversify',wf4:'investigative',wf5:'colonisation',wf6:'expand',wf7:'surviving',wf8:'reconstruct',wf9:'occupied',wf10:'habitat'};
+
+// Task E error correction
+var t8eSents=[{n:1,t:'Scientists use a single approach to study early human migration, drawing only on genetic evidence.',wrong:'single',ans:'multidisciplinary',id:'t8e1'},{n:2,t:'Ancient stone renovations found at lakeside sites revealed that early humans lived there for thousands of years.',wrong:'renovations',ans:'artefacts',id:'t8e2'},{n:3,t:'Without the ability to control, early human populations in new environments would have died out quickly.',wrong:'control',ans:'adapt',id:'t8e3'},{n:4,t:"The natural reorganisation of an animal can be destroyed by human settlement or climate change.",wrong:'reorganisation',ans:'habitat',id:'t8e4'},{n:5,t:"The physical preservation of early humans, including bones found in caves, provide valuable scientific data.",wrong:'preservation',ans:'remains',id:'t8e5'}];
+(function buildT8E(){var wrap=document.getElementById('t8eList');var html='';t8eSents.forEach(function(s){var display=s.t.replace(s.wrong,'<u>'+s.wrong+'</u>');html+='<p>'+s.n+'. '+display+'<br>&nbsp;&nbsp;Correct word: <input class="fill short" id="'+s.id+'"></p>';});wrap.innerHTML=html;})();
+
+function checkTask8(){
+  var rA=0,rB=0,rC=0,rD=0,rE=0;
+  // A
+  Object.keys(t8aAns).forEach(function(id){var sel=document.getElementById(id);if(sel&&sel.value===t8aAns[id])rA++;});
+  // B
+  t8bSents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
+  // C
+  t8cData.forEach(function(q){var chosen=document.querySelector('input[name="'+q.id+'"]:checked');if(chosen&&chosen.value===q.ans)rC++;});
+  // D
+  Object.keys(wfAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===wfAns[id].toLowerCase();if(ok)rD++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  // E
+  t8eSents.forEach(function(s){var el=document.getElementById(s.id);if(!el)return;var ok=el.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rE++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  alert('Task A (matching): '+rA+'/10\nTask B (gap fill): '+rB+'/10\nTask C (choose): '+rC+'/5\nTask D (word families): '+rD+'/10\nTask E (error correction): '+rE+'/5');
+  document.getElementById('ansKey8Body').innerHTML='<b>A:</b> evolution-A, trajectory-B, habitat-C, fossil-D, intrinsic-E, artefacts-F, sustained-G, colonise-H, multidisciplinary-I, habitable-J<br><br><b>B:</b> 1.investigate 2.remains 3.expansion 4.habitable 5.diversification 6.ancestors 7.reconstruct 8.survive 9.diversify 10.adapt<br><br><b>C:</b> 1.A 2.A 3.A 4.A 5.A<br><br><b>D:</b> evolutionary / adaptation / diversify / investigative / colonisation / expand / surviving / reconstruct / occupied / habitat<br><br><b>E:</b> 1.multidisciplinary 2.artefacts 3.adapt 4.habitat 5.remains';
+  document.getElementById('ansKey8').classList.add('show');checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+var t4checkEl=document.getElementById('t4check');
+if(taskDone[4]&&t4checkEl)t4checkEl.checked=true;
+if(taskDone[4])task4MessageReceived=true;
+(function waitForSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitForSdk,100);}})();
+showTask(current);
+
+/* ===== PERSISTENT HIGHLIGHT ===== */
+(function(){
+  var HL_KEY='sprint4_hl_day13';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+})();
+</script>
+</body>
+</html>
