@@ -1,1 +1,460 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 14 · Week 2 Vocab Review</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;}
+body{
+  background:linear-gradient(135deg,#1a1f2e 0%,#1e2d40 40%,#0f2027 100%);
+  color:#e8eaf0;min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* starfield */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite alternate;}
+@keyframes twinkle{from{opacity:.2;}to{opacity:.8;}}
+
+/* layout */
+.shell{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
+header{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.brand{font-size:20px;font-weight:800;letter-spacing:.5px;}
+.brand em{color:#7dd3fc;font-style:normal;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.music-btn{background:rgba(125,211,252,.15);border:1px solid rgba(125,211,252,.3);color:#7dd3fc;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;}
+.music-btn:hover{background:rgba(125,211,252,.25);}
+.back-link{color:#94a3b8;font-size:13px;font-weight:600;text-decoration:none;}
+.back-link:hover{color:#7dd3fc;}
+
+/* main area */
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px;}
+
+/* day selector */
+.day-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;}
+.day-tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.day-tab:hover{background:rgba(125,211,252,.1);border-color:rgba(125,211,252,.3);color:#7dd3fc;}
+.day-tab.active{background:rgba(125,211,252,.2);border-color:#7dd3fc;color:#7dd3fc;}
+.day-tab.all-tab{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.4);color:#c4b5fd;}
+.day-tab.all-tab.active{background:rgba(167,139,250,.3);border-color:#c4b5fd;color:#c4b5fd;}
+
+/* progress */
+.progress-wrap{width:100%;max-width:600px;margin-bottom:20px;}
+.progress-label{display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin-bottom:6px;}
+.progress-bar{background:rgba(255,255,255,.08);border-radius:999px;height:6px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#c4b5fd);transition:width .4s ease;}
+
+/* stats row */
+.stats-row{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;justify-content:center;}
+.stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 18px;text-align:center;min-width:90px;}
+.stat-n{font-size:24px;font-weight:800;line-height:1;}
+.stat-l{font-size:11px;color:#64748b;margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+.stat-n.green{color:#4ade80;}
+.stat-n.amber{color:#fbbf24;}
+.stat-n.muted{color:#475569;}
+
+/* flashcard */
+.card-area{width:100%;max-width:600px;perspective:1400px;margin-bottom:24px;}
+.card-outer{width:100%;aspect-ratio:5/3;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.175,.885,.32,1.1);cursor:pointer;}
+.card-outer.flipped{transform:rotateY(180deg);}
+.card-face{
+  position:absolute;inset:0;border-radius:20px;padding:28px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.card-front{background:linear-gradient(135deg,rgba(30,45,64,.95),rgba(15,32,39,.95));}
+.card-back{background:linear-gradient(135deg,rgba(20,30,50,.97),rgba(10,20,34,.97));transform:rotateY(180deg);}
+.card-day-tag{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#475569;margin-bottom:12px;}
+.card-word{font-size:clamp(22px,5vw,38px);font-weight:800;color:#e2e8f0;line-height:1.15;margin-bottom:8px;}
+.card-pos{font-size:13px;color:#64748b;font-style:italic;}
+.card-tap{font-size:12px;color:#334155;margin-top:16px;}
+.card-def{font-size:clamp(14px,3.5vw,17px);color:#c8d6e8;line-height:1.6;max-width:420px;}
+.card-ex{font-size:13px;color:#4d6580;margin-top:14px;font-style:italic;line-height:1.5;}
+
+/* action buttons */
+.action-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;justify-content:center;}
+.action-btn{border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;}
+.btn-know{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;box-shadow:0 4px 16px rgba(22,163,74,.3);}
+.btn-know:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(22,163,74,.4);}
+.btn-again{background:linear-gradient(135deg,#c2410c,#b91c1c);color:#fff;box-shadow:0 4px 16px rgba(185,28,28,.3);}
+.btn-again:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(185,28,28,.4);}
+.btn-skip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;}
+.btn-skip:hover{background:rgba(255,255,255,.1);}
+.action-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+
+/* controls row */
+.controls-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:24px;}
+.ctrl-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#94a3b8;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;}
+.ctrl-btn:hover{background:rgba(255,255,255,.1);color:#e2e8f0;}
+.ctrl-btn.active{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.4);color:#c4b5fd;}
+
+/* results */
+.results{display:none;width:100%;max-width:600px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:32px;text-align:center;}
+.results.show{display:block;}
+.results h2{font-size:28px;margin-bottom:8px;}
+.results p{color:#64748b;margin-bottom:24px;}
+.result-ring{width:100px;height:100px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;border:4px solid #4ade80;color:#4ade80;}
+.results-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.res-btn{border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;}
+.res-btn.primary{background:linear-gradient(135deg,#7dd3fc,#6366f1);color:#0f172a;}
+.res-btn.secondary{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;}
+
+/* word count chip */
+.word-count{background:rgba(125,211,252,.1);border:1px solid rgba(125,211,252,.2);color:#7dd3fc;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:20px;}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="shell">
+
+<header>
+  <a href="../student-dashboard.html" class="back-link">← Dashboard</a>
+  <div class="brand">IELTS <em>Sprint4</em> — Day 14 · Rest Day</div>
+  <div class="header-right">
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">♪ Music: Off</button>
+  </div>
+</header>
+
+<main>
+  <h1 style="font-size:clamp(20px,4vw,30px);font-weight:800;margin:20px 0 6px;text-align:center;">Week 2 Vocabulary Review</h1>
+  <p style="color:#64748b;font-size:14px;text-align:center;margin-bottom:20px;">Flashcards from Days 8, 9, 11 &amp; 12 — 80 words total</p>
+
+  <div class="day-tabs">
+    <button class="day-tab all-tab active" onclick="filterDay('all')">All 80</button>
+    <button class="day-tab" onclick="filterDay(8)">Day 8 · Archaeology</button>
+    <button class="day-tab" onclick="filterDay(9)">Day 9 · Sleep &amp; Memory</button>
+    <button class="day-tab" onclick="filterDay(11)">Day 11 · Senses</button>
+    <button class="day-tab" onclick="filterDay(12)">Day 12 · Evolution</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="progressText">Card 1 of 80</span><span id="progressPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n green" id="knownN">0</div><div class="stat-l">Known ✓</div></div>
+    <div class="stat"><div class="stat-n amber" id="againN">0</div><div class="stat-l">Review ↩</div></div>
+    <div class="stat"><div class="stat-n muted" id="leftN">80</div><div class="stat-l">Remaining</div></div>
+  </div>
+
+  <div class="card-area" onclick="flipCard()" id="cardArea">
+    <div class="card-outer" id="cardOuter">
+      <div class="card-face card-front" id="cardFront">
+        <div class="card-day-tag" id="cardDayTag">Day 8 · Archaeology</div>
+        <div class="card-word" id="cardWord">Loading...</div>
+        <div class="card-pos" id="cardPos"></div>
+        <div class="card-tap">Tap to reveal definition</div>
+      </div>
+      <div class="card-face card-back" id="cardBack">
+        <div class="card-def" id="cardDef"></div>
+        <div class="card-ex" id="cardEx"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-row" id="actionRow">
+    <button class="action-btn btn-again" id="btnAgain" onclick="markAgain()" disabled>↩ Review again</button>
+    <button class="action-btn btn-skip" onclick="nextCard()">Skip →</button>
+    <button class="action-btn btn-know" id="btnKnow" onclick="markKnown()" disabled>✓ Got it!</button>
+  </div>
+
+  <div class="controls-row">
+    <button class="ctrl-btn" onclick="shuffle()">🔀 Shuffle</button>
+    <button class="ctrl-btn" onclick="resetDeck()">↺ Restart</button>
+    <button class="ctrl-btn active" id="showExBtn" onclick="toggleEx()">Examples: On</button>
+  </div>
+
+  <div class="results" id="results">
+    <div class="result-ring" id="resultRing">0%</div>
+    <h2 id="resultTitle">Round complete!</h2>
+    <p id="resultSub"></p>
+    <div class="results-actions">
+      <button class="res-btn primary" onclick="reviewAgain()">↩ Review marked cards</button>
+      <button class="res-btn secondary" onclick="resetDeck()">Start over</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+var VOCAB = [
+// Day 8 – Archaeology / Radiocarbon Dating
+{d:8,t:'archaeology',w:'curiosity',pos:'noun',def:'A strong desire to learn or know something.',ex:'Scientific curiosity drove Libby to develop radiocarbon dating.'},
+{d:8,t:'archaeology',w:'prehistoric',pos:'adjective',def:'Relating to the time before written historical records.',ex:'Archaeologists study prehistoric cave paintings to understand early humans.'},
+{d:8,t:'archaeology',w:'radiocarbon dating',pos:'noun',def:'A scientific technique that uses the decay of carbon particles to determine the age of ancient organic material.',ex:'Radiocarbon dating transformed our understanding of prehistoric human remains.'},
+{d:8,t:'archaeology',w:'particles',pos:'noun',def:'Extremely small pieces or units of a substance.',ex:'Carbon particles in organic matter decay at a predictable rate after death.'},
+{d:8,t:'archaeology',w:'composed of',pos:'phrase',def:'Made up of particular parts or elements.',ex:'All living things are composed of organic molecules containing carbon.'},
+{d:8,t:'archaeology',w:'intrigued',pos:'adjective',def:'Very interested or curious about something.',ex:'Libby was intrigued by the idea of using carbon decay to date ancient remains.'},
+{d:8,t:'archaeology',w:'controversial',pos:'adjective',def:'Causing strong disagreement or debate among experts.',ex:'The technique was controversial at first but quickly gained acceptance.'},
+{d:8,t:'archaeology',w:'evidence',pos:'noun',def:'Facts or information that prove whether something is true or false.',ex:'The weight of evidence supported Libby\'s discovery.'},
+{d:8,t:'archaeology',w:'ultimately',pos:'adverb',def:'In the end; after a long process or series of events.',ex:'He was ultimately awarded the Nobel Prize in Chemistry in 1960.'},
+{d:8,t:'archaeology',w:'qualifications',pos:'noun',def:'Official training, certificates, or experience that make someone suitable for a role.',ex:'Despite lacking formal qualifications in archaeology, his chemistry expertise was exceptional.'},
+{d:8,t:'archaeology',w:'inventor',pos:'noun',def:'A person who creates or designs something for the first time.',ex:'Willard Libby was the inventor of radiocarbon dating.'},
+{d:8,t:'archaeology',w:'institution',pos:'noun',def:'A large, important organisation such as a university or research centre.',ex:'He worked at the University of Chicago, a prestigious research institution.'},
+{d:8,t:'archaeology',w:'prestigious',pos:'adjective',def:'Respected and admired as very important or excellent.',ex:'Winning a prize from such a prestigious institution was a great honour.'},
+{d:8,t:'archaeology',w:'flaws',pos:'noun',def:'Weaknesses or imperfections in something.',ex:'The method had flaws — it worked only within a certain time range.'},
+{d:8,t:'archaeology',w:'expertise',pos:'noun',def:'Expert knowledge or skill in a particular area.',ex:'His expertise in chemistry allowed him to develop an entirely new approach.'},
+{d:8,t:'archaeology',w:'anthropology',pos:'noun',def:'The study of human beings, their societies, cultures, and evolution.',ex:'Radiocarbon dating became standard practice in both archaeology and anthropology.'},
+{d:8,t:'archaeology',w:'archaeologist',pos:'noun',def:'A scientist who studies human history by excavating ancient sites and artefacts.',ex:'An archaeologist could now date a bone fragment with remarkable precision.'},
+{d:8,t:'archaeology',w:'breakthrough',pos:'noun',def:'A sudden, important development or discovery that changes things significantly.',ex:'The discovery was a breakthrough for the entire field of historical science.'},
+{d:8,t:'archaeology',w:'determination',pos:'noun',def:'Firmness of purpose; refusing to give up despite difficulty.',ex:'Libby\'s determination never wavered even when others doubted his method.'},
+{d:8,t:'archaeology',w:'ingenuity',pos:'noun',def:'The ability to solve difficult problems in clever and original ways.',ex:'His extraordinary ingenuity won him the Nobel Prize in Chemistry.'},
+// Day 9 – Sleep & Memory
+{d:9,t:'sleep & memory',w:'consolidate',pos:'verb',def:'To stabilise and transfer information into long-term memory.',ex:'Sleep allows the brain to consolidate the day\'s most important learning.'},
+{d:9,t:'sleep & memory',w:'reinforce',pos:'verb',def:'To strengthen or support something that already exists.',ex:'Sleep reinforces newly formed memories, making them more durable.'},
+{d:9,t:'sleep & memory',w:'decay',pos:'verb/noun',def:'To gradually deteriorate or break down over time.',ex:'Without sleep, memories begin to decay and fade.'},
+{d:9,t:'sleep & memory',w:'interference',pos:'noun',def:'The disruption of memory or learning by other information.',ex:'New sensory experiences cause interference with fragile memories.'},
+{d:9,t:'sleep & memory',w:'sensory',pos:'adjective',def:'Relating to the physical senses: sight, sound, touch, taste, and smell.',ex:'Sleep cuts off incoming sensory data from the eyes and ears.'},
+{d:9,t:'sleep & memory',w:'solidify',pos:'verb',def:'To become firm, stable, or fixed.',ex:'Neural pathways solidify into permanent connections during deep sleep.'},
+{d:9,t:'sleep & memory',w:'retain',pos:'verb',def:'To keep or hold onto something.',ex:'Sleep-deprived students struggle to retain new information.'},
+{d:9,t:'sleep & memory',w:'redundant',pos:'adjective',def:'No longer needed or useful; superfluous.',ex:'The brain eliminates redundant connections that carry little information.'},
+{d:9,t:'sleep & memory',w:'adequate',pos:'adjective',def:'Sufficient; enough for a particular purpose.',ex:'Even adequate sleep may not fully offset the effects of severe stress.'},
+{d:9,t:'sleep & memory',w:'cognitive',pos:'adjective',def:'Relating to thought, memory, reasoning, and other mental processes.',ex:'Sleep deprivation causes measurable cognitive decline.'},
+{d:9,t:'sleep & memory',w:'deficits',pos:'noun',def:'Shortfalls or shortcomings in a person\'s performance or ability.',ex:'Memory deficits are common in people with chronic sleep problems.'},
+{d:9,t:'sleep & memory',w:'developmental',pos:'adjective',def:'Relating to the process of growth and development.',ex:'Sleep disorders can have serious developmental consequences for children.'},
+{d:9,t:'sleep & memory',w:'procedural',pos:'adjective',def:'Relating to a series of steps or a physical process.',ex:'Procedural memory — like riding a bike — is strongly consolidated during sleep.'},
+{d:9,t:'sleep & memory',w:'hypothesize',pos:'verb',def:'To propose a theory or explanation that has not yet been proven.',ex:'Scientists hypothesize that glymphatic activity peaks in deep sleep.'},
+{d:9,t:'sleep & memory',w:'intervening',pos:'adjective',def:'Occurring between two events or points in time.',ex:'Any intervening experience can corrupt a fragile memory trace.'},
+{d:9,t:'sleep & memory',w:'exploit',pos:'verb',def:'To make full use of something for a particular purpose.',ex:'Researchers exploit sleep science to design better learning programmes.'},
+{d:9,t:'sleep & memory',w:'relevance',pos:'noun',def:'The importance or connection of something to a particular subject.',ex:'The relevance of sleep research extends well beyond the laboratory.'},
+{d:9,t:'sleep & memory',w:'impairment',pos:'noun',def:'A condition in which a physical or mental ability is weakened or damaged.',ex:'Chronic sleep deprivation causes lasting cognitive impairment.'},
+{d:9,t:'sleep & memory',w:'retention',pos:'noun',def:'The ability to keep information in memory over time.',ex:'Memory retention improves significantly after a full night of sleep.'},
+{d:9,t:'sleep & memory',w:'intervention',pos:'noun',def:'An action taken to improve a difficult situation.',ex:'Sleep therapy is an effective intervention for patients with memory disorders.'},
+// Day 11 – Olfactory / Sensory Biology
+{d:11,t:'senses & biology',w:'sensory',pos:'adjective',def:'Relating to the five physical senses and how the brain receives external information.',ex:'The olfactory system is one of the most ancient sensory pathways in the brain.'},
+{d:11,t:'senses & biology',w:'influential',pos:'adjective',def:'Having a great effect on someone or something.',ex:'The anatomist\'s work was highly influential in establishing how smell works.'},
+{d:11,t:'senses & biology',w:'anatomist',pos:'noun',def:'A scientist who studies the structure of living organisms.',ex:'An anatomist first mapped the nerve pathways connecting the nose to the brain.'},
+{d:11,t:'senses & biology',w:'redundant',pos:'adjective',def:'No longer needed; having more than necessary for a particular function.',ex:'Many receptor types are redundant, providing a backup system for detecting odours.'},
+{d:11,t:'senses & biology',w:'receptor',pos:'noun',def:'A specialised cell or protein that detects specific stimuli.',ex:'Olfactory receptors in the nose bind to airborne molecules.'},
+{d:11,t:'senses & biology',w:'devote',pos:'verb',def:'To give a large amount of time or effort to something.',ex:'Humans devote a relatively small proportion of brain tissue to smell.'},
+{d:11,t:'senses & biology',w:'diluted',pos:'adjective',def:'Made weaker or less concentrated by adding another substance.',ex:'Even a heavily diluted scent can trigger a powerful emotional memory.'},
+{d:11,t:'senses & biology',w:'intimately',pos:'adverb',def:'In a way that is closely and deeply connected.',ex:'Smell is intimately linked to the brain\'s memory and emotion centres.'},
+{d:11,t:'senses & biology',w:'cognitive',pos:'adjective',def:'Relating to thought, memory, reasoning, and mental processes.',ex:'Damage to the olfactory system can have unexpected cognitive consequences.'},
+{d:11,t:'senses & biology',w:'rational',pos:'adjective',def:'Based on logic and reason rather than emotion.',ex:'Our response to smell is rarely fully rational — it bypasses conscious thought.'},
+{d:11,t:'senses & biology',w:'conscious',pos:'adjective',def:'Aware of and responding to one\'s surroundings; deliberate.',ex:'Much of our sensory processing happens below the level of conscious awareness.'},
+{d:11,t:'senses & biology',w:'precision',pos:'noun',def:'The quality of being exact and accurate.',ex:'The brain\'s ability to distinguish similar smells with precision is remarkable.'},
+{d:11,t:'senses & biology',w:'capacity',pos:'noun',def:'The maximum amount or ability to do something.',ex:'Humans have a far greater capacity to detect odours than was once believed.'},
+{d:11,t:'senses & biology',w:'olfactory',pos:'adjective',def:'Relating to the sense of smell.',ex:'The olfactory bulb is one of the oldest structures in the mammalian brain.'},
+{d:11,t:'senses & biology',w:'efficiently',pos:'adverb',def:'Achieving maximum productivity with minimum waste or effort.',ex:'The nose efficiently filters millions of molecules with every breath.'},
+{d:11,t:'senses & biology',w:'evoke',pos:'verb',def:'To bring a feeling or memory into the mind.',ex:'A familiar smell can immediately evoke vivid childhood memories.'},
+{d:11,t:'senses & biology',w:'stimuli',pos:'noun',def:'Things that cause a response in a person or organ.',ex:'The brain rapidly categorises incoming stimuli by comparing them with stored patterns.'},
+{d:11,t:'senses & biology',w:'accurate',pos:'adjective',def:'Correct in all details; free from error.',ex:'Our memory for smells is highly accurate even after many years.'},
+{d:11,t:'senses & biology',w:'unpleasant',pos:'adjective',def:'Causing discomfort or displeasure.',ex:'Humans are especially good at detecting unpleasant odours linked to danger.'},
+{d:11,t:'senses & biology',w:'evolutionary',pos:'adjective',def:'Relating to the gradual development of organisms over time.',ex:'Our powerful sense of smell has deep evolutionary origins.'},
+// Day 12/13 – Evolution & Human Migration
+{d:12,t:'evolution & migration',w:'evolution',pos:'noun',def:'The gradual development of species through natural selection over generations.',ex:'The evolution of human cognition is one of science\'s great mysteries.'},
+{d:12,t:'evolution & migration',w:'ancestors',pos:'noun',def:'People or animals from whom a species is descended.',ex:'Our earliest ancestors left Africa more than 100,000 years ago.'},
+{d:12,t:'evolution & migration',w:'diversification',pos:'noun',def:'The process of developing a greater variety of forms or types.',ex:'The rapid diversification of species followed major environmental changes.'},
+{d:12,t:'evolution & migration',w:'artefacts',pos:'noun',def:'Objects made by humans, especially those of historical or cultural interest.',ex:'Stone artefacts provide key evidence about the capabilities of early humans.'},
+{d:12,t:'evolution & migration',w:'remains',pos:'noun',def:'Parts of a dead organism that have survived over time.',ex:'Fossil remains were analysed to reconstruct the diet of early hominids.'},
+{d:12,t:'evolution & migration',w:'occupation',pos:'noun',def:'The act of living in or using a particular place.',ex:'The earliest evidence of human occupation at the site dates back 70,000 years.'},
+{d:12,t:'evolution & migration',w:'expansion',pos:'noun',def:'The process of becoming larger in size, number, or scope.',ex:'The expansion of early humans across the globe took thousands of years.'},
+{d:12,t:'evolution & migration',w:'colonise',pos:'verb',def:'To move into and establish a population in a new area.',ex:'Early humans were the first large mammals to colonise every major continent.'},
+{d:12,t:'evolution & migration',w:'reconstruct',pos:'verb',def:'To create an accurate picture of something from available evidence.',ex:'Researchers reconstruct past climates using ice cores and pollen records.'},
+{d:12,t:'evolution & migration',w:'investigate',pos:'verb',def:'To examine or study something carefully and systematically.',ex:'Scientists continue to investigate the causes of the last major ice age.'},
+{d:12,t:'evolution & migration',w:'trajectory',pos:'noun',def:'The course of development of something over time.',ex:'The trajectory of human migration can be traced through genetic markers.'},
+{d:12,t:'evolution & migration',w:'adapt',pos:'verb',def:'To change in order to suit a new environment or set of conditions.',ex:'Early humans were able to adapt rapidly to a wide range of climates.'},
+{d:12,t:'evolution & migration',w:'sustained',pos:'adjective',def:'Maintained continuously over a long period.',ex:'The expansion required a sustained source of food and fresh water.'},
+{d:12,t:'evolution & migration',w:'habitat',pos:'noun',def:'The natural environment in which an organism typically lives.',ex:'Changing sea levels transformed the coastal habitat of early populations.'},
+{d:12,t:'evolution & migration',w:'survive',pos:'verb',def:'To continue to live or exist in difficult conditions.',ex:'Only the groups that could survive climate variability spread across the globe.'},
+{d:12,t:'evolution & migration',w:'multidisciplinary',pos:'adjective',def:'Involving several different academic disciplines or fields of study.',ex:'Understanding human origins requires a multidisciplinary approach.'},
+{d:12,t:'evolution & migration',w:'intrinsic',pos:'adjective',def:'Belonging naturally; essential to the nature of something.',ex:'The drive to explore seems to be intrinsic to the human species.'},
+{d:12,t:'evolution & migration',w:'habitable',pos:'adjective',def:'Suitable for living in; providing the conditions needed for survival.',ex:'The region became habitable again after the ice sheets retreated.'},
+{d:12,t:'evolution & migration',w:'fossil',pos:'noun',def:'Preserved remains or traces of a prehistoric organism found in rock.',ex:'A fossil jawbone found in Morocco dates back 300,000 years.'},
+{d:12,t:'evolution & migration',w:'diversify',pos:'verb',def:'To develop a wider range of forms, activities, or products.',ex:'Early humans began to diversify their toolkit around 70,000 years ago.'}
+];
+
+// ─── STATE ─────────────────────────────────────────────
+var deck = [], known = 0, again = 0, idx = 0, flipped = false, showEx = true;
+var currentFilter = 'all';
+var audioCtx = null, musicOn = false, musicNodes = [];
+
+// ─── STARS ─────────────────────────────────────────────
+(function createStars(){
+  var c = document.getElementById('stars');
+  for(var i=0;i<80;i++){
+    var s=document.createElement('div');
+    s.className='star';
+    var sz=Math.random()*2.5+0.5;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-duration:'+(2+Math.random()*4)+'s;animation-delay:'+(Math.random()*4)+'s;opacity:'+(0.1+Math.random()*0.4);
+    c.appendChild(s);
+  }
+})();
+
+// ─── DECK MANAGEMENT ───────────────────────────────────
+function filterDay(day){
+  currentFilter = day;
+  document.querySelectorAll('.day-tab').forEach(function(b){b.classList.remove('active');});
+  event.target.classList.add('active');
+  resetDeck();
+}
+function resetDeck(){
+  var src = currentFilter==='all' ? VOCAB : VOCAB.filter(function(c){return c.d===currentFilter;});
+  deck = src.map(function(c,i){return {card:c,idx:i};});
+  known=0; again=0; idx=0; flipped=false;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('cardArea').style.display='';
+  document.getElementById('actionRow').style.display='';
+  shuffleDeck();
+  updateUI();
+}
+function shuffleDeck(){
+  for(var i=deck.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=deck[i]; deck[i]=deck[j]; deck[j]=t;
+  }
+  idx=0; flipped=false; updateUI();
+}
+function shuffle(){resetDeck(); shuffleDeck();}
+
+// ─── CARD UI ───────────────────────────────────────────
+function updateUI(){
+  if(deck.length===0||idx>=deck.length){showResults();return;}
+  var c=deck[idx].card;
+  document.getElementById('cardDayTag').textContent='Day '+c.d+' · '+c.t;
+  document.getElementById('cardWord').textContent=c.w;
+  document.getElementById('cardPos').textContent=c.pos;
+  document.getElementById('cardDef').textContent=c.def;
+  document.getElementById('cardEx').textContent=showEx?'"'+c.ex+'"':'';
+  document.getElementById('cardEx').style.display=showEx?'':'none';
+  // reset flip
+  flipped=false;
+  document.getElementById('cardOuter').classList.remove('flipped');
+  document.getElementById('btnKnow').disabled=true;
+  document.getElementById('btnAgain').disabled=true;
+  // progress
+  var total=VOCAB.filter(function(v){return currentFilter==='all'||v.d===currentFilter;}).length;
+  var done=known+again;
+  var pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progressText').textContent='Card '+(idx+1)+' of '+deck.length;
+  document.getElementById('progressPct').textContent=pct+'%';
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('knownN').textContent=known;
+  document.getElementById('againN').textContent=again;
+  document.getElementById('leftN').textContent=deck.length-idx;
+}
+function flipCard(){
+  flipped=!flipped;
+  document.getElementById('cardOuter').classList.toggle('flipped',flipped);
+  if(flipped){
+    document.getElementById('btnKnow').disabled=false;
+    document.getElementById('btnAgain').disabled=false;
+  }
+}
+function markKnown(){known++;idx++;flipped=false;updateUI();}
+function markAgain(){
+  again++;
+  // move current card to the end of remaining deck
+  var cur=deck.splice(idx,1)[0];
+  deck.push(cur);
+  flipped=false;updateUI();
+}
+function nextCard(){idx++;flipped=false;updateUI();}
+function toggleEx(){
+  showEx=!showEx;
+  var btn=document.getElementById('showExBtn');
+  btn.textContent='Examples: '+(showEx?'On':'Off');
+  btn.classList.toggle('active',showEx);
+  if(flipped){
+    var c=deck[idx].card;
+    document.getElementById('cardEx').textContent=showEx?'"'+c.ex+'"':'';
+    document.getElementById('cardEx').style.display=showEx?'':'none';
+  }
+}
+
+// ─── RESULTS ───────────────────────────────────────────
+function showResults(){
+  document.getElementById('cardArea').style.display='none';
+  document.getElementById('actionRow').style.display='none';
+  var total=known+again;
+  var pct=total>0?Math.round(known/total*100):0;
+  document.getElementById('resultRing').textContent=pct+'%';
+  var title=pct===100?'Perfect — flawless round! 🌟':pct>=80?'Excellent work! 🎉':pct>=60?'Good progress! 💪':'Keep going — you\'ll get there! 📚';
+  document.getElementById('resultTitle').textContent=title;
+  document.getElementById('resultSub').textContent='You knew '+known+' of '+total+' words.'+(again>0?' '+again+' marked for review.':'');
+  document.getElementById('results').classList.add('show');
+}
+function reviewAgain(){
+  // only keep the cards that were marked for review
+  var toReview=deck.filter(function(c){return true;}); // they're all at end
+  if(again===0){resetDeck();return;}
+  // start fresh but only the again cards are at the back; just reset
+  var src=currentFilter==='all'?VOCAB:VOCAB.filter(function(c){return c.d===currentFilter;});
+  deck=src.map(function(c,i){return {card:c,idx:i};});
+  known=0;again=0;idx=0;flipped=false;
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('cardArea').style.display='';
+  document.getElementById('actionRow').style.display='';
+  shuffleDeck();updateUI();
+}
+
+// ─── AMBIENT MUSIC ─────────────────────────────────────
+function toggleMusic(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  musicOn=!musicOn;
+  document.getElementById('musicBtn').textContent='♪ Music: '+(musicOn?'On':'Off');
+  if(musicOn){startMusic();}else{stopMusic();}
+}
+function stopMusic(){
+  musicNodes.forEach(function(n){try{n.stop();}catch(e){}});
+  musicNodes=[];
+}
+function startMusic(){
+  stopMusic();
+  // Gentle ambient drone — Am chord + slow LFO
+  var masterGain=audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0,audioCtx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.07,audioCtx.currentTime+3);
+  masterGain.connect(audioCtx.destination);
+
+  var reverb=audioCtx.createConvolver();
+  var len=audioCtx.sampleRate*2;
+  var buf=audioCtx.createBuffer(2,len,audioCtx.sampleRate);
+  for(var ch=0;ch<2;ch++){var d=buf.getChannelData(ch);for(var i=0;i<len;i++){d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);}}
+  reverb.buffer=buf;
+  reverb.connect(masterGain);
+
+  // Notes: A2,E3,A3,C4,E4,G4 — Am7 chord, very soft
+  var freqs=[110,165,220,261.6,329.6,392];
+  freqs.forEach(function(freq,fi){
+    var osc=audioCtx.createOscillator();
+    var gain=audioCtx.createGain();
+    osc.type='sine';
+    osc.frequency.value=freq;
+    // slight detune for warmth
+    osc.detune.value=(fi%2===0?-5:5);
+    // slow LFO on gain
+    var lfo=audioCtx.createOscillator();
+    var lfoGain=audioCtx.createGain();
+    lfo.frequency.value=0.03+fi*0.007;
+    lfoGain.gain.value=0.006;
+    lfo.connect(lfoGain);
+    lfoGain.connect(gain.gain);
+    lfo.start();
+    gain.gain.value=0.012/(fi+1);
+    osc.connect(gain);
+    gain.connect(reverb);
+    osc.start();
+    musicNodes.push(osc);
+    musicNodes.push(lfo);
+  });
+}
+
+// ─── KEYBOARD ──────────────────────────────────────────
+document.addEventListener('keydown',function(e){
+  if(e.key===' '||e.key==='Enter'){if(deck.length&&idx<deck.length){flipCard();e.preventDefault();}}
+  if(e.key==='ArrowRight'||e.key==='1'){if(!document.getElementById('btnKnow').disabled)markKnown();}
+  if(e.key==='ArrowLeft'||e.key==='2'){if(!document.getElementById('btnAgain').disabled)markAgain();}
+});
+
+// ─── INIT ──────────────────────────────────────────────
+resetDeck();
+</script>
+</body>
+</html>
