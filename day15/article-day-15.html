@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — The Dual Geography of Post-War New Zealand Literature</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.7;}
+  .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+  .topbar a{color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;}.topbar a:hover{text-decoration:underline;}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+  .kicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-size:12.5px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+  h1{font-size:30px;margin:0 0 8px;line-height:1.25;}
+  .byline{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:14px;margin-bottom:30px;}
+  .lede{font-size:18px;color:#333;margin-bottom:28px;}
+  p{margin:0 0 18px;font-size:17px;}
+  h2{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:21px;margin:36px 0 14px;color:var(--accent-dark);border-bottom:2px solid var(--border);padding-bottom:8px;}
+  .diagram{background:#f0f4f5;border:1px solid var(--border);border-radius:8px;padding:16px 20px;font-family:monospace;font-size:12px;margin:20px 0;color:var(--accent-dark);line-height:2;white-space:pre-wrap;}
+  ul{margin:0 0 18px;font-size:16.5px;line-height:1.9;padding-left:22px;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14.5px;}
+  th,td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top;}
+  th{background:#eef3f4;font-weight:700;}td.term{font-weight:700;color:var(--accent-dark);}
+  .qs-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin-top:36px;}
+  .qs-section h2{border:none;margin-top:0;padding-bottom:0;}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .q-block{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;}
+  .q-text{font-size:15px;margin-bottom:8px;}
+  .opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}
+  .opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 8px;width:200px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}
+  input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}.btn:hover{background:var(--accent-dark);}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:10px 14px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+  .answer-key summary::-webkit-details-marker{display:none;}
+  .answer-key-body{padding:12px 16px;background:#fff;font-size:14px;line-height:1.8;}
+  .footer-note{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:13px;margin-top:50px;border-top:1px solid var(--border);padding-top:16px;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<div class="topbar"><a href="javascript:window.close()">← Back to Day 15</a></div>
+<div class="wrap">
+  <div class="kicker">Background Reading // Literature &amp; Cultural Studies</div>
+  <h1>The Dual Geography of Post-War New Zealand Literature</h1>
+  <div class="byline">Prepared for IELTS Sprint4 — Day 15</div>
+
+  <p class="lede">For decades, New Zealand literature was dominated by a collective cultural anxiety known as <strong>provincialism</strong>. Writers frequently portrayed their society as a sterile, conformist "dull wasteland" that stifled artistic expression and demanded absolute social uniformity. However, a generation of post-war authors engineered a major artistic shift.</p>
+
+  <p>By slicing through this bleak outlook, writers like Maurice Gee explored the profound psychological duality hidden beneath the surface of quiet, suburban towns.</p>
+
+  <h2>The Topography of Tension: Suburban vs. Wild Spaces</h2>
+  <p>A central pillar of post-war New Zealand literature is the intense focus on localised geography to represent internal psychological states. Unlike European writers who could draw upon centuries of urban literary history, New Zealand authors had to build a mythology out of rapidly expanding suburban boroughs — where the orderly domestic world directly bordered the untamed landscape of the bush and rural waterways.</p>
+
+  <div class="diagram">[The Domestic Realm] ──────► [The Threshold] ──────► [The Untamed Frontier]
+(Kitchen / Home)              (Borderline)           (Creek / Bush)
+• Safety, conformity          • Tension &amp; transition  • Danger, decay, freedom
+• Social pressure             • First mortality       • Creative potential</div>
+
+  <ul>
+    <li><strong>The Domestic Interior:</strong> The family kitchen or classroom symbolised safety and maternal affection — but also the crushing weight of community expectations and pressure to conform.</li>
+    <li><strong>The Riparian/Wild Space:</strong> Environments like Henderson Creek stood for absolute liberty, physical adventure, and emotional awakening. It was here that a child first encountered the harsh realities of decay and mortality.</li>
+  </ul>
+  <p>Rather than fleeing the tension between these contrasting worlds, Gee utilised them as the primary engine for his storytelling. The constant movement between the security of the home and the hazards of the wilderness became a metaphor for the lifelong struggle to balance social belonging against the risky pursuit of personal identity.</p>
+
+  <h2>The Rugby Mythos and Masculine Conformity</h2>
+  <p>To understand the impact of early novels like <em>The Big Season</em>, one must recognise the absolute cultural dominance of rugby in mid-century New Zealand. More than just a national sport, rugby functioned as a secular religion — the primary benchmark for defining acceptable masculine behaviour.</p>
+
+  <div class="diagram">[The Mid-Century Social Contract]
+Rigid Masculine Expectations (Rugby Field) &lt;───[CRITICAL TENSION]───&gt; Individual Autonomy (Creative/Romantic Pursuits)</div>
+
+  <p>In a small, isolated society, the rugby field was an arena where individual ego had to be completely sacrificed for the collective survival of the team. Standing out or prioritising intellectual and artistic interests was frequently viewed as a form of social betrayal. When post-war writers introduced protagonist athletes who were internally divided — performing dutifully on the sports field while secretly yearning for creative or romantic paths — they were executing a radical critique of New Zealand's social contract. These characters represented a new generation trying to discover their true potential without destroying their ties to the community.</p>
+
+  <h2>Intergenerational Memory and Oral History</h2>
+  <p>As New Zealand literature matured in the late 1970s, novelists moved away from simple coming-of-age stories and began tackling massive intergenerational sagas that tracked the evolution of the national psyche across multiple eras. This evolution relied heavily on the integration of raw oral history and family genealogies.</p>
+
+  <div class="diagram">[Family Oral Traditions] + [Extensive Oral Research] ──> [The Intergenerational Novel]
+                                                                    │
+                                                                    ▼
+                                                       [A Multi-Generational Portrait]</div>
+
+  <p>By blending detailed memories of historical schoolhouses, local workplaces, and regional family dynamics, authors created fiction that felt indistinguishable from historical reality. These masterworks — most notably the Plumb trilogy — used the trajectory of a single family to mirror the spiritual and political shifts of the entire nation across three generations. The resulting literature proved that a writer did not need to pen a literal autobiography to express absolute truth; by shaping personal memories through an imaginative lens, they could capture the authentic history of an entire society.</p>
+
+  <h2>Vocabulary Glossary</h2>
+  <table>
+    <tr><th>Word / Phrase</th><th>Definition</th><th>Example</th></tr>
+    <tr><td class="term">self-assured</td><td>Confident in one's own abilities and character.</td><td>The self-assured narrator recounts his childhood without sentimentality.</td></tr>
+    <tr><td class="term">masterpiece</td><td>A work of outstanding skill, artistry, or excellence.</td><td>The Plumb trilogy is widely regarded as a masterpiece of New Zealand fiction.</td></tr>
+    <tr><td class="term">stimulated</td><td>Encouraged or aroused to greater activity or interest.</td><td>The wild landscape stimulated the children's imagination and sense of adventure.</td></tr>
+    <tr><td class="term">autobiography</td><td>An account of a person's life written by that person.</td><td>Although not a literal autobiography, the novel draws heavily on the author's own memories.</td></tr>
+    <tr><td class="term">betray</td><td>To be disloyal to someone or something; to reveal something that was meant to be secret.</td><td>Pursuing artistic goals was considered a way to betray the expectations of the community.</td></tr>
+    <tr><td class="term">grounded in</td><td>Based on or rooted in something real, factual, or familiar.</td><td>The novel's power comes from being grounded in the everyday reality of suburban life.</td></tr>
+    <tr><td class="term">enrich</td><td>To improve the quality, value, or significance of something.</td><td>Oral family histories enrich the narrative with authentic emotional detail.</td></tr>
+    <tr><td class="term">delves into</td><td>Investigates or explores deeply and thoroughly.</td><td>The novel delves into the hidden tensions beneath the surface of respectable family life.</td></tr>
+    <tr><td class="term">potential</td><td>The capacity or ability to develop, achieve, or succeed in the future.</td><td>The creek represents the potential for self-discovery beyond social constraints.</td></tr>
+    <tr><td class="term">tension</td><td>A feeling of anxiety or strain caused by opposing forces or demands.</td><td>The tension between conformity and freedom drives the narrative forward.</td></tr>
+    <tr><td class="term">acclaim</td><td>Public praise and approval, especially for an artistic achievement.</td><td>The trilogy received widespread critical acclaim both in New Zealand and internationally.</td></tr>
+    <tr><td class="term">enthusiastically</td><td>With intense enjoyment, interest, or eagerness.</td><td>Young readers enthusiastically identified with the protagonist's sense of restlessness.</td></tr>
+    <tr><td class="term">audience</td><td>The group of people who read, watch, or listen to a work.</td><td>The novel found a wide audience among readers who had grown up in suburban New Zealand.</td></tr>
+    <tr><td class="term">publication</td><td>The act of making a book, article, or other work available to the public.</td><td>The publication of the novel marked a turning point in New Zealand literary history.</td></tr>
+    <tr><td class="term">disillusioned</td><td>Disappointed when one discovers that something is not as good or true as believed.</td><td>The protagonist becomes disillusioned with the rigid expectations of small-town life.</td></tr>
+    <tr><td class="term">narrative</td><td>A spoken or written account of connected events; a story.</td><td>The narrative shifts between past and present, gradually revealing the family's secrets.</td></tr>
+    <tr><td class="term">impression</td><td>A feeling or idea about something; the effect produced on a person.</td><td>The novel leaves a lasting impression of a society struggling to define its own identity.</td></tr>
+    <tr><td class="term">exaggerated</td><td>Represented as larger, better, or worse than it really is.</td><td>The community's fear of nonconformity is deliberately exaggerated for satirical effect.</td></tr>
+    <tr><td class="term">significance</td><td>The quality of being important, meaningful, or worthy of attention.</td><td>The significance of the creek as a symbol of freedom cannot be overstated.</td></tr>
+    <tr><td class="term">subsequent</td><td>Coming after or following something in time or order.</td><td>Subsequent novels built on the themes established in this groundbreaking debut.</td></tr>
+  </table>
+
+  <div class="qs-section">
+    <h2>Comprehension Questions</h2>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:18px 0 8px;color:var(--accent-dark);">Academic Vocabulary Enhancement</h3>
+    <p class="instr">Find the words or phrases within the article that match the following formal definitions.</p>
+    <div class="q-block"><div class="q-text">1. (n. — Introduction): A state of being narrow-minded or excessively concerned with local matters at the expense of a broader view.</div><input class="fill" id="vq1"></div>
+    <div class="q-block"><div class="q-text">2. (adj. — Paragraph 2): Relating to, living on, or situated along the banks of a river or stream.</div><input class="fill" id="vq2"></div>
+    <div class="q-block"><div class="q-text">3. (n. — Paragraph 3): A traditional belief or a collection of stories surrounding a specific cultural institution or practice.</div><input class="fill" id="vq3"></div>
+    <div class="q-block"><div class="q-text">4. (n. — Paragraph 4): Long, detailed stories tracking the history of a family or community across generations.</div><input class="fill" id="vq4"></div>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:24px 0 8px;color:var(--accent-dark);">Multiple Choice (Questions 1–4)</h3>
+    <p class="instr">Choose the correct letter, A, B, C or D.</p>
+    <div class="q-block" id="aq1Block"><div class="q-text">1. According to the first paragraph, "provincialism" led mid-century writers to depict New Zealand life as …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq1" value="A"> A) technologically superior to European urban centres.</label><label class="opt-row" data-val="B"><input type="radio" name="aq1" value="B"> B) dynamic, adventurous, and filled with artistic freedom.</label><label class="opt-row" data-val="C"><input type="radio" name="aq1" value="C"> C) emotionally sterile, highly conformist, and uninspiring.</label><label class="opt-row" data-val="D"><input type="radio" name="aq1" value="D"> D) deeply dependent on international military alliances.</label></div></div>
+    <div class="q-block" id="aq2Block"><div class="q-text">2. In the geographic framework, wild spaces like creeks primarily symbolised …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq2" value="A"> A) financial ruin due to industrial pollution.</label><label class="opt-row" data-val="B"><input type="radio" name="aq2" value="B"> B) personal liberty alongside an early exposure to danger and mortality.</label><label class="opt-row" data-val="C"><input type="radio" name="aq2" value="C"> C) the strict enforcement of traditional schoolhouse rules.</label><label class="opt-row" data-val="D"><input type="radio" name="aq2" value="D"> D) a complete lack of biological diversity in the countryside.</label></div></div>
+    <div class="q-block" id="aq3Block"><div class="q-text">3. Why was the depiction of an internally conflicted rugby player considered unusual in early New Zealand fiction?</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq3" value="A"> A) Most writers were legally banned from attending sporting events.</label><label class="opt-row" data-val="B"><input type="radio" name="aq3" value="B"> B) Rugby was a minor hobby that held very little interest for the public.</label><label class="opt-row" data-val="C"><input type="radio" name="aq3" value="C"> C) The sport historically demanded total conformity, making individual distraction seem like a betrayal.</label><label class="opt-row" data-val="D"><input type="radio" name="aq3" value="D"> D) Professional athletes were generally expected to become politicians.</label></div></div>
+    <div class="q-block" id="aq4Block"><div class="q-text">4. The development of intergenerational sagas allowed authors to …</div><div class="opts"><label class="opt-row" data-val="A"><input type="radio" name="aq4" value="A"> A) avoid doing any research into local history.</label><label class="opt-row" data-val="B"><input type="radio" name="aq4" value="B"> B) mirror the broad historical and psychological shifts of the entire nation.</label><label class="opt-row" data-val="C"><input type="radio" name="aq4" value="C"> C) write completely factual autobiographies without changing any names.</label><label class="opt-row" data-val="D"><input type="radio" name="aq4" value="D"> D) argue that modern urban centres were ecologically superior to rural zones.</label></div></div>
+
+    <h3 style="font-family:sans-serif;font-size:17px;margin:24px 0 8px;color:var(--accent-dark);">Summary Completion (Questions 5–7)</h3>
+    <p class="instr">Complete the summary. Choose NO MORE THAN TWO WORDS from the article for each answer.</p>
+    <div style="background:#f7f8fa;border:1px solid var(--border);border-radius:8px;padding:16px 18px;line-height:2.2;font-size:15.5px;margin-bottom:14px;">
+      Post-war New Zealand literature relied heavily on a geographic duality. While domestic interiors offered safety, they also enforced intense social conformity. In contrast, <input class="fill" id="aq5" style="width:120px;"> zones allowed characters to explore personal identity and adventure. Writers also challenged national myths by creating complex characters torn between the demands of the <input class="fill" id="aq6" style="width:150px;"> and their own internal desires. By combining family lore with extensive <input class="fill" id="aq7" style="width:150px;">, these authors constructed massive multi-generational sagas that captured the true evolution of their country's history.
+    </div>
+
+    <button class="btn" onclick="checkArticleComprehension()">Check answers</button>
+    <details class="answer-key" id="artAnsKey"><summary>Answer key</summary>
+      <div class="answer-key-body">
+        <b>Vocab finding:</b> 1. provincialism &nbsp;•&nbsp; 2. Riparian &nbsp;•&nbsp; 3. mythos &nbsp;•&nbsp; 4. sagas<br>
+        <b>MCQ:</b> 1. C &nbsp;•&nbsp; 2. B &nbsp;•&nbsp; 3. C &nbsp;•&nbsp; 4. B<br>
+        <b>Summary:</b> 5. wild &nbsp;•&nbsp; 6. rugby field &nbsp;•&nbsp; 7. oral history
+      </div>
+    </details>
+  </div>
+
+  <div class="footer-note">Background Reading — IELTS Sprint4 Day 15 &nbsp;•&nbsp; Literature &amp; Cultural Studies</div>
+</div>
+<script>
+var vocabAns={vq1:'provincialism',vq2:'Riparian',vq3:'mythos',vq4:'sagas'};
+var mcqAns={aq1:'C',aq2:'B',aq3:'C',aq4:'B'};
+var sumAns={aq5:'wild',aq6:'rugby field',aq7:'oral history'};
+function checkArticleComprehension(){
+  var right=0,total=11;
+  Object.keys(vocabAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===vocabAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  Object.keys(mcqAns).forEach(function(name){var chosen=document.querySelector('input[name="'+name+'"]:checked');var ok=chosen&&chosen.value===mcqAns[name];if(ok)right++;var block=document.getElementById(name+'Block');if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===mcqAns[name])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});
+  Object.keys(sumAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===sumAns[id].toLowerCase();if(ok)right++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});
+  alert('You got '+right+' / '+total+' correct.');
+  document.getElementById('artAnsKey').classList.add('show');
+}
+(function(){
+  var HL_KEY='sprint4_hl_art15';
+  var tools=document.getElementById('hlTools');
+  function saveHighlights(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}
+  function applyHighlight(searchText){if(!searchText.trim())return;var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(node){var p=node.parentNode;while(p){var tag=p.tagName||'';if(tag==='SCRIPT'||tag==='STYLE'||tag==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return node.textContent.indexOf(searchText)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node;var found=false;while((node=walker.nextNode())&&!found){var idx=node.textContent.indexOf(searchText);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+searchText.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}}
+  function restoreHighlights(){try{var saved=JSON.parse(localStorage.getItem(HL_KEY)||'[]');saved.forEach(function(t){applyHighlight(t);});}catch(e){}}
+  document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});
+  document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});
+  document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){document.execCommand('hiliteColor',false,'#ffe45c');}s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';saveHighlights();};
+  restoreHighlights();
+})();
+</script>
+</body>
+</html>
