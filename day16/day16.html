@@ -124,11 +124,11 @@
 
 <!-- TASK 6 -->
 <section class="task" id="task6" data-task="6">
-  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — How playing an instrument benefits your brain</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video — University advice: things to know before you start</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
   <div class="video-wrap"><iframe src="https://www.youtube.com/embed/9dgmp3KmwGg?start=40" title="How playing an instrument benefits your brain" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
   <div class="card"><h4>Part 1 — Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
   <div class="card"><h4>Part 2 — Gap fill (15 words)</h4>
-    <div class="wordbank"><span class="chip">fireworks</span><span class="chip">neuroscientists</span><span class="chip">melody</span><span class="chip">workout</span><span class="chip">visual</span><span class="chip">motor</span><span class="chip">corpus</span><span class="chip">hemispheres</span><span class="chip">creatively</span><span class="chip">executive</span><span class="chip">strategizing</span><span class="chip">memories</span><span class="chip">contextual</span><span class="chip">aesthetic</span><span class="chip">enhancement</span></div>
+    <div class="wordbank"><span class="chip">expense</span><span class="chip">degree</span><span class="chip">career</span><span class="chip">sustainable</span><span class="chip">slider</span><span class="chip">departments</span><span class="chip">engineering</span><span class="chip">lectures</span><span class="chip">myths</span><span class="chip">ratio</span><span class="chip">discipline</span><span class="chip">employers</span><span class="chip">marketing</span><span class="chip">communication</span><span class="chip">diversity</span></div>
     <div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
   </div>
   <div class="card"><h4>Part 3 — Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
@@ -251,40 +251,40 @@ function checkTask5(){var r=0;Object.keys(t5Ans).forEach(function(id){var el=doc
 
 /* ===== TASK 6 VIDEO ===== */
 var vidMcqData=[
-  {n:1,q:'According to the video, what happens inside a musician\'s brain while playing an instrument?',opts:['Only the memory centre becomes active.','The brain becomes less active.','Multiple areas of the brain become active simultaneously.','Only the motor cortex is used.'],ans:'C'},
-  {n:2,q:'Which technologies have helped neuroscientists study the brain in real time?',opts:['X-rays and ultrasound','MRI and PET scanners','ECG machines','Telescopes'],ans:'B'},
-  {n:3,q:'What happens when people simply listen to music?',opts:['Only the auditory cortex is activated.','The brain shuts down unnecessary functions.','Multiple brain regions process melody, rhythm, and sound together.','Only the right hemisphere becomes active.'],ans:'C'},
-  {n:4,q:'The video compares playing music to which activity?',opts:['Reading a novel','Solving a puzzle','A full-body workout for the brain','Watching television'],ans:'C'},
-  {n:5,q:'Which three cortices are especially engaged when playing a musical instrument?',opts:['Visual, auditory, and motor cortices','Frontal, temporal, and occipital cortices','Sensory, emotional, and memory cortices','Left, right, and central cortices'],ans:'A'},
-  {n:6,q:'What important brain structure becomes stronger through musical training?',opts:['Cerebellum','Brain stem','Corpus callosum','Hippocampus'],ans:'C'},
-  {n:7,q:'According to the video, what does a stronger corpus callosum allow?',opts:['Slower reactions','Better eyesight','Faster communication between the brain\'s hemispheres','Improved hearing only'],ans:'C'},
-  {n:8,q:'Which of the following is included in executive function?',opts:['Sleeping and dreaming','Planning, strategizing, and attention to detail','Digestion and breathing','Balance and coordination only'],ans:'B'},
-  {n:9,q:'How do musicians appear to organize memories?',opts:['By storing only visual information','By repeating information aloud','By giving each memory multiple tags','By forgetting unnecessary details'],ans:'C'},
-  {n:10,q:'What did randomized studies find about people who learned music?',opts:['They became physically stronger.','They showed enhancement in multiple brain areas.','They became better athletes.','They had no measurable brain changes.'],ans:'B'}
+  {n:1,q:'According to the speaker, why should students take university seriously?',opts:['Because attendance is optional','Because failing a course usually means paying to take it again','Because there is no homework','Because classes are shorter than high school'],ans:'B'},
+  {n:2,q:'Before starting university, what important question should students ask themselves?',opts:['Which dormitory is the cheapest?','Which clubs should I join?','Why am I going to university?','How many classes should I skip?'],ans:'C'},
+  {n:3,q:'What does the speaker say about choosing a university program?',opts:['Computer science is always the best choice.','The most expensive program is usually the best.','There is one perfect program for everyone.','Students should choose something that leads to an enjoyable and sustainable career.'],ans:'D'},
+  {n:4,q:'What "rule of thumb" does the speaker suggest when choosing a program?',opts:['Always choose the easiest major.','Imagine a slider between fun and income.','Pick the same major as your friends.','Focus only on salary.'],ans:'B'},
+  {n:5,q:'Which group should you avoid discussing the job market with?',opts:['Engineering students','Business students','Fine arts students','Law students'],ans:'C'},
+  {n:6,q:'According to the speaker, how much should students study outside class?',opts:['30 minutes for every lecture hour','One hour for every lecture hour','Two to three hours for every lecture hour','Only before exams'],ans:'C'},
+  {n:7,q:'Which statement does the speaker identify as a myth?',opts:['University courses cost money.','People are much more mature in university.','Students should expect to study regularly.','University can influence your future career.'],ans:'B'},
+  {n:8,q:'According to the example given, which program has about 90% male students?',opts:['Nursing','Psychology','Computer Science','Education'],ans:'C'},
+  {n:9,q:'What advice does the speaker give about standing out to employers?',opts:['Be the smartest student in every subject.','Focus only on technical skills.','Develop communication and marketing skills alongside your main expertise.','Avoid extracurricular activities.'],ans:'C'},
+  {n:10,q:'Why does the speaker recommend having a diverse set of skills?',opts:['To graduate earlier','To make university easier','To prepare for future changes, including automation','To impress professors'],ans:'C'}
 ];
 (function buildVidMcq(){var wrap=document.getElementById('vidMcqList');var html='';vidMcqData.forEach(function(q){html+='<div class="q-block" id="vmcq'+q.n+'"><div class="q-text">'+q.n+'. '+q.q+'</div><div class="opts">';var letters=['A','B','C','D'];q.opts.forEach(function(o,idx){html+='<label class="opt-row" data-val="'+letters[idx]+'"><input type="radio" name="vq'+q.n+'" value="'+letters[idx]+'"> '+letters[idx]+') '+o+'</label>';});html+='</div></div>';});wrap.innerHTML=html;})();
 
 var vidGapData=[
-  {n:1,t:'The speaker compares activity inside a musician\'s brain to ___.',ans:'fireworks'},
-  {n:2,t:'___ have made major breakthroughs in understanding the brain.',ans:'neuroscientists'},
-  {n:3,t:'While listening to music, the brain processes elements such as rhythm and ___.',ans:'melody'},
-  {n:4,t:'Playing music is described as the brain\'s equivalent of a full-body ___.',ans:'workout'},
-  {n:5,t:'Playing an instrument especially activates the ___ cortex.',ans:'visual'},
-  {n:6,t:'Fine motor skills are controlled by the ___ cortex.',ans:'motor'},
-  {n:7,t:'Musical training increases the activity of the ___ callosum.',ans:'corpus'},
-  {n:8,t:'This structure connects the two brain ___.',ans:'hemispheres'},
-  {n:9,t:'Stronger brain connections may help musicians solve problems more ___.',ans:'creatively'},
-  {n:10,t:'Musicians often have higher levels of ___ function.',ans:'executive'},
-  {n:11,t:'Executive function includes planning and ___.',ans:'strategizing'},
-  {n:12,t:'Musicians can create, store, and retrieve ___ more efficiently.',ans:'memories'},
-  {n:13,t:'Each memory may include a ___ tag alongside other types of tags.',ans:'contextual'},
-  {n:14,t:'Researchers found that the artistic and ___ aspects of music are unique.',ans:'aesthetic'},
-  {n:15,t:'Music learning resulted in noticeable ___ in several brain regions.',ans:'enhancement'}
+  {n:1,t:'If you fail a course, you may have to pay for it again at your own ___.',ans:'expense'},
+  {n:2,t:'The speaker reminds students that they are at university to earn a ___.',ans:'degree'},
+  {n:3,t:'A university qualification can help shape your future ___.',ans:'career'},
+  {n:4,t:'Students should choose a program that leads to a ___ job.',ans:'sustainable'},
+  {n:5,t:'The speaker describes a ___ between enjoyment and income.',ans:'slider'},
+  {n:6,t:'He advises students to avoid certain conversations with people from different ___.',ans:'departments'},
+  {n:7,t:'According to the speaker, students in ___ always believe they have the most homework.',ans:'engineering'},
+  {n:8,t:'Students are advised to study two to three hours for every hour of ___.',ans:'lectures'},
+  {n:9,t:'The speaker clears up several common ___ about university life.',ans:'myths'},
+  {n:10,t:'He also discusses the male-to-female ___ in different programs.',ans:'ratio'},
+  {n:11,t:'You do not need to be the best in your ___ to become successful.',ans:'discipline'},
+  {n:12,t:'Developing additional skills can help you stand out to ___.',ans:'employers'},
+  {n:13,t:'Artists often succeed because they are good at ___ as well as creating art.',ans:'marketing'},
+  {n:14,t:'Successful engineers also need strong ___ skills.',ans:'communication'},
+  {n:15,t:'Having ___ can help you adapt to future career changes.',ans:'diversity'}
 ];
 (function buildVidGap(){var wrap=document.getElementById('vidGapList');var html='';vidGapData.forEach(function(g){html+='<p>'+g.n+'. '+g.t.replace('___','<input class="fill" id="vg'+g.n+'">')+'</p>';});wrap.innerHTML=html;})();
 
-var vidMatchData=[{n:1,term:'neuroscientist',ans:'A'},{n:2,term:'melody',ans:'B'},{n:3,term:'cortex',ans:'C'},{n:4,term:'motor skills',ans:'D'},{n:5,term:'hemisphere',ans:'E'},{n:6,term:'corpus callosum',ans:'F'},{n:7,term:'executive function',ans:'G'},{n:8,term:'strategize',ans:'H'},{n:9,term:'retrieve',ans:'I'},{n:10,term:'interconnected',ans:'J'},{n:11,term:'cognitive',ans:'K'},{n:12,term:'auditory',ans:'L'},{n:13,term:'aesthetic',ans:'M'},{n:14,term:'enhancement',ans:'N'},{n:15,term:'simultaneously',ans:'O'}];
-var vidMatchDefs={A:'A scientist who studies the brain and nervous system',B:'A sequence of musical notes forming a tune',C:'The outer layer of the brain',D:'The ability to make controlled physical movements',E:'One half of the brain',F:'The bundle of nerve fibres connecting the two brain hemispheres',G:'Mental skills used for planning, decision-making, and attention',H:'To plan carefully in order to achieve a goal',I:'To bring back information from memory',J:'Closely linked or connected together',K:'Related to thinking, learning, and understanding',L:'Related to hearing',M:'Related to beauty or artistic appreciation',N:'An improvement or increase in quality or ability',O:'Happening at the same time'};
+var vidMatchData=[{n:1,term:'expense',ans:'A'},{n:2,term:'degree',ans:'B'},{n:3,term:'sustainable',ans:'C'},{n:4,term:'career',ans:'D'},{n:5,term:'register',ans:'E'},{n:6,term:'lecture',ans:'F'},{n:7,term:'department',ans:'G'},{n:8,term:'myth',ans:'H'},{n:9,term:'discipline',ans:'I'},{n:10,term:'employer',ans:'J'},{n:11,term:'avenue',ans:'K'},{n:12,term:'marketing',ans:'L'},{n:13,term:'communication',ans:'M'},{n:14,term:'diversity',ans:'N'},{n:15,term:'automation',ans:'O'}];
+var vidMatchDefs={A:'The money required to pay for something',B:'A university qualification',C:'Able to continue successfully over a long period',D:'A person's long-term professional life',E:'To officially sign up for something',F:'A formal lesson at a college or university',G:'A division of a university based on a subject area',H:'A widely believed idea that is actually false',I:'A particular field of study or profession',J:'A person or company that hires workers',K:'A way or method of achieving something',L:'Activities used to promote or sell products or services',M:'The ability to share information effectively',N:'A variety of different skills, experiences, or qualities',O:'The use of machines or technology to perform tasks automatically'};
 (function buildVidMatch(){var wrap=document.getElementById('vidMatchList');var letters=Object.keys(vidMatchDefs).sort();var optHtml='<option value="">--</option>'+letters.map(function(l){return '<option value="'+l+'">'+l+'</option>';}).join('');var html='<p class="instr" style="margin-bottom:12px;">';letters.forEach(function(l){html+='<b>'+l+'.</b> '+vidMatchDefs[l]+'<br>';});html+='</p>';vidMatchData.forEach(function(m){html+='<div class="q-text" style="margin-bottom:7px;font-size:15px;">'+m.n+'. '+m.term+' &rarr; <select class="fill" id="vm'+m.n+'">'+optHtml+'</select></div>';});wrap.innerHTML=html;})();
 
 function checkVideoTask(){
@@ -293,7 +293,7 @@ function checkVideoTask(){
   vidGapData.forEach(function(g){var inp=document.getElementById('vg'+g.n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans;if(ok)rGap++;inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok&&inp.value.trim()!=='');});
   vidMatchData.forEach(function(m){var sel=document.getElementById('vm'+m.n);if(sel&&sel.value===m.ans)rMatch++;});
   alert('MCQ: '+rMcq+'/10\nGap fill: '+rGap+'/15\nMatching: '+rMatch+'/15');
-  document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> C B C C A C C B C B<br><b>Gap fill:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' ')+'<br><b>Matching:</b> 1-A 2-B 3-C 4-D 5-E 6-F 7-G 8-H 9-I 10-J 11-K 12-L 13-M 14-N 15-O';
+  document.getElementById('ansKey6Body').innerHTML='<b>MCQ:</b> B C D B C C B C C C<br><b>Gap fill:</b> '+vidGapData.map(function(g){return g.n+'.'+g.ans;}).join(' ')+'<br><b>Matching:</b> 1-A 2-B 3-C 4-D 5-E 6-F 7-G 8-H 9-I 10-J 11-K 12-L 13-M 14-N 15-O';
   document.getElementById('ansKey6').classList.add('show');checkedTasks[6]=true;refreshDoneButton();
 }window.checkVideoTask=checkVideoTask;
 
