@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — Reductionist Nutrition, the Synthetic Pivot, and the Vitamin Paradox</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.75;}
+  .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+  .topbar a{color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+  .kicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-size:12.5px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+  h1{font-size:28px;margin:0 0 8px;line-height:1.2;}
+  .byline{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--muted);font-size:14px;margin-bottom:28px;}
+  p{margin:0 0 18px;font-size:17px;}
+  h2{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:20px;margin:34px 0 12px;color:var(--accent-dark);border-bottom:2px solid var(--border);padding-bottom:8px;}
+  .diagram{background:#f0f4f5;border:1px solid var(--border);border-radius:8px;padding:16px 20px;font-family:monospace;font-size:12px;margin:18px 0;color:var(--accent-dark);line-height:1.9;white-space:pre-wrap;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14px;}
+  th,td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;}
+  th{background:#eef3f4;font-weight:700;}
+  td.term{font-weight:700;color:var(--accent-dark);}
+  .qs{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;display:none;}
+  .qs h3{margin:0 0 14px;font-size:16px;color:var(--accent-dark);}
+  .q-block{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);font-size:15px;}
+  .q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .opts{display:flex;flex-direction:column;gap:5px;margin:8px 0 0 4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;}
+  .opt-row input{width:15px;height:15px;}
+  .opt-row.correct{color:#1f9d55;font-weight:700;}
+  .opt-row.wrong{color:#d23a3a;}
+  input.fill{font:inherit;font-size:14px;padding:3px 7px;width:200px;border:1px solid #aab2bb;border-radius:5px;}
+  input.fill.ok{border-color:#1f9d55;background:#e6f6ec;color:#1f9d55;font-weight:700;}
+  input.fill.no{border-color:#d23a3a;background:#fbeaea;color:#d23a3a;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none;}
+  .answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:10px 14px;background:#eef3f4;color:var(--accent-dark);font-weight:700;font-size:14px;}
+  .answer-key summary::-webkit-details-marker{display:none;}
+  .answer-key-body{padding:12px 16px;font-size:14px;line-height:1.7;}
+  .confirm-area{margin-top:22px;padding:14px;background:#eef3f4;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}
+  .hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<div class="topbar"><a href="javascript:window.close()">← Back to Day 17</a></div>
+<div class="wrap">
+<div class="kicker">Background Reading // Nutritional Science</div>
+<h1>Reductionist Nutrition, the Synthetic Pivot, and the Vitamin Paradox</h1>
+<div class="byline">Prepared for IELTS Sprint4 — Day 17 &nbsp;·&nbsp; Level: Advanced / Band 7.5–8.5</div>
+
+<p>Before the 20th century, human health was understood through whole foods and environmental factors. The discovery of micronutrients catalysed a transformation known as <strong>nutritionism</strong> — the tendency to reduce complex food matrices to isolated, individual chemical compounds. To understand how essential organic molecules became a commercial industry, we must examine the biochemistry of deficiency, the industrial synthesis of nutrients, and the psychological mechanisms governing consumer behaviour.</p>
+
+<h2>The Chemical Paradigm Shift: From Whole Foods to Isolated Molecules</h2>
+<p>Prior to the early 1900s, diseases like scurvy, rickets, and beriberi were often attributed to bad air, infectious bacteria, or genetic weakness. The breakthrough occurred when scientists realised these afflictions were caused by the absence of specific trace organic compounds required for cellular metabolic pathways.</p>
+
+<div class="diagram">[Complex Food Matrix] ──(Industrial Reductionism)──► [Isolated Synthetic Chemical]
+(Synergistic Enzymes)                                   (e.g., Synthetic Ascorbic Acid)
+         │                                                          │
+         ▼                                                          ▼
+[Balanced Metabolism]                             [Marketed as "Nutritional Insurance"]</div>
+
+<p>However, the isolation of these molecules birthed a scientific assumption: if a chemical compound extracted from food cures a specific disease, then that compound isolated in a laboratory must be the sole agent responsible for health. This approach ignores the <strong>food matrix effect</strong> — the complex interaction between fibre, enzymes, trace minerals, and secondary metabolites working together in whole foods. When a vitamin is extracted or synthesised in isolation, it lacks these biological co-factors, which can alter how the human body absorbs and metabolises it.</p>
+
+<h2>The Industrialisation of Fortification and "Health Halo" Marketing</h2>
+<p>Following World War II, advancements in organic chemistry allowed pharmaceutical companies to mass-produce synthetic vitamins identical in chemical structure to their natural counterparts. This technological leap created food fortification, allowing manufacturers to add isolated nutrients back into heavily processed foods.</p>
+
+<div class="diagram">[Refined / Processed Food] ──► + [Synthetic Micronutrient Addition] ──► [The "Health Halo" Effect]
+(Stripped of natural fibre)       (e.g., Synthetic Vitamin Fortification)   (Consumer perceives product as beneficial)</div>
+
+<p>This dynamic gave rise to the <strong>Health Halo Effect</strong> — a cognitive bias where consumers perceive a food product as entirely healthy based on a single positive attribute. By adding inexpensive synthetic vitamins to products high in sugar, refined starches, or industrial fats, marketers convert processed items into perceived health products. This allows consumers to justify poor dietary choices, relying on added synthetic vitamins as an "insurance policy" against systemic metabolic dysfunction.</p>
+
+<h2>The Double-Edged Sword: Toxicity and Micronutrient Balance</h2>
+<p>While acute vitamin deficiencies can be fatal, the assumption that higher doses of isolated vitamins yield exponentially better health outcomes runs counter to basic toxicology. Nutrients in human biology operate along a classic <strong>U-shaped response curve</strong>.</p>
+
+<div class="diagram">High Risk / Illness │                                      │ High Risk / Toxicity
+(Deficiency State)  │\                                    /│ (Hypervitaminosis)
+                    │ \_________Optimal Health___________/ │
+                    └──────────────────────────────────────┘
+                      Low Dose                        High Dose</div>
+
+<p><strong>Water-soluble vitamins</strong> (e.g., Vitamin C, B-complex): Excess amounts are generally excreted through urine, though ultra-high doses can still cause renal stress, gastrointestinal distress, or nerve damage.</p>
+<p><strong>Fat-soluble vitamins</strong> (A, D, E, K): These are stored in the body's adipose tissue and liver. Excess accumulation cannot be easily excreted, leading to <em>hypervitaminosis</em> — a toxic state that can cause liver damage, bone density loss, and systemic cell disruption. Furthermore, consuming high doses of isolated antioxidants can disrupt natural cell signalling pathways, acting as pro-oxidants and increasing oxidative stress rather than preventing it.</p>
+
+<h2>Vocabulary Glossary — Day 17</h2>
+<table>
+  <tr><th>Word / Phrase</th><th>Definition</th><th>Example</th></tr>
+  <tr><td class="term">nutrition</td><td>The process of taking in food and using it for energy and growth.</td><td>Good nutrition depends on variety, not just supplementation.</td></tr>
+  <tr><td class="term">supplement</td><td>A product taken in addition to food to provide additional nutrients.</td><td>A Vitamin D supplement is often recommended for people in northern climates.</td></tr>
+  <tr><td class="term">breakthrough</td><td>A sudden, important development that changes a field significantly.</td><td>The discovery of Vitamin C was a breakthrough in understanding scurvy.</td></tr>
+  <tr><td class="term">fortified</td><td>Enriched by adding vitamins or minerals during food processing.</td><td>Many breakfast cereals are fortified with iron and B vitamins.</td></tr>
+  <tr><td class="term">skepticism</td><td>An attitude of doubt or critical questioning toward accepted claims.</td><td>Scientific skepticism led researchers to question the supplement industry's claims.</td></tr>
+  <tr><td class="term">inherent</td><td>Existing naturally as a fundamental quality of something.</td><td>The inherent complexity of whole food cannot be replicated in a capsule.</td></tr>
+  <tr><td class="term">comprehend</td><td>To fully understand something that is complex or difficult.</td><td>It is difficult to comprehend why so many people take unregulated supplements.</td></tr>
+  <tr><td class="term">enthusiasm</td><td>Intense interest, enjoyment, or approval of something.</td><td>Public enthusiasm for vitamin supplements shows little sign of slowing.</td></tr>
+  <tr><td class="term">synthetic</td><td>Produced by chemical processes rather than occurring naturally.</td><td>Synthetic ascorbic acid is chemically similar to the Vitamin C in an orange.</td></tr>
+  <tr><td class="term">acknowledge</td><td>To accept or admit that something is true.</td><td>Scientists must acknowledge the limitations of the reductionist model.</td></tr>
+  <tr><td class="term">obsession</td><td>An unhealthy preoccupation or fixation with a particular idea.</td><td>The cultural obsession with individual nutrients ignores the complexity of diet.</td></tr>
+  <tr><td class="term">deficiency</td><td>A shortage or lack of something the body needs to function properly.</td><td>A Vitamin D deficiency can cause bone weakness and immune problems.</td></tr>
+  <tr><td class="term">administer</td><td>To give or apply a treatment or medicine to a person.</td><td>Doctors administer high-dose Vitamin B12 injections to patients who cannot absorb it orally.</td></tr>
+  <tr><td class="term">astounding</td><td>Surprisingly impressive or hard to believe.</td><td>The astounding growth of the supplement industry reflects changing consumer habits.</td></tr>
+  <tr><td class="term">recover</td><td>To return to a normal state of health after illness or difficulty.</td><td>Patients with scurvy begin to recover quickly once given adequate Vitamin C.</td></tr>
+  <tr><td class="term">double-edged sword</td><td>Something that has both beneficial and harmful consequences.</td><td>High-dose supplementation is a double-edged sword: helpful in deficiency, harmful in excess.</td></tr>
+  <tr><td class="term">regardless of</td><td>Without being affected by a particular factor or condition.</td><td>Regardless of marketing claims, supplements cannot replace a balanced diet.</td></tr>
+  <tr><td class="term">prevent</td><td>To stop something from happening before it occurs.</td><td>No supplement can reliably prevent chronic disease in the absence of a healthy lifestyle.</td></tr>
+  <tr><td class="term">insurance policy</td><td>A safeguard or backup strategy taken to protect against a potential problem.</td><td>Many people treat their multivitamin as an insurance policy against poor eating.</td></tr>
+  <tr><td class="term">make up for</td><td>To compensate for a shortage or failing.</td><td>Taking a supplement cannot make up for years of nutritional neglect.</td></tr>
+</table>
+
+<div class="confirm-area">
+  <label style="display:flex;align-items:center;gap:10px;font-weight:600;font-size:14.5px;cursor:pointer;">
+    <input type="checkbox" id="readCheck" style="width:18px;height:18px;" onchange="revealQs()">
+    I have finished reading the article
+  </label>
+</div>
+
+<div class="qs" id="comprehension">
+  <h3>Section 1 — Academic Vocabulary Enhancement</h3>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:14px;">Find the word or phrase in the article that matches each formal definition.</p>
+  <div class="q-block">1. (n. — Introduction): The tendency to reduce complex food to isolated individual chemical compounds.<br><input class="fill" id="vq1" placeholder="Find in text…"></div>
+  <div class="q-block">2. (adj. — Paragraph 3): Enriched by adding essential nutrients or vitamins during processing.<br><input class="fill" id="vq2" placeholder="Find in text…"></div>
+  <div class="q-block">3. (adj. — Paragraph 4): Produced by chemical synthesis rather than originating from natural biological sources.<br><input class="fill" id="vq3" placeholder="Find in text…"></div>
+  <div class="q-block">4. (n. — Paragraph 5): A cognitive bias where a product is perceived as healthy based on one positive attribute.<br><input class="fill" id="vq4" placeholder="Find in text…"></div>
+
+  <h3 style="margin-top:24px;">Section 2 — Multiple Choice</h3>
+  <div class="q-block" id="mcq1"><div style="margin-bottom:8px;font-size:15px;">1. How did consumers react when synthetic vitamins were first added to commercial foods after WWII?</div><div class="opts">
+    <label class="opt-row" data-val="A"><input type="radio" name="mcq1" value="A"> A) They demanded strict government regulations on synthetic ingredients.</label>
+    <label class="opt-row" data-val="B"><input type="radio" name="mcq1" value="B"> B) They rejected fortified foods in favour of fresh produce.</label>
+    <label class="opt-row" data-val="C"><input type="radio" name="mcq1" value="C"> C) They perceived fortified products as healthy based on the Health Halo Effect.</label>
+    <label class="opt-row" data-val="D"><input type="radio" name="mcq1" value="D"> D) They expressed deep scientific skepticism about the safety of food additives.</label>
+  </div></div>
+  <div class="q-block" id="mcq2"><div style="margin-bottom:8px;font-size:15px;">2. The "food matrix effect" implies that isolated synthetic vitamins may be less effective because they</div><div class="opts">
+    <label class="opt-row" data-val="A"><input type="radio" name="mcq2" value="A"> A) lack the supporting natural compounds and enzymes found in whole foods.</label>
+    <label class="opt-row" data-val="B"><input type="radio" name="mcq2" value="B"> B) are instantly rejected by the human digestive tract.</label>
+    <label class="opt-row" data-val="C"><input type="radio" name="mcq2" value="C"> C) contain higher levels of toxic industrial residues.</label>
+    <label class="opt-row" data-val="D"><input type="radio" name="mcq2" value="D"> D) can only be absorbed when taken with large amounts of water.</label>
+  </div></div>
+  <div class="q-block" id="mcq3"><div style="margin-bottom:8px;font-size:15px;">3. How do food manufacturers use synthetic vitamins to influence consumer behaviour?</div><div class="opts">
+    <label class="opt-row" data-val="A"><input type="radio" name="mcq3" value="A"> A) By reducing the retail cost of processed snacks.</label>
+    <label class="opt-row" data-val="B"><input type="radio" name="mcq3" value="B"> B) By creating a false perception of healthiness around otherwise low-quality foods.</label>
+    <label class="opt-row" data-val="C"><input type="radio" name="mcq3" value="C"> C) By replacing all sugar with organic alternatives.</label>
+    <label class="opt-row" data-val="D"><input type="radio" name="mcq3" value="D"> D) By proving that fortified foods can permanently replace balanced diets.</label>
+  </div></div>
+  <div class="q-block" id="mcq4"><div style="margin-bottom:8px;font-size:15px;">4. Why can fat-soluble vitamins (A, D, E, K) pose a greater risk when overconsumed?</div><div class="opts">
+    <label class="opt-row" data-val="A"><input type="radio" name="mcq4" value="A"> A) They dissolve immediately in the bloodstream, blocking blood flow.</label>
+    <label class="opt-row" data-val="B"><input type="radio" name="mcq4" value="B"> B) They accumulate in bodily tissues rather than being easily excreted.</label>
+    <label class="opt-row" data-val="C"><input type="radio" name="mcq4" value="C"> C) They lose all structural integrity when exposed to body heat.</label>
+    <label class="opt-row" data-val="D"><input type="radio" name="mcq4" value="D"> D) They prevent the thyroid gland from producing essential hormones.</label>
+  </div></div>
+
+  <h3 style="margin-top:24px;">Section 3 — Summary Completion</h3>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Choose <strong>NO MORE THAN TWO WORDS</strong> from the article for each answer.</p>
+  <p style="font-size:15px;line-height:2.2;">The discovery of micronutrients led to a belief that isolated compounds could maintain health, opening the door for manufacturers to create a <input class="fill" id="sq5" placeholder="answer…"> that misleads consumers about a food's true dietary value. Many now treat synthetic vitamins as a form of nutritional <input class="fill" id="sq6" placeholder="answer…"> to compensate for poor eating. However, excessive doses can backfire; nutrients follow a <input class="fill" id="sq7" placeholder="answer…"> curve where high intake shifts from beneficial to toxic.</p>
+
+  <button class="btn" onclick="checkArticleQs()">Check all answers</button>
+  <details class="answer-key" id="artKey"><summary>Answer key</summary>
+  <div class="answer-key-body">
+    <b>Section 1:</b><br>1. nutritionism &nbsp;•&nbsp; 2. fortified &nbsp;•&nbsp; 3. synthetic &nbsp;•&nbsp; 4. Health Halo Effect<br><br>
+    <b>Section 2:</b> 1.C &nbsp;•&nbsp; 2.A &nbsp;•&nbsp; 3.B &nbsp;•&nbsp; 4.B<br><br>
+    <b>Section 3:</b> 5. health halo (effect) &nbsp;•&nbsp; 6. insurance policy &nbsp;•&nbsp; 7. U-shaped
+  </div></details>
+</div>
+</div>
+<script>
+function revealQs(){if(document.getElementById('readCheck').checked)document.getElementById('comprehension').style.display='block';}
+var artMcqAns={mcq1:'C',mcq2:'A',mcq3:'B',mcq4:'B'};
+var artVocabAns={vq1:'nutritionism',vq2:'fortified',vq3:'synthetic',vq4:'health halo'};
+var artSumAns={sq5:'health halo',sq6:'insurance policy',sq7:'U-shaped'};
+function checkArticleQs(){var r=0,t=11;Object.keys(artVocabAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(artVocabAns[id])>=0;if(ok)r++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});Object.keys(artMcqAns).forEach(function(n){var chosen=document.querySelector('input[name="'+n+'"]:checked');var ok=chosen&&chosen.value===artMcqAns[n];if(ok)r++;var block=document.getElementById(n);if(block){block.querySelectorAll('.opt-row').forEach(function(row){if(row.dataset.val===artMcqAns[n])row.classList.add('correct');else if(chosen&&row.dataset.val===chosen.value)row.classList.add('wrong');});}});Object.keys(artSumAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(artSumAns[id].split(' ')[0])>=0;if(ok)r++;el.classList.toggle('ok',ok);el.classList.toggle('no',!ok&&el.value.trim()!=='');});alert('You got '+r+' / '+t+' correct.');document.getElementById('artKey').classList.add('show');}
+(function(){var HL_KEY='sprint4_hl_art17';var tools=document.getElementById('hlTools');function save(){var texts=[];document.querySelectorAll('.hl').forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||'')==='SCRIPT'||(p.tagName||'')==='STYLE'||(p.tagName||'')==='BUTTON'||p.className==='hl')return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);found=true;}catch(e){}}}};function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||'[]').forEach(apply);}catch(e){}}document.addEventListener('mouseup',function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display='none';return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display='none';return;}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+'px';tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+'px';},1);});document.addEventListener('mousedown',function(e){if(!tools.contains(e.target))tools.style.display='none';});document.getElementById('hlBtn').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display='none';save();};document.getElementById('hlClear').onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll('.hl').forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display='none';save();};restore();})();
+</script>
+</body>
+</html>
