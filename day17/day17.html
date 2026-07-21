@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 17</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;color:var(--text);}
+  input.fill.short{width:90px;}input.fill.med{width:200px;}input.fill.wide{width:260px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";}.answer-key[open] summary::before{content:"▾";}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}.wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}.wf-table th{background:var(--accent-light);font-weight:700;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 17</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">nutrition</span><span class="chip">supplement</span><span class="chip">breakthrough</span><span class="chip">fortified</span><span class="chip">skepticism</span><span class="chip">inherent</span><span class="chip">comprehend</span><span class="chip">enthusiasm</span><span class="chip">synthetic</span><span class="chip">acknowledge</span><span class="chip">obsession</span><span class="chip">deficiency</span><span class="chip">administer</span><span class="chip">astounding</span><span class="chip">recover</span><span class="chip">double-edged sword</span><span class="chip">regardless of</span><span class="chip">prevent</span><span class="chip">insurance policy</span><span class="chip">make up for</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word or phrase from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word or phrase (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+  <div class="card"><h3>Vitamins, supplements, and the limits of reductionist nutrition</h3>
+    <div class="passage-text">The early twentieth century discovery of vitamins transformed how scientists understood human health. Before this breakthrough, diseases like scurvy and rickets were misattributed to bacteria or genetic weakness. Once researchers identified the specific compounds responsible, an enthusiastic public and commercial sector moved quickly to industrialise their production. Food manufacturers fortified cereals, drinks, and snack foods with synthetic vitamins, and millions of consumers began to treat a daily supplement as an insurance policy against the consequences of poor eating. However, scientists with genuine skepticism toward this model pointed out that isolated compounds behave very differently in the body from the complex matrices in which they naturally occur in food. A growing body of evidence suggests that whole foods contain thousands of bioactive compounds — fibre, enzymes, and phytochemicals — that work together to regulate how vitamins are absorbed. No supplement can make up for the inherent complexity of a genuinely balanced diet. Furthermore, excessive supplementation carries its own risks: fat-soluble vitamins such as A and D accumulate in bodily tissue and can reach toxic levels, making high-dose supplementation a genuine double-edged sword.</div>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+  <div class="card"><h3>Reductionist Nutrition, the Synthetic Pivot, and the Vitamin Paradox</h3><p class="instr">Advanced background reading on nutritionism, the food matrix effect, Health Halo marketing, and vitamin toxicity — with full glossary and comprehension questions inside.</p><a class="btn link-out" href="article-day-17.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_17.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the passage, then answer all questions below.</p></div>
+  <div class="card"><h3>The Vitamin Supplement Industry: Promise and Paradox</h3>
+    <div class="passage-text">The global vitamin supplement industry is now worth over one hundred billion dollars annually, yet the scientific evidence supporting the widespread use of dietary supplements remains deeply contested. For most of the twentieth century, the dominant narrative in nutritional science was straightforwardly optimistic: if vitamin deficiencies caused disease, then supplementing with isolated vitamins would prevent it. This logic seemed unassailable, and it drove the rapid growth of a commercial supplement industry that now reaches into virtually every pharmacy, supermarket, and online marketplace on the planet.<br><br>
+    However, a series of large-scale clinical trials conducted from the 1990s onwards began to challenge this assumption with disturbing results. A landmark study involving beta-carotene supplements — a compound found naturally in orange and green vegetables, and widely marketed as a cancer-preventative antioxidant — found that high-dose supplementation in smokers actually increased rates of lung cancer rather than reducing them. Similar findings emerged from studies of synthetic Vitamin E and selenium supplementation, where high doses were associated with elevated mortality rates rather than the reductions in cardiovascular disease that researchers had expected.<br><br>
+    These outcomes point to a fundamental misunderstanding embedded in the reductionist model of nutrition. The human body has evolved to extract nutrients from complex food matrices over millions of years; it has not been designed to process isolated, high-dose synthetic compounds delivered in a single daily capsule. Whole foods contain thousands of bioactive compounds — phytochemicals, enzymes, fibres, and trace minerals — that work together to regulate how vitamins are absorbed, stored, and metabolised. When a single compound is extracted from this matrix and administered in isolation, its biological behaviour can change dramatically.<br><br>
+    None of this suggests that vitamin supplementation has no value. For individuals with diagnosed deficiencies — such as pregnant women requiring additional folate, or elderly patients who are unable to absorb sufficient Vitamin B12 — targeted supplementation under medical supervision can be genuinely life-saving. The problem lies not in the vitamins themselves but in the widespread, unsupervised use of high-dose supplements as a substitute for a balanced diet.</div>
+  </div>
+  <div class="card"><h4>Section 1 — True / False / Not Given (5 questions)</h4>
+    <p class="instr">Write True, False, or Not Given based on the passage.</p>
+    <div id="t5TFList"></div>
+  </div>
+  <div class="card"><h4>Section 2 — Short answer (3 questions)</h4>
+    <p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+    <div class="passage-text">
+      <p>6. What did a landmark study find about beta-carotene supplementation in smokers?<br><input class="fill med" id="t5s6"></p>
+      <p>7. What has the human body evolved to extract nutrients from, according to the passage?<br><input class="fill med" id="t5s7"></p>
+      <p>8. For which group does the passage say targeted supplementation can be life-saving?<br><input class="fill med" id="t5s8"></p>
+    </div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage and answer the comprehension questions.</p></div>
+
+  <div class="card"><h3>Passage A — Vitamin D: The Sunshine Supplement</h3>
+    <div class="passage-text">Vitamin D occupies a uniquely contested position in nutritional science. Unlike most vitamins, it is produced naturally by the skin when exposed to ultraviolet B radiation from sunlight, meaning that it functions more like a hormone than a dietary nutrient. In populations living far from the equator, especially during the winter months, sunlight exposure can fall dramatically below the threshold required for adequate Vitamin D synthesis. This has driven significant scientific interest in Vitamin D supplementation as a means of preventing conditions ranging from bone density loss to immune dysfunction and seasonal depression. However, enthusiasm for Vitamin D supplementation has sometimes outpaced the evidence. While clinical trials have confirmed that correcting a genuine Vitamin D deficiency produces clear health benefits, studies examining supplementation in people with already adequate levels have produced more ambiguous results. Several large trials found no significant reduction in cancer rates or cardiovascular disease among participants taking daily Vitamin D supplements. This pattern suggests that the vitamin's benefits are most pronounced when addressing an existing deficiency, rather than as a general preventative measure.</div>
+    <h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+    <div id="t6aMcqList"></div>
+  </div>
+
+  <div class="card"><h3>Passage B — The Marketing of Nutritional Insurance</h3>
+    <div class="passage-text">The concept of the vitamin supplement as a form of nutritional insurance has proven extraordinarily powerful as a marketing tool. The logic is emotionally compelling: regardless of how poorly one eats, a daily multivitamin can make up for any nutritional shortfalls. This idea has been reinforced over decades by advertising campaigns that present supplements as a straightforward hedge against the consequences of a modern lifestyle. However, the nutritional insurance model has significant limitations. Most clinical nutrition researchers now acknowledge that the micronutrient content of whole foods is only one of many variables that determine health outcomes. Dietary fibre, for example, cannot be effectively replicated in a capsule. The gut microbiome — the community of bacteria inhabiting the digestive tract — responds to the physical texture, fermentable compounds, and prebiotic fibres of whole foods in ways that cannot be simulated by isolated vitamins. Furthermore, an obsession with individual micronutrients can lead consumers to neglect the overall quality of their diet. Studies suggest that people who take supplements regularly may feel liberated to make less healthy food choices, reassured by the false belief that a pill can compensate for nutritional shortcomings.</div>
+    <h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+    <div id="t6bMcqList"></div>
+  </div>
+
+  <div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+
+  <div class="card"><h3>Passage 1 — Natural vs Synthetic Vitamins</h3>
+    <div class="passage-text">The distinction between natural and synthetic vitamins is a subject of considerable debate among nutritional scientists. Many manufacturers argue that synthetic vitamins are chemically identical to their natural counterparts — that, for instance, the ascorbic acid produced in a laboratory is the same molecule as the Vitamin C extracted from an orange. At a purely molecular level, this claim is largely accurate. However, the argument overlooks the broader nutritional context in which vitamins are found in nature. A whole orange contains not only ascorbic acid but also bioflavonoids, hesperidin, and a range of polyphenols that interact with the vitamin to enhance its absorption and activity. When ascorbic acid is consumed in isolation, these interactions do not occur, potentially limiting the compound's biological effectiveness.</div>
+    <div id="t7p1List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card"><h3>Passage 2 — The Placebo Effect in Supplement Use</h3>
+    <div class="passage-text">One frequently overlooked variable in studies examining the benefits of vitamin supplementation is the placebo effect. Participants who believe they are receiving a beneficial treatment consistently report improved well-being, reduced fatigue, and faster recovery from illness, even when the substance they are taking is pharmacologically inert. In the context of supplement research, this creates a significant methodological challenge. People who take supplements tend to be more health-conscious overall — they are more likely to exercise regularly, maintain a balanced diet, and attend routine medical appointments. This phenomenon, known as the healthy user bias, makes it genuinely difficult to isolate the effect of the supplement itself from the effect of the broader lifestyle choices that supplement users tend to make.</div>
+    <div id="t7p2List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card"><h3>Passage 3 — The U-Shaped Curve and Vitamin Toxicity</h3>
+    <div class="passage-text">The relationship between vitamin intake and health outcomes does not follow a simple linear pattern. Nutritional scientists describe it instead as a U-shaped curve: health risks are elevated both when intake is too low and when it is excessively high. For fat-soluble vitamins such as A, D, E, and K, the risks of excessive intake are particularly serious, because these compounds are stored in the body's fatty tissues and liver rather than being excreted in urine. Hypervitaminosis A, for example, can cause severe headaches, bone density loss, and liver damage, while excessive Vitamin D intake can lead to the dangerous accumulation of calcium in the bloodstream, damaging the kidneys and cardiovascular system. The safe upper limits for these vitamins are considerably lower than many people assume, and can be reached relatively easily through high-dose supplementation.</div>
+    <div id="t7p3List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card"><h3>Passage 4 — Whole Food vs Reductionist Nutrition</h3>
+    <div class="passage-text">The ongoing debate between advocates of whole-food nutrition and proponents of targeted supplementation reflects a deeper philosophical divide in nutritional science. Reductionists argue that once the specific chemical compounds responsible for health outcomes have been identified, those compounds can be extracted, synthesised, and delivered more efficiently as supplements. Whole-food advocates counter that this approach fundamentally misunderstands the nature of food as a biological system. They point to numerous studies demonstrating that populations consuming diets rich in minimally processed whole foods have significantly lower rates of chronic disease than those relying on fortified processed foods and supplements, even when the micronutrient content of the two diets is broadly similar. This evidence suggests that the benefits of a whole-food diet cannot be reduced to the sum of its individual chemical components.</div>
+    <div id="t7p4List" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Vocabulary recap</h2><p class="task-sub">Five vocabulary exercises using all 20 words from today.</p></div>
+
+  <div class="card"><h4>Task A — Match the word to its definition (10 words)</h4>
+    <p class="instr">Match each word or phrase to the correct definition (A–J).</p>
+    <div class="wordbank" style="margin-bottom:12px;"><span class="chip">A. A shortage or lack of something the body needs</span><span class="chip">B. To fully understand something complex</span><span class="chip">C. Enriched by adding vitamins during processing</span><span class="chip">D. Produced by chemical processes rather than occurring naturally</span><span class="chip">E. Intense interest, enjoyment, or approval</span><span class="chip">F. Existing naturally as a fundamental quality</span><span class="chip">G. To return to normal health after illness</span><span class="chip">H. To stop something from happening before it occurs</span><span class="chip">I. An unhealthy preoccupation with a particular idea</span><span class="chip">J. To give or apply a treatment to someone</span></div>
+    <div id="t8aList"></div>
+  </div>
+
+  <div class="card"><h4>Task B — Gap fill (10 sentences)</h4>
+    <p class="instr">Complete each sentence with ONE word or phrase from the box.</p>
+    <div class="wordbank" style="margin-bottom:12px;"><span class="chip">nutrition</span><span class="chip">supplement</span><span class="chip">breakthrough</span><span class="chip">skepticism</span><span class="chip">acknowledge</span><span class="chip">astounding</span><span class="chip">double-edged sword</span><span class="chip">regardless of</span><span class="chip">insurance policy</span><span class="chip">make up for</span></div>
+    <div id="t8bList" class="passage-text"></div>
+  </div>
+
+  <div class="card"><h4>Task C — Choose the correct word</h4>
+    <p class="instr">Choose the best option (A or B) for each sentence.</p>
+    <div id="t8cList"></div>
+  </div>
+
+  <div class="card"><h4>Task D — Word families</h4>
+    <p class="instr">Complete the table with the correct form of each word.</p>
+    <table class="wf-table">
+      <tr><th>Noun</th><th>Verb</th><th>Adjective</th></tr>
+      <tr><td>nutrition</td><td>nourish</td><td><input class="fill short" id="wf1"></td></tr>
+      <tr><td><input class="fill short" id="wf2"></td><td>supplement</td><td>supplementary</td></tr>
+      <tr><td>enthusiasm</td><td>—</td><td><input class="fill short" id="wf3"></td></tr>
+      <tr><td>skepticism</td><td>—</td><td><input class="fill short" id="wf4"></td></tr>
+      <tr><td><input class="fill short" id="wf5"></td><td>—</td><td>deficient</td></tr>
+      <tr><td>acknowledgement</td><td><input class="fill short" id="wf6"></td><td>acknowledged</td></tr>
+      <tr><td>prevention</td><td><input class="fill short" id="wf7"></td><td>preventable</td></tr>
+      <tr><td><input class="fill short" id="wf8"></td><td>recover</td><td>recovered</td></tr>
+      <tr><td>obsession</td><td>—</td><td><input class="fill short" id="wf9"></td></tr>
+      <tr><td>synthesis</td><td><input class="fill short" id="wf10"></td><td>synthetic</td></tr>
+    </table>
+  </div>
+
+  <div class="card"><h4>Task E — Error correction</h4>
+    <p class="instr">Each sentence contains ONE incorrect vocabulary word. Write the correct word in the box.</p>
+    <div id="t8eList" class="passage-text"></div>
+  </div>
+
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check all vocab tasks</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 17 of 30</div>
+  <h1>Congratulations — Day 17 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 18.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=17,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day17_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosave(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(/^t8|^wf/.test(id))return 8;return 1;}
+function hookAutosave(){document.querySelectorAll("input.fill,select.fill").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("input",function(){autosave(el.id,el.value);});el.addEventListener("change",function(){autosave(el.id,el.value);});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day17_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="✅ Passage submitted — score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="📖 Passage opened — submit there, then come back here.";}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 ===== */
+var VA_segs=["The original scientific ","/*1*/","— the discovery that certain diseases resulted from the absence of specific trace compounds — transformed humanity's understanding of ","/*2*/",". The ","/*3*/","that followed was ","/*4*/",": newspapers celebrated each newly identified vitamin as though it were a universal cure. Not everyone shared this optimism; researchers with genuine ","/*5*/","noted that isolated compounds behaved very differently from the complex matrices in which they occurred naturally. This was not easy for the general public to ","/*6*/",". The food industry acted quickly. Manufacturers ","/*7*/","cereals, drinks, and snack foods with ","/*8*/","vitamins, and millions of consumers came to treat their daily multivitamin as an ","/*9*/","— a reliable way to ","/*10*/","the nutritional gaps created by a diet of processed food. This behaviour reflected a cultural ","/*11*/","with individual micronutrients that ignored the ","/*12*/","complexity of whole-food nutrition. What few consumers ","/*13*/","was that a ","/*14*/","is not the same thing as the food it replaces. Excessive supplementation is a ","/*15*/",": while a genuine vitamin ","/*16*/","can cause serious illness, overconsumption carries its own risks. Physicians who ","/*17*/","high doses must do so with great care. Patients trying to ","/*18*/","from illness often believe that more is better. ","/*19*/","the claims on the label, no pill can ","/*20*/","the complex benefits found in real, whole food."];
+var VA_ans={1:"breakthrough",2:"nutrition",3:"enthusiasm",4:"astounding",5:"skepticism",6:"comprehend",7:"fortified",8:"synthetic",9:"insurance policy",10:"make up for",11:"obsession",12:"inherent",13:"acknowledged",14:"supplement",15:"double-edged sword",16:"deficiency",17:"administer",18:"recover",19:"regardless of",20:"prevent"};
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){if(s.startsWith("/*")){var w=VA_ans[g];var cl=w.length>12?"wide":w.length>7?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+g+"\"> ";g++;}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_words=["deficiency","comprehend","fortified","synthetic","enthusiasm","inherent","recover","prevent","obsession","administer","nutrition","supplement","skepticism","astounding","regardless of"];
+var VB_defs={A:"A shortage or lack of something the body needs",B:"To fully understand something complex",C:"Enriched by adding vitamins during processing",D:"Produced by chemical processes rather than occurring naturally",E:"Intense interest, enjoyment, or approval",F:"Existing naturally as a fundamental quality",G:"To return to normal health after illness",H:"To stop something from happening before it occurs",I:"An unhealthy preoccupation with a particular idea",J:"To give or apply a treatment to someone",K:"The process of taking in food and using it for energy",L:"A product taken in addition to food to provide extra nutrients",M:"An attitude of doubt or critical questioning",N:"Surprisingly impressive or hard to believe",O:"Without being affected by a particular factor or condition"};
+var VB_ans={1:"A",2:"B",3:"C",4:"D",5:"E",6:"F",7:"G",8:"H",9:"I",10:"J",11:"K",12:"L",13:"M",14:"N",15:"O"};
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var letters=Object.keys(VB_defs).sort();var optHtml="<option value=\"\">--</option>"+letters.map(function(l){return "<option value=\""+l+"\">"+l+"</option>";}).join("");var html="<p class=\"instr\" style=\"margin-bottom:12px;\">";letters.forEach(function(l){html+="<b>"+l+".</b> "+VB_defs[l]+"<br>";});html+="</p>";VB_words.forEach(function(w,idx){var n=idx+1;html+="<div class=\"q-text\" style=\"margin-bottom:8px;\">"+n+". "+w+" &rarr; <select class=\"fill\" id=\"vb"+n+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase()||(VA_ans[i]==="acknowledged"&&inp.value.trim().toLowerCase()==="acknowledge");if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById("vb"+j);if(sel&&sel.value===VB_ans[j])rB++;}alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/15");document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" &nbsp;•&nbsp; ")+"<br><br><b>B:</b><br>"+VB_words.map(function(w,i){return (i+1)+". "+VB_ans[i+1];}).join(" &nbsp;•&nbsp; ");document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[{n:1,s:"The discovery of vitamins led scientists to attribute diseases like scurvy to genetic weakness.",tf:"False"},{n:2,s:"Food manufacturers fortified products with synthetic vitamins following the discovery of micronutrients.",tf:"True"},{n:3,s:"Scientists with genuine skepticism argued that isolated compounds behave differently in the body from those in whole foods.",tf:"True"},{n:4,s:"The passage states that no supplement of any kind has any value for human health.",tf:"False"},{n:5,s:"According to the text, fat-soluble vitamins can accumulate in body tissue and reach toxic levels.",tf:"True"}];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var chosen=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(chosen&&chosen.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[{n:1,s:"The scientific evidence supporting widespread supplement use is universally positive and well established.",tf:"False",opts:["True","False","Not Given"]},{n:2,s:"A study found that beta-carotene supplements increased lung cancer rates in smokers.",tf:"True",opts:["True","False","Not Given"]},{n:3,s:"The passage suggests that whole foods contain thousands of bioactive compounds.",tf:"True",opts:["True","False","Not Given"]},{n:4,s:"The author argues that vitamin supplementation should be banned entirely.",tf:"Not Given",opts:["True","False","Not Given"]},{n:5,s:"The passage suggests that targeted supplementation can be beneficial for people with diagnosed deficiencies.",tf:"True",opts:["True","False","Not Given"]}];
+(function buildT5TF(){var wrap=document.getElementById("t5TFList");var html="";t5TFData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\">";q.opts.forEach(function(opt){html+="<label><input type=\"radio\" name=\"t5tf"+q.n+"\" value=\""+opt+"\"> "+opt+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkTask5(){var rTF=0,rS=0;t5TFData.forEach(function(q){var c=document.querySelector("input[name=\"t5tf"+q.n+"\"]:checked");if(c&&c.value===q.tf)rTF++;});var shorts={t5s6:"increased lung cancer",t5s7:"complex food matrices",t5s8:"diagnosed deficiencies"};["t5s6","t5s7","t5s8"].forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var v=el.value.trim().toLowerCase();var ok=(i===0&&(v.indexOf("lung cancer")>=0||v.indexOf("increased")>=0))||(i===1&&v.indexOf("food matri")>=0)||(i===2&&v.indexOf("deficien")>=0);if(ok)rS++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("T/F/NG: "+rTF+"/5\nShort answer: "+rS+"/3");document.getElementById("ansKey5Body").innerHTML="<b>T/F/NG:</b> 1.False 2.True 3.True 4.Not Given 5.True<br><br><b>Short answer:</b><br>6. Increased (rates of) lung cancer<br>7. Complex food matrices<br>8. (Individuals with) diagnosed deficiencies";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[{n:1,q:"How is Vitamin D described as different from most other vitamins?",opts:["It is found only in animal products.","It is produced by the skin in response to sunlight.","It cannot be taken in supplement form.","It is only needed by elderly people."],ans:"B",id:"t6a1"},{n:2,q:"Why is Vitamin D supplementation of particular interest in high-latitude populations?",opts:["They consume more dairy products than other populations.","They have higher rates of skin cancer.","Their sunlight exposure can fall below the threshold needed for adequate synthesis.","Their diets are typically lower in meat."],ans:"C",id:"t6a2"},{n:3,q:"What do large clinical trials examining Vitamin D supplementation in people with adequate levels suggest?",opts:["High doses are always beneficial regardless of existing levels.","Supplementation produces clear and consistent health improvements.","Benefits are more limited when deficiency is not already present.","Vitamin D supplements reduce all forms of disease equally."],ans:"C",id:"t6a3"},{n:4,q:"The passage describes Vitamin D benefits as most pronounced when used to",opts:["prevent sunburn in outdoor workers.","treat seasonal mood disorders exclusively.","address an existing deficiency.","replace calcium in elderly patients."],ans:"C",id:"t6a4"},{n:5,q:"What does the author suggest about the enthusiasm for Vitamin D supplementation?",opts:["It is fully justified by all available clinical research.","It has sometimes run ahead of the actual scientific evidence.","It is primarily driven by pharmaceutical companies.","It has no basis in nutritional science."],ans:"B",id:"t6a5"}];
+var t6bData=[{n:1,q:"What is the central appeal of the nutritional insurance concept?",opts:["It guarantees immunity from serious diseases.","It suggests that supplements can compensate for a poor diet regardless of its quality.","It is endorsed by all leading nutritional scientists.","It reduces the cost of maintaining a healthy lifestyle."],ans:"B",id:"t6b1"},{n:2,q:"What does the passage say about dietary fibre?",opts:["It is the most important component of any supplement.","It can be effectively replaced by high-dose vitamin capsules.","It cannot be properly replicated in supplement form.","It is only found in animal products."],ans:"C",id:"t6b2"},{n:3,q:"According to the passage, how does the gut microbiome respond to whole foods?",opts:["By producing synthetic vitamins independently.","By rejecting excessive quantities of vitamins and minerals.","By responding to physical textures, fermentable compounds, and prebiotic fibres that supplements cannot simulate.","By converting dietary fat into water-soluble vitamins."],ans:"C",id:"t6b3"},{n:4,q:"What behaviour pattern do studies suggest about regular supplement users?",opts:["They tend to eat more fruit and vegetables than non-users.","They may make less healthy food choices, reassured by the belief that supplements compensate.","They show significantly lower rates of chronic disease.","They consume fewer calories overall than people who do not take supplements."],ans:"B",id:"t6b4"},{n:5,q:"What does the passage imply about the nutritional insurance model?",opts:["It is entirely accurate and supported by all available research.","It is primarily used by doctors to help patients with deficiencies.","It has significant limitations that marketing campaigns do not acknowledge.","It was developed by independent academic researchers rather than the food industry."],ans:"C",id:"t6b5"}];
+function buildMcqBlock(data,prefix){var html="";data.forEach(function(q){html+="<div class=\"q-block\" id=\""+prefix+q.n+"Block\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\""+q.id+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});return html;}
+document.getElementById("t6aMcqList").innerHTML=buildMcqBlock(t6aData,"t6a");
+document.getElementById("t6bMcqList").innerHTML=buildMcqBlock(t6bData,"t6b");
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var chosen=document.querySelector("input[name=\""+q.id+"\"]:checked");var ok=chosen&&chosen.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+"Block");if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(chosen&&row.dataset.val===chosen.value)row.classList.add("wrong");});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,"t6a");var rB=checkMcqSet(t6bData,"t6b");alert("Passage A: "+rA+"/5\nPassage B: "+rB+"/5");document.getElementById("ansKey6Body").innerHTML="<b>Passage A:</b> 1.B 2.C 3.C 4.C 5.B<br><b>Passage B:</b> 1.B 2.C 3.C 4.B 5.C";document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,qs:[{n:1,s:"The passage states that manufacturers claim synthetic and natural vitamins are chemically identical.",tf:"True"},{n:2,s:"According to the passage, the claim that synthetic and natural vitamins are identical is completely false at a molecular level.",tf:"False"},{n:3,s:"The passage suggests that a whole orange contains compounds beyond ascorbic acid that enhance Vitamin C absorption.",tf:"True"}]},
+  {pid:2,qs:[{n:1,s:"Participants in supplement studies who believe they are receiving a beneficial treatment often report improved well-being.",tf:"True"},{n:2,s:"The passage states that the placebo effect is the only cause of positive findings in supplement research.",tf:"False"},{n:3,s:"According to the passage, supplement users tend to be more health-conscious than non-users overall.",tf:"True"}]},
+  {pid:3,qs:[{n:1,s:"According to the passage, health outcomes from vitamin intake follow a linear pattern where more is always better.",tf:"False"},{n:2,s:"Fat-soluble vitamins are stored in the body's fatty tissues and liver rather than being excreted in urine.",tf:"True"},{n:3,s:"The passage states that the safe upper limits for fat-soluble vitamins are much higher than most people realise.",tf:"False"}]},
+  {pid:4,qs:[{n:1,s:"Reductionists argue that individual chemical compounds can be synthesised and delivered as supplements.",tf:"True"},{n:2,s:"The passage states that populations eating whole-food diets have higher rates of chronic disease than those relying on supplements.",tf:"False"},{n:3,s:"According to the passage, the evidence suggests that the benefits of a whole-food diet can be explained entirely by its micronutrient content.",tf:"False"}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById("t7p"+p.pid+"List");var html="<p class=\"instr\">True or False?</p>";p.qs.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.qs.forEach(function(q){total++;var c=document.querySelector("input[name=\"t7p"+p.pid+"q"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});});alert("You got "+right+"/"+total+" correct.");var key="";t7Data.forEach(function(p){key+="<b>Passage "+p.pid+":</b> ";key+=p.qs.map(function(q){return q.n+"."+q.tf;}).join(" ");key+="<br>";});document.getElementById("ansKey7Body").innerHTML=key;document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== TASK 8 ===== */
+var t8aWords=["deficiency","comprehend","fortified","synthetic","enthusiasm","inherent","recover","prevent","obsession","administer"];
+var t8aAns={t8a1:"A",t8a2:"B",t8a3:"C",t8a4:"D",t8a5:"E",t8a6:"F",t8a7:"G",t8a8:"H",t8a9:"I",t8a10:"J"};
+(function buildT8A(){var wrap=document.getElementById("t8aList");var optHtml="<option value=\"\">--</option><option value=\"A\">A</option><option value=\"B\">B</option><option value=\"C\">C</option><option value=\"D\">D</option><option value=\"E\">E</option><option value=\"F\">F</option><option value=\"G\">G</option><option value=\"H\">H</option><option value=\"I\">I</option><option value=\"J\">J</option>";var html="";t8aWords.forEach(function(w,idx){html+="<div class=\"q-text\" style=\"margin-bottom:8px;font-size:15px;\">"+w+" &rarr; <select class=\"fill\" id=\"t8a"+(idx+1)+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+var t8bSents=[{n:1,t:"The ___ that vitamins could prevent disease drove decades of commercial supplement growth.",ans:"breakthrough",id:"t8b1"},{n:2,t:"Good ___ depends on the variety and quality of your whole diet, not just vitamin pills.",ans:"nutrition",id:"t8b2"},{n:3,t:"The rate of growth in the supplement industry has been ___ — few would have predicted its scale.",ans:"astounding",id:"t8b3"},{n:4,t:"Many researchers have ___ that isolated compounds cannot replicate the full effect of whole foods.",ans:"acknowledged",id:"t8b4"},{n:5,t:"She approached the marketing claims about supplements with healthy ___.",ans:"skepticism",id:"t8b5"},{n:6,t:"A daily vitamin is often treated as an ___ against the effects of an unhealthy lifestyle.",ans:"insurance policy",id:"t8b6"},{n:7,t:"High-dose supplementation is a ___: helpful for deficiency, potentially dangerous in excess.",ans:"double-edged sword",id:"t8b7"},{n:8,t:"___ the brand or price, no pill can replace the benefits of a genuinely healthy diet.",ans:"regardless of",id:"t8b8"},{n:9,t:"A vitamin pill cannot ___ the damage caused by years of poor nutritional choices.",ans:"make up for",id:"t8b9"},{n:10,t:"Taking an isolated ___ in a capsule is not the same as eating the food it came from.",ans:"supplement",id:"t8b10"}];
+(function buildT8B(){var wrap=document.getElementById("t8bList");var html="";t8bSents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill short\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+var t8cData=[{n:1,t:"A person with a ___ (A: deficiency / B: obsession) in Vitamin D may need targeted supplementation.",opts:["deficiency","obsession"],ans:"A",id:"t8c1"},{n:2,t:"The idea that a pill can ___ (A: prevent / B: administer) all diet-related illness is not supported by evidence.",opts:["prevent","administer"],ans:"A",id:"t8c2"},{n:3,t:"She was ___ (A: astounded / B: fortified) to learn that her favourite cereal contained mostly synthetic vitamins.",opts:["astounded","fortified"],ans:"A",id:"t8c3"},{n:4,t:"A clinical ___ (A: recover / B: acknowledge) of the evidence shows that supplements have limited benefits.",opts:["recover","acknowledge"],ans:"B",id:"t8c4"},{n:5,t:"The ___ (A: inherent / B: synthetic) complexity of whole food cannot be recreated in a single capsule.",opts:["inherent","synthetic"],ans:"A",id:"t8c5"}];
+(function buildT8C(){var wrap=document.getElementById("t8cList");var html="";t8cData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.t+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\""+q.id+"\" value=\"A\"> A: "+q.opts[0]+"</label><label><input type=\"radio\" name=\""+q.id+"\" value=\"B\"> B: "+q.opts[1]+"</label></div></div>";});wrap.innerHTML=html;})();
+
+var wfAns={wf1:"nutritional",wf2:"supplement",wf3:"enthusiastic",wf4:"skeptical",wf5:"deficiency",wf6:"acknowledge",wf7:"prevent",wf8:"recovery",wf9:"obsessive",wf10:"synthesize"};
+
+var t8eSents=[{n:1,t:"The critics responded enthusiasm to the supplement industry's claims, demanding more evidence.",wrong:"enthusiasm",ans:"skepticism",id:"t8e1"},{n:2,t:"The central supplement of the debate — between whole-food advocates and reductionists — remains unresolved.",wrong:"supplement",ans:"obsession",id:"t8e2"},{n:3,t:"High-dose Vitamin A is not a nutrition — overconsumption causes serious liver damage.",wrong:"nutrition",ans:"supplement",id:"t8e3"},{n:4,t:"The doctors needed to deficiency the Vitamin B12 injections every four weeks.",wrong:"deficiency",ans:"administer",id:"t8e4"},{n:5,t:"Regardless of the claims on the label, no pill can comprehend years of nutritional neglect.",wrong:"comprehend",ans:"make up for",id:"t8e5"}];
+(function buildT8E(){var wrap=document.getElementById("t8eList");var html="";t8eSents.forEach(function(s){var disp=s.t.replace(s.wrong,"<u>"+s.wrong+"</u>");html+="<p>"+s.n+". "+disp+"<br>&nbsp;&nbsp;Correct word/phrase: <input class=\"fill short\" id=\""+s.id+"\"></p>";});wrap.innerHTML=html;})();
+
+function checkTask8(){var rA=0,rB=0,rC=0,rD=0,rE=0;
+  Object.keys(t8aAns).forEach(function(id){var sel=document.getElementById(id);if(sel&&sel.value===t8aAns[id])rA++;});
+  t8bSents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase()||(s.ans==="acknowledged"&&inp.value.trim().toLowerCase()==="acknowledge");if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  t8cData.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");if(c&&c.value===q.ans)rC++;});
+  Object.keys(wfAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===wfAns[id].toLowerCase();if(ok)rD++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  t8eSents.forEach(function(s){var el=document.getElementById(s.id);if(!el)return;var ok=el.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rE++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  alert("Task A (matching): "+rA+"/10\nTask B (gap fill): "+rB+"/10\nTask C (choose): "+rC+"/5\nTask D (word families): "+rD+"/10\nTask E (error correction): "+rE+"/5");
+  document.getElementById("ansKey8Body").innerHTML="<b>A:</b> deficiency-A, comprehend-B, fortified-C, synthetic-D, enthusiasm-E, inherent-F, recover-G, prevent-H, obsession-I, administer-J<br><br><b>B:</b> 1.breakthrough 2.nutrition 3.astounding 4.acknowledged 5.skepticism 6.insurance policy 7.double-edged sword 8.regardless of 9.make up for 10.supplement<br><br><b>C:</b> 1.A 2.A 3.A 4.B 5.A<br><br><b>D:</b> nutritional / supplement / enthusiastic / skeptical / deficiency / acknowledge / prevent / recovery / obsessive / synthesize<br><br><b>E:</b> 1.skepticism 2.obsession 3.supplement 4.administer 5.make up for";
+  document.getElementById("ansKey8").classList.add("show");checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day17";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
