@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Sprint4 — Day 18</title>
+<style>
+  :root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+  *{box-sizing:border-box;}html,body{margin:0;height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+  .brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+  .daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+  .teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+  .dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+  .content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+  .task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+  .task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+  .task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+  .card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+  .instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+  .passage-text{line-height:1.85;font-size:15.5px;}
+  input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+  input.fill.short{width:90px;}input.fill.med{width:200px;}input.fill.wide{width:260px;}
+  input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+  select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+  .q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+  .q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+  .opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+  .tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+  .btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+  .btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+  .check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+  .answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+  .answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";}.answer-key[open] summary::before{content:"▾";}
+  .answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+  .wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}.wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}.wf-table th{background:var(--accent-light);font-weight:700;}
+  .navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+  .nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+  .completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+  .completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+  .completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+  .big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+  .completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+  #confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+  .hl{background:#ffe45c;border-radius:2px;}
+  .hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+  .hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+  .hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 18</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+  <div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+  <div class="card"><h3>Word list</h3><div class="wordbank">
+    <span class="chip">revolutionary</span><span class="chip">propulsion</span><span class="chip">predecessor</span><span class="chip">maritime</span><span class="chip">culminate</span><span class="chip">pivotal</span><span class="chip">infrastructure</span><span class="chip">transition</span><span class="chip">commerce</span><span class="chip">obsolete</span><span class="chip">momentum</span><span class="chip">innovative</span><span class="chip">unprecedented</span><span class="chip">vessel</span><span class="chip">demonstrate</span><span class="chip">resistance</span><span class="chip">expansion</span><span class="chip">commercial</span><span class="chip">inaugurate</span><span class="chip">supplant</span>
+  </div></div>
+  <div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word or phrase from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+  <div class="card"><h4>Exercise B — Sentence completion</h4><p class="instr">Complete each sentence with ONE word from the box above.</p><div id="vocabB-list" class="passage-text"></div></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+  <details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+  <div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+  <div class="card"><h3>Steam power and the transformation of maritime trade</h3>
+    <div class="passage-text">Before the invention of steam-powered vessels, maritime commerce was entirely dependent on the wind and the skill of sailors. This dependency made ocean voyages unpredictable and limited the reliability of long-distance trade. The resistance to change from those invested in traditional sailing was considerable: experienced merchants and shipowners argued that wind was free and that steam engines were expensive, prone to failure, and required a global network of coal supply points that did not yet exist. Despite this opposition, the momentum of innovation proved unstoppable. The pivotal breakthrough came not on the open ocean but on the sheltered rivers and canals of Europe and America. Robert Fulton's Clermont, launched in 1807 on the Hudson River, was the first commercially successful steam vessel, inaugurating a new era of scheduled water transport. Within decades, steamships had grown large enough and efficient enough to attempt oceanic crossings. By the second half of the nineteenth century, the transition from sail to steam was effectively complete, and the great sailing vessels that had once dominated global commerce had become obsolete for most trade routes. The expansion of steam navigation transformed not only trade but human migration, enabling millions of people to travel between continents more quickly and cheaply than ever before.</div>
+  </div>
+  <div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+  <div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+  <details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+  <div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+  <div class="card"><h3>The Age of Steam: How the First Steamships Transformed Maritime Commerce and Global Trade</h3><p class="instr">Advanced background reading on the Charlotte Dundas, Robert Fulton, Brunel, and the transition from sail to steam — with full vocabulary glossary and comprehension questions.</p><a class="btn link-out" href="article-day-18.html" target="_blank" rel="noopener">📄 Open article</a></div>
+  <div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+  <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+  <div class="card"><a class="btn link-out" href="passage_day_18.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+  <div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+  <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+  <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+  <div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the passage, then answer all questions below.</p></div>
+  <div class="card"><h3>Brunel, the Iron Ship, and the Engineering of Speed</h3>
+    <div class="passage-text">In the history of steamship development, few figures cast a longer shadow than Isambard Kingdom Brunel. A civil engineer of exceptional ambition and technical originality, Brunel approached the challenge of ocean steam navigation not as an incremental improvement on existing designs but as an opportunity for fundamental reinvention. His three great ships — the SS <em>Great Western</em>, the SS <em>Great Britain</em>, and the SS <em>Great Eastern</em> — represented successive leaps in naval architecture that would define the trajectory of commercial shipping for the rest of the nineteenth century and well into the twentieth.<br><br>
+    Brunel's first ship, the SS <em>Great Western</em>, launched in 1837, was designed specifically for the transatlantic route between Bristol and New York. Brunel had argued, controversially, that a larger ship was not merely more impressive — it was more efficient. His reasoning was based on a fundamental principle of naval architecture: a ship's carrying capacity increases with the cube of its dimensions, while its water resistance increases only with the square. This meant that a ship twice as long could carry eight times the cargo while encountering only four times the resistance — a compelling economic argument for building larger. The <em>Great Western</em>'s successful transatlantic crossing in 1838, completed in fifteen days with coal to spare, vindicated this principle decisively.<br><br>
+    Yet it was Brunel's second ship, the SS <em>Great Britain</em>, launched in 1843, that represented the most genuinely revolutionary departure in ship design of the century. The <em>Great Britain</em> was the first large ocean-going vessel to be built from iron rather than wood, and the first to be driven by a screw propeller rather than the exposed paddle wheels that had characterised earlier steamships. Both innovations were met with significant resistance from the maritime establishment. Critics argued that iron would be heavier and more vulnerable to corrosion than wood, and that the screw propeller — tested initially on a much smaller vessel — could not possibly generate sufficient thrust to drive a ship of the <em>Great Britain</em>'s size across open ocean. Both objections proved unfounded. The iron hull was not only lighter than its wooden equivalent at the same strength, but far more resistant to the stresses of ocean voyaging. And the screw propeller, positioned below the waterline, was dramatically more efficient in heavy seas than the paddle wheel, which lifted entirely out of the water when the ship rolled.<br><br>
+    Brunel himself did not live to see his third ship enter regular service. The SS <em>Great Eastern</em>, launched in 1858, was so far ahead of its time that the maritime industry had no immediate use for a vessel of its extraordinary scale. Nearly 700 feet in length and capable of carrying over four thousand passengers, the <em>Great Eastern</em> was not matched in size until the early twentieth century. It found its greatest use not as a passenger liner but as a cable-laying ship, successfully deploying the first permanent transatlantic telegraph cable in 1866 — a different kind of revolution, but one no less transformative for the connected world that followed.</div>
+  </div>
+  <div class="card"><h4>Section 1 — True / False / Not Given (5 questions)</h4>
+    <p class="instr">Write True, False, or Not Given based on the passage above.</p>
+    <div id="t5TFList"></div>
+  </div>
+  <div class="card"><h4>Section 2 — Short answer (3 questions)</h4>
+    <p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+    <div class="passage-text">
+      <p>6. What did Brunel argue was the economic advantage of building larger ships?<br><input class="fill med" id="t5s6"></p>
+      <p>7. What was the SS Great Britain the first large ocean-going vessel to be built from?<br><input class="fill med" id="t5s7"></p>
+      <p>8. What use did the SS Great Eastern eventually find that made it historically significant?<br><input class="fill med" id="t5s8"></p>
+    </div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+  <details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+  <div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage carefully and answer the comprehension questions.</p></div>
+  <div class="card"><h3>Passage A — Coal, Infrastructure, and the Global Network of Steam</h3>
+    <div class="passage-text">The expansion of steam navigation was not only a story of innovative ship design; it was equally a story of infrastructure. A sailing ship required no fuel other than the wind. A steamship, by contrast, consumed coal at a rate that made long voyages logistically demanding. In the early decades of steam navigation, this dependency on coal represented one of the most significant practical constraints on the technology's global reach. A transatlantic voyage consumed hundreds of tons of coal, and the weight of this fuel displaced cargo that might otherwise generate revenue. To overcome this constraint, maritime nations — led by Britain — invested heavily in establishing a worldwide network of coaling stations at strategically important ports. These stations — located in places such as Gibraltar, Aden, Singapore, and Cape Town — formed the critical infrastructure that made global steam navigation commercially viable. Without this network, the expansion of steam shipping would have been confined to coastal and river routes. With it, the transition from a world of wind-dependent trade to one of scheduled, reliable ocean commerce became possible for the first time.</div>
+    <h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+    <div id="t6aMcqList"></div>
+  </div>
+  <div class="card"><h3>Passage B — The Paddle Wheel vs the Screw Propeller</h3>
+    <div class="passage-text">The competition between the paddle wheel and the screw propeller as the primary means of steam-powered maritime propulsion was resolved by one of the most compelling practical experiments in the history of naval engineering. In 1845, the British Admiralty arranged a tug-of-war between two Royal Navy sloops of identical power: HMS <em>Alecto</em>, fitted with traditional paddle wheels, and HMS <em>Rattler</em>, fitted with a screw propeller. The result was unambiguous. HMS <em>Rattler</em> pulled HMS <em>Alecto</em> astern at a speed of nearly three knots, even with <em>Alecto</em>'s engines working at full power. The demonstration settled the debate for naval architects once and for all. The screw propeller was more efficient, generated less drag, and performed significantly better in the rough sea conditions that ocean-going vessels routinely encountered. Within two decades of the trial, virtually all new ocean-going steamships were being built with screw propellers, and the paddle wheel — once the defining technology of steam navigation — had been supplanted entirely on deep-water routes.</div>
+    <h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+    <div id="t6bMcqList"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+  <details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+  <div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+  <div class="card"><h3>Passage 1 — The Charlotte Dundas and the Canal Age</h3>
+    <div class="passage-text">The first vessel to demonstrate the practical viability of steam-powered propulsion was not an ocean-going ship but a canal tugboat. The <em>Charlotte Dundas</em>, designed by William Symington and launched in Scotland in 1802, successfully towed two heavily laden barges along the Forth and Clyde Canal against a strong headwind — a feat entirely beyond the capability of the horses that normally performed this work. Despite its successful trial, the <em>Charlotte Dundas</em> was quickly withdrawn from service. The canal company's directors feared that the wash generated by its stern paddle wheel would erode the canal banks and damage the waterway infrastructure. Symington's vessel thus became a demonstration of the possible rather than a commercial success, and it would take another five years and a more entrepreneurial environment — the rivers of the United States — for steam navigation to prove itself as a commercially viable enterprise.</div>
+    <div id="t7p1List" style="margin-top:12px;"></div>
+  </div>
+  <div class="card"><h3>Passage 2 — Steam, Trade, and the Opening of Asia</h3>
+    <div class="passage-text">Perhaps no single event did more to demonstrate the commercial power of steam navigation than the opening of the Suez Canal in 1869. Before the canal's construction, ships travelling from Britain to India or China were forced to sail around the Cape of Good Hope at the southern tip of Africa — a journey of some 11,000 miles that could take several months. The Suez Canal reduced the distance between Britain and India to approximately 7,000 miles. For sailing ships, however, the canal was of limited use: the narrow waterway offered insufficient wind, and the current was often unfavourable. Steamships, by contrast, could traverse the canal under their own power regardless of wind conditions, and the new route reduced journey times from Britain to Bombay from three months to just three weeks. The canal therefore gave steam shipping a decisive competitive advantage over sail that accelerated its dominance of ocean trade beyond what any technological improvement alone could have achieved.</div>
+    <div id="t7p2List" style="margin-top:12px;"></div>
+  </div>
+  <div class="card"><h3>Passage 3 — The Resistance of the Sailing Industry</h3>
+    <div class="passage-text">The transition from sail to steam was not smooth, and the resistance it encountered was both practical and psychological. For experienced sailors and shipowners, the advantages of sail were self-evident: wind was free, sails required no fuel, and the craft of sailing had been perfected over millennia. Steam engines, by contrast, were noisy, unreliable, and required trained engineers to operate and maintain. They also produced large quantities of smoke and soot, which damaged rigging, irritated passengers, and made the handling of a vessel in port considerably more complicated. Many of the earliest steamships were therefore hybrid vessels, retaining their masts and sails as a precaution against engine failure. It was only when steam engines became reliable enough to be trusted alone that the industry began the full commercial transition that would render traditional sail obsolete.</div>
+    <div id="t7p3List" style="margin-top:12px;"></div>
+  </div>
+  <div class="card"><h3>Passage 4 — Migration and the Steamship</h3>
+    <div class="passage-text">The social consequences of the steamship were at least as significant as its economic ones. In the age of sail, emigration across the Atlantic was a dangerous, expensive, and unpredictable undertaking that was beyond the means of most working-class families. Crossing times varied enormously, conditions below decks were often appalling, and mortality rates on the longer voyages could be alarmingly high. The steamship transformed all of this. By the 1860s, regular steamship services had reduced crossing times between Liverpool and New York to ten days or less, and competition between shipping lines had brought fares down to levels accessible to poor rural families. The result was an unprecedented surge in emigration. During the second half of the nineteenth century and the first decades of the twentieth, more than fifty million people emigrated from Europe to the Americas and Australia — a movement of human population on a scale that had no precedent in recorded history and that fundamentally shaped the demographic composition of the modern world.</div>
+    <div id="t7p4List" style="margin-top:12px;"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+  <details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+  <div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Vocabulary recap</h2><p class="task-sub">Five vocabulary exercises using all 20 words from today.</p></div>
+  <div class="card"><h4>Task A — Match the word to its definition (10 words)</h4>
+    <p class="instr">Match each word to the correct definition (A–J).</p>
+    <div class="wordbank" style="margin-bottom:12px;"><span class="chip">A. Involving or causing a complete and dramatic change</span><span class="chip">B. Connected with the sea, trade, or navigation</span><span class="chip">C. The action of driving or pushing something forward</span><span class="chip">D. No longer needed or in use; out of date</span><span class="chip">E. A person or thing preceded by and replaced by another</span><span class="chip">F. To reach a climax or the highest point of development</span><span class="chip">G. Never done or known before</span><span class="chip">H. A large ship or boat</span><span class="chip">I. The process of changing from one state to another</span><span class="chip">J. The basic physical structures needed for an operation to function</span></div>
+    <div id="t8aList"></div>
+  </div>
+  <div class="card"><h4>Task B — Gap fill (10 sentences)</h4>
+    <p class="instr">Complete each sentence with ONE word from the box.</p>
+    <div class="wordbank" style="margin-bottom:12px;"><span class="chip">pivotal</span><span class="chip">momentum</span><span class="chip">innovative</span><span class="chip">demonstrate</span><span class="chip">resistance</span><span class="chip">expansion</span><span class="chip">commercial</span><span class="chip">inaugurate</span><span class="chip">supplant</span><span class="chip">commerce</span></div>
+    <div id="t8bList" class="passage-text"></div>
+  </div>
+  <div class="card"><h4>Task C — Choose the correct word</h4>
+    <p class="instr">Choose the best option (A or B) for each sentence.</p>
+    <div id="t8cList"></div>
+  </div>
+  <div class="card"><h4>Task D — Word families</h4>
+    <p class="instr">Complete the table with the correct form of each word.</p>
+    <table class="wf-table">
+      <tr><th>Noun</th><th>Verb</th><th>Adjective</th></tr>
+      <tr><td>revolution</td><td>revolutionise</td><td><input class="fill short" id="wf1"></td></tr>
+      <tr><td><input class="fill short" id="wf2"></td><td>—</td><td>maritime</td></tr>
+      <tr><td>transition</td><td><input class="fill short" id="wf3"></td><td>transitional</td></tr>
+      <tr><td><input class="fill short" id="wf4"></td><td>commercialise</td><td>commercial</td></tr>
+      <tr><td>innovation</td><td>innovate</td><td><input class="fill short" id="wf5"></td></tr>
+      <tr><td>demonstration</td><td><input class="fill short" id="wf6"></td><td>demonstrable</td></tr>
+      <tr><td><input class="fill short" id="wf7"></td><td>expand</td><td>expansive</td></tr>
+      <tr><td>inauguration</td><td><input class="fill short" id="wf8"></td><td>inaugural</td></tr>
+      <tr><td>precedent</td><td>—</td><td><input class="fill short" id="wf9"></td></tr>
+      <tr><td><input class="fill short" id="wf10"></td><td>culminate</td><td>culminating</td></tr>
+    </table>
+  </div>
+  <div class="card"><h4>Task E — Error correction</h4>
+    <p class="instr">Each sentence contains ONE incorrect vocabulary word. Write the correct word in the box.</p>
+    <div id="t8eList" class="passage-text"></div>
+  </div>
+  <div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check all vocab tasks</button></div>
+  <details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 18 of 30</div>
+  <h1>Congratulations — Day 18 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 19.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=18,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day18_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+var debTimers={};
+function autosave(id,val){if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(/^t8|^wf/.test(id))return 8;return 1;}
+function hookAutosave(){document.querySelectorAll("input.fill,select.fill").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("input",function(){autosave(el.id,el.value);});el.addEventListener("change",function(){autosave(el.id,el.value);});});}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day18_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="Passage submitted — score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="Passage opened — submit there, then come back here.";}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var VA_segs=["The story of steamship development represents one of the most ","/*1*/","periods of ","/*2*/","innovation in modern history. Before the first practical steam ","/*3*/","took to the water, ocean trade was entirely dependent on wind — a fact that made long-distance ","/*4*/","unpredictable and slow. The ","/*5*/","of the great sailing ship had ruled the seas for centuries, but it was about to be ","/*6*/","by a new and ","/*7*/","technology. Early experiments with steam-powered ","/*8*/","proved that engines could maintain reliable forward motion against wind and current. However, the ","/*9*/","from established maritime interests was formidable. Experienced shipowners argued that steam engines were costly and that the global ","/*10*/","of coaling stations needed to support them did not yet exist. Despite this opposition, the ","/*11*/","of technological progress proved unstoppable. In 1807, Robert Fulton used the power of steam to ","/*12*/","the era of scheduled river transport on the Hudson. What followed was ","/*13*/",": within fifty years, steamships had grown large enough and reliable enough to ","/*14*/","their viability on the open ocean. The ","/*15*/","from sail to steam was not merely technical — it transformed global ","/*16*/","by making trade predictable for the first time. The ","/*17*/","of this process came with Brunel's great iron ships, which combined an iron hull with a screw propeller — the innovation that would ","/*18*/","the old paddle wheel entirely. By 1900, the sailing vessel had become ","/*19*/","for ocean commerce, and the ","/*20*/","of maritime trade routes that steam made possible had reshaped the commercial geography of the world."];
+var VA_ans={1:"pivotal",2:"maritime",3:"vessel",4:"commerce",5:"predecessor",6:"supplanted",7:"innovative",8:"propulsion",9:"resistance",10:"infrastructure",11:"momentum",12:"inaugurate",13:"unprecedented",14:"demonstrate",15:"transition",16:"commercial",17:"culmination",18:"supplant",19:"obsolete",20:"expansion"};
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){if(s.startsWith("/*")){var w=VA_ans[g];var cl=w.length>11?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+g+"\"> ";g++;}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_sents=[
+  {n:1,t:"The 1838 transatlantic race was a ___ moment that proved steam navigation was viable.",ans:"pivotal",id:"vb1"},
+  {n:2,t:"The ___ of steam navigation was closely linked to Britain's ambitions in global trade.",ans:"expansion",id:"vb2"},
+  {n:3,t:"Brunel's designs were consistently ___ — far ahead of anything his rivals were attempting.",ans:"innovative",id:"vb3"},
+  {n:4,t:"The trial of 1845 was designed to ___ which type of propulsion was more powerful.",ans:"demonstrate",id:"vb4"},
+  {n:5,t:"By 1900, the great sailing vessel had become ___ on most major trade routes.",ans:"obsolete",id:"vb5"},
+  {n:6,t:"The ___ of change gathered pace once the first transatlantic crossing proved viable.",ans:"momentum",id:"vb6"},
+  {n:7,t:"The screw propeller eventually ___ the paddle wheel on all deep-water ships.",ans:"supplanted",id:"vb7"},
+  {n:8,t:"Fulton's success on the Hudson served to ___ the era of scheduled water transport.",ans:"inaugurate",id:"vb8"},
+  {n:9,t:"A network of coaling stations formed the ___ backbone of global steam navigation.",ans:"commercial",id:"vb9"},
+  {n:10,t:"Brunel's ambition ___ in the SS Great Eastern, the largest ship of the nineteenth century.",ans:"culminated",id:"vb10"},
+  {n:11,t:"The Clermont's success broke down ___ to steam navigation from sceptical investors.",ans:"resistance",id:"vb11"},
+  {n:12,t:"The Charlotte Dundas had no ___ — it was genuinely the first of its kind.",ans:"predecessor",id:"vb12"},
+  {n:13,t:"International ___ depended on ships arriving on schedule, which only steam could guarantee.",ans:"commerce",id:"vb13"},
+  {n:14,t:"The ___ from sail to steam took several decades and was not without setbacks.",ans:"transition",id:"vb14"},
+  {n:15,t:"The volume of migration enabled by steam shipping was truly ___.",ans:"unprecedented",id:"vb15"}
+];
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var html="";VB_sents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill short\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+function checkVocab(){
+  var rA=0;
+  for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase()||(VA_ans[i]==="supplanted"&&inp.value.trim().toLowerCase()==="supplant")||(VA_ans[i]==="supplant"&&inp.value.trim().toLowerCase()==="supplanted");if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}
+  var rB=0;
+  VB_sents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var val=inp.value.trim().toLowerCase();var ok=val===s.ans.toLowerCase()||(s.ans==="culminated"&&val==="culminate")||(s.ans==="inaugurate"&&val==="inaugurated");if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/15");
+  document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" &nbsp;•&nbsp; ")+"<br><br><b>B:</b><br>"+VB_sents.map(function(s){return s.n+". "+s.ans;}).join(" &nbsp;•&nbsp; ");
+  document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();
+}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[
+  {n:1,s:"Before steam power, maritime commerce was entirely dependent on wind and the skill of sailors.",tf:"True"},
+  {n:2,s:"Shipowners who opposed steam engines argued that wind was unreliable and expensive.",tf:"False"},
+  {n:3,s:"The Clermont was the first steam vessel to successfully demonstrate propulsion on a canal.",tf:"False"},
+  {n:4,s:"By the second half of the nineteenth century, the transition from sail to steam was effectively complete for ocean commerce.",tf:"True"},
+  {n:5,s:"Steam navigation made emigration between continents faster, cheaper, and more accessible to working-class families.",tf:"True"}
+];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var c=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[
+  {n:1,s:"Brunel designed the SS Great Western as an incremental improvement on existing steamship designs.",tf:"False",opts:["True","False","Not Given"]},
+  {n:2,s:"Brunel argued that larger ships were more economically efficient because carrying capacity increased faster than water resistance.",tf:"True",opts:["True","False","Not Given"]},
+  {n:3,s:"The SS Great Britain was more expensive to build than any previous British warship.",tf:"Not Given",opts:["True","False","Not Given"]},
+  {n:4,s:"Critics of the screw propeller argued that it could not generate enough thrust for a ship the size of the Great Britain.",tf:"True",opts:["True","False","Not Given"]},
+  {n:5,s:"The SS Great Eastern was primarily used as a passenger liner for the transatlantic route.",tf:"False",opts:["True","False","Not Given"]}
+];
+(function buildT5TF(){var wrap=document.getElementById("t5TFList");var html="";t5TFData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\">";q.opts.forEach(function(opt){html+="<label><input type=\"radio\" name=\"t5tf"+q.n+"\" value=\""+opt+"\"> "+opt+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkTask5(){var rTF=0,rS=0;t5TFData.forEach(function(q){var c=document.querySelector("input[name=\"t5tf"+q.n+"\"]:checked");if(c&&c.value===q.tf)rTF++;});var shorts={t5s6:"larger ships were more efficient",t5s7:"iron",t5s8:"cable-laying ship"};["t5s6","t5s7","t5s8"].forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var v=el.value.trim().toLowerCase();var ok=(i===0&&(v.indexOf("larger")>=0||v.indexOf("efficient")>=0||v.indexOf("economic")>=0))||(i===1&&(v==="iron"||v.indexOf("iron")>=0))||(i===2&&(v.indexOf("cable")>=0||v.indexOf("telegraph")>=0));if(ok)rS++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("T/F/NG: "+rTF+"/5\nShort answer: "+rS+"/3");document.getElementById("ansKey5Body").innerHTML="<b>T/F/NG:</b> 1.False 2.True 3.Not Given 4.True 5.False<br><br><b>Short answer:</b><br>6. (They were more) efficient / larger ships were more efficient<br>7. Iron<br>8. Cable-laying ship";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[
+  {n:1,q:"What made long-distance steam voyages logistically demanding in the early decades?",opts:["The high cost of building iron-hulled vessels","The lack of trained engineers","The large quantities of coal required, which displaced cargo","The inability of early engines to maintain speed in rough seas"],ans:"C",id:"t6a1"},
+  {n:2,q:"Which nation led the investment in global coaling station infrastructure?",opts:["France","The United States","Germany","Britain"],ans:"D",id:"t6a2"},
+  {n:3,q:"What would have been the consequence without a global network of coaling stations?",opts:["Steam shipping would have been restricted to coastal and river routes.","Sailing ships would have remained dominant on all trade routes indefinitely.","Steam engines would have been replaced by a different technology.","International trade would have declined sharply in the 1850s."],ans:"A",id:"t6a3"},
+  {n:4,q:"According to the passage, the coaling station network made global steam navigation",opts:["technically impossible","commercially viable","unnecessarily expensive","available only to military ships"],ans:"B",id:"t6a4"},
+  {n:5,q:"What does the passage suggest about the relationship between infrastructure and technological expansion?",opts:["Infrastructure development is less important than technical innovation.","Coaling stations were built before steamships were invented.","Technological expansion requires supporting infrastructure to become commercially viable.","Infrastructure investment always follows technological adoption by at least fifty years."],ans:"C",id:"t6a5"}
+];
+var t6bData=[
+  {n:1,q:"How was the competition between paddle wheel and screw propeller resolved in 1845?",opts:["By a vote of the British Admiralty's engineering committee","By a public trial in which HMS Rattler towed HMS Alecto astern","By a transatlantic speed race between two competing shipping companies","By an independent scientific assessment published in an engineering journal"],ans:"B",id:"t6b1"},
+  {n:2,q:"What was the result of the 1845 trial?",opts:["HMS Alecto won, confirming the superiority of the paddle wheel","The trial was inconclusive and had to be repeated","HMS Rattler pulled HMS Alecto astern, even with Alecto's engines at full power","Both vessels broke down and the experiment was abandoned"],ans:"C",id:"t6b2"},
+  {n:3,q:"Why was the screw propeller more effective in rough seas than the paddle wheel?",opts:["It was positioned above the waterline and avoided contact with waves","It was positioned below the waterline and did not lift out of the water when the ship rolled","It required less power to operate in high winds","It could be retracted when not in use to reduce drag"],ans:"B",id:"t6b3"},
+  {n:4,q:"According to the passage, how long did it take for screw propellers to dominate ocean-going ship design after the 1845 trial?",opts:["Within five years","Within two decades","Within fifty years","Almost immediately, within one year"],ans:"B",id:"t6b4"},
+  {n:5,q:"What conclusion did the 1845 trial reach about the paddle wheel?",opts:["It remained competitive for coastal routes but not ocean voyages","It was more efficient than the screw in calm water","It had been entirely supplanted on deep-water routes within two decades","It required further development before it could compete with the screw"],ans:"C",id:"t6b5"}
+];
+function buildMcqBlock(data,prefix){var html="";data.forEach(function(q){html+="<div class=\"q-block\" id=\""+prefix+q.n+"Block\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\""+q.id+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});return html;}
+document.getElementById("t6aMcqList").innerHTML=buildMcqBlock(t6aData,"t6a");
+document.getElementById("t6bMcqList").innerHTML=buildMcqBlock(t6bData,"t6b");
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");var ok=c&&c.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+"Block");if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(c&&row.dataset.val===c.value)row.classList.add("wrong");});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,"t6a");var rB=checkMcqSet(t6bData,"t6b");alert("Passage A: "+rA+"/5\nPassage B: "+rB+"/5");document.getElementById("ansKey6Body").innerHTML="<b>Passage A:</b> 1.C 2.D 3.A 4.B 5.C<br><b>Passage B:</b> 1.B 2.C 3.B 4.B 5.C";document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,qs:[{n:1,s:"The Charlotte Dundas was designed as an ocean-going steamship.",tf:"False"},{n:2,s:"The Charlotte Dundas demonstrated that steam power could outperform horses at towing canal barges.",tf:"True"},{n:3,s:"The Charlotte Dundas was withdrawn because its engines were unreliable.",tf:"False"}]},
+  {pid:2,qs:[{n:1,s:"Before the Suez Canal, ships travelling from Britain to India had to sail around Africa.",tf:"True"},{n:2,s:"The Suez Canal benefited sailing ships and steamships equally.",tf:"False"},{n:3,s:"The Suez Canal reduced the journey time from Britain to Bombay from three months to three weeks.",tf:"True"}]},
+  {pid:3,qs:[{n:1,s:"Early steamships were universally welcomed by experienced sailors and shipowners.",tf:"False"},{n:2,s:"Many of the earliest steamships retained sails as a precaution against engine failure.",tf:"True"},{n:3,s:"The passage states that steam engines produced less smoke than earlier technologies.",tf:"False"}]},
+  {pid:4,qs:[{n:1,s:"In the age of sail, emigration across the Atlantic was cheap and straightforward for working-class families.",tf:"False"},{n:2,s:"By the 1860s, steamship crossing times between Liverpool and New York had fallen to ten days or less.",tf:"True"},{n:3,s:"The passage states that more than fifty million people emigrated from Europe between 1850 and 1950.",tf:"True"}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById("t7p"+p.pid+"List");var html="<p class=\"instr\">True or False?</p>";p.qs.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.qs.forEach(function(q){total++;var c=document.querySelector("input[name=\"t7p"+p.pid+"q"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});});alert("You got "+right+"/"+total+" correct.");var key="";t7Data.forEach(function(p){key+="<b>Passage "+p.pid+":</b> ";key+=p.qs.map(function(q){return q.n+"."+q.tf;}).join(" ");key+="<br>";});document.getElementById("ansKey7Body").innerHTML=key;document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== TASK 8 ===== */
+var t8aWords=["revolutionary","maritime","propulsion","obsolete","predecessor","culminate","unprecedented","vessel","transition","infrastructure"];
+var t8aAns={t8a1:"A",t8a2:"B",t8a3:"C",t8a4:"D",t8a5:"E",t8a6:"F",t8a7:"G",t8a8:"H",t8a9:"I",t8a10:"J"};
+(function buildT8A(){var wrap=document.getElementById("t8aList");var optHtml="<option value=\"\">--</option><option value=\"A\">A</option><option value=\"B\">B</option><option value=\"C\">C</option><option value=\"D\">D</option><option value=\"E\">E</option><option value=\"F\">F</option><option value=\"G\">G</option><option value=\"H\">H</option><option value=\"I\">I</option><option value=\"J\">J</option>";var html="";t8aWords.forEach(function(w,idx){html+="<div class=\"q-text\" style=\"margin-bottom:8px;font-size:15px;\">"+w+" &rarr; <select class=\"fill\" id=\"t8a"+(idx+1)+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+var t8bSents=[{n:1,t:"The 1838 transatlantic race was a ___ moment in the history of ocean navigation.",ans:"pivotal",id:"t8b1"},{n:2,t:"The ___ of international trade accelerated as steam made ocean shipping more reliable.",ans:"expansion",id:"t8b2"},{n:3,t:"Brunel was praised for his ___ approach to ship design, which rejected conventional thinking.",ans:"innovative",id:"t8b3"},{n:4,t:"The Charlotte Dundas was able to ___ that steam power could outperform horse-drawn towing.",ans:"demonstrate",id:"t8b4"},{n:5,t:"The ___ from traditional sailing interests delayed the adoption of steam for several decades.",ans:"resistance",id:"t8b5"},{n:6,t:"International ___ expanded rapidly once steamships made delivery schedules reliable.",ans:"commerce",id:"t8b6"},{n:7,t:"The screw propeller eventually ___ the paddle wheel on all deep-water shipping routes.",ans:"supplant",id:"t8b7"},{n:8,t:"Fulton used the success of the Clermont to ___ a regular passenger service on the Hudson River.",ans:"inaugurate",id:"t8b8"},{n:9,t:"By 1900, the sailing vessel had been rendered purely ___ for most ocean trade routes.",ans:"obsolete",id:"t8b9"},{n:10,t:"The ___ success of the Clermont proved that steam navigation could generate reliable revenue.",ans:"commercial",id:"t8b10"}];
+(function buildT8B(){var wrap=document.getElementById("t8bList");var html="";t8bSents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill short\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+var t8cData=[{n:1,t:"The paddle wheel was ___ (A: supplanted / B: inaugurated) by the screw propeller within two decades of the 1845 trial.",opts:["supplanted","inaugurated"],ans:"A",id:"t8c1"},{n:2,t:"The lack of global coaling stations was the most significant practical constraint on the ___ (A: commercial / B: maritime) reach of early steam navigation.",opts:["commercial","maritime"],ans:"B",id:"t8c2"},{n:3,t:"The SS Great Eastern was a vessel of genuinely ___ (A: obsolete / B: unprecedented) scale.",opts:["obsolete","unprecedented"],ans:"B",id:"t8c3"},{n:4,t:"The volume of migration that steam navigation enabled had no ___ (A: predecessor / B: momentum) in recorded history.",opts:["predecessor","momentum"],ans:"A",id:"t8c4"},{n:5,t:"Brunel argued that building larger ships was more ___ (A: pivotal / B: commercial) — you could carry more cargo per pound of coal.",opts:["pivotal","commercial"],ans:"B",id:"t8c5"}];
+(function buildT8C(){var wrap=document.getElementById("t8cList");var html="";t8cData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.t+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\""+q.id+"\" value=\"A\"> A: "+q.opts[0]+"</label><label><input type=\"radio\" name=\""+q.id+"\" value=\"B\"> B: "+q.opts[1]+"</label></div></div>";});wrap.innerHTML=html;})();
+
+var wfAns={wf1:"revolutionary",wf2:"maritime",wf3:"transition",wf4:"commerce",wf5:"innovative",wf6:"demonstrate",wf7:"expansion",wf8:"inaugurate",wf9:"unprecedented",wf10:"culmination"};
+
+var t8eSents=[{n:1,t:"The Charlotte Dundas had no vessel — it was the first steam-powered tugboat of its kind.",wrong:"vessel",ans:"predecessor",id:"t8e1"},{n:2,t:"The construction of coaling stations was the infrastructure that made global propulsion navigation viable.",wrong:"propulsion",ans:"commercial",id:"t8e2"},{n:3,t:"By 1900, most sailing ships had been rendered commerce on the major ocean trade routes.",wrong:"commerce",ans:"obsolete",id:"t8e3"},{n:4,t:"Brunel's career reached its pivotal in the construction of the SS Great Eastern.",wrong:"pivotal",ans:"culmination",id:"t8e4"},{n:5,t:"The volume of emigration enabled by steam shipping was truly maritime — nothing like it had ever occurred before.",wrong:"maritime",ans:"unprecedented",id:"t8e5"}];
+(function buildT8E(){var wrap=document.getElementById("t8eList");var html="";t8eSents.forEach(function(s){var disp=s.t.replace(s.wrong,"<u>"+s.wrong+"</u>");html+="<p>"+s.n+". "+disp+"<br>&nbsp;&nbsp;Correct word: <input class=\"fill short\" id=\""+s.id+"\"></p>";});wrap.innerHTML=html;})();
+
+function checkTask8(){var rA=0,rB=0,rC=0,rD=0,rE=0;
+  Object.keys(t8aAns).forEach(function(id){var sel=document.getElementById(id);if(sel&&sel.value===t8aAns[id])rA++;});
+  t8bSents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase()||(s.ans==="supplant"&&inp.value.trim().toLowerCase()==="supplanted");if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  t8cData.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");if(c&&c.value===q.ans)rC++;});
+  Object.keys(wfAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===wfAns[id].toLowerCase();if(ok)rD++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  t8eSents.forEach(function(s){var el=document.getElementById(s.id);if(!el)return;var ok=el.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rE++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  alert("Task A (matching): "+rA+"/10\nTask B (gap fill): "+rB+"/10\nTask C (choose): "+rC+"/5\nTask D (word families): "+rD+"/10\nTask E (error correction): "+rE+"/5");
+  document.getElementById("ansKey8Body").innerHTML="<b>A:</b> revolutionary-A, maritime-B, propulsion-C, obsolete-D, predecessor-E, culminate-F, unprecedented-G, vessel-H, transition-I, infrastructure-J<br><br><b>B:</b> 1.pivotal 2.expansion 3.innovative 4.demonstrate 5.resistance 6.commerce 7.supplant 8.inaugurate 9.obsolete 10.commercial<br><br><b>C:</b> 1.A 2.B 3.B 4.A 5.B<br><br><b>D:</b> revolutionary / maritime / transition / commerce / innovative / demonstrate / expansion / inaugurate / unprecedented / culmination<br><br><b>E:</b> 1.predecessor 2.commercial 3.obsolete 4.culmination 5.unprecedented";
+  document.getElementById("ansKey8").classList.add("show");checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day18";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
