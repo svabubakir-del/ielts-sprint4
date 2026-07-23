@@ -57,7 +57,7 @@ select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb
 <body>
 <div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
 <header class="topbar">
-  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">\u2190 Dashboard</a>
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
   <div class="brand">IELTS <span>Sprint4</span></div>
   <div class="daylabel">Day 19</div>
   <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
@@ -99,7 +99,7 @@ select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb
 <section class="task" id="task4" data-task="4">
 <div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
 <div class="card"><a class="btn link-out" href="passage_day_19.html" target="_blank" onclick="openTask4()">&#128214; Open main reading passage</a></div>
-<div class="status-line" id="task4Status">\u23f3 Waiting for you to submit the test in the new tab\u2026</div>
+<div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
 <div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
 <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">&#128221; Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
 </section>
@@ -205,15 +205,15 @@ The practical implications of this research are considerable. If insight is most
 
 </div></main>
 <footer class="navbar">
-  <button class="btn secondary" id="prevBtn" onclick="goPrev()">\u2190 Previous</button>
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
   <span class="nav-info" id="navInfo">Task 1 of 8</span>
-  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done \u2192</button>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
 </footer>
 <div class="completion-screen" id="completionScreen">
-  <div class="big-check">\u2713</div><div class="eyebrow">Day 19 of 30</div>
-  <h1>Congratulations \u2014 Day 19 complete! \U0001f389</h1>
+  <div class="big-check">✓</div><div class="eyebrow">Day 19 of 30</div>
+  <h1>Congratulations — Day 19 complete! \U0001f389</h1>
   <p>All 8 tasks done. Come back tomorrow for Day 20.</p>
-  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">\u2190 Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
 </div>
 <canvas id="confettiCanvas"></canvas>
 <script src="../supabase-config.js"></script>
