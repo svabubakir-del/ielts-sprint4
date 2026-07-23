@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IELTS Sprint4 — Day 19</title>
+<style>
+:root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+*{box-sizing:border-box;}html,body{margin:0;height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+.brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+.daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+.teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+.dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+.content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+.task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+.task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+.task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+.card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+.instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+.wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;}
+.passage-text{line-height:1.85;font-size:15.5px;}
+input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+input.fill.short{width:90px;}input.fill.med{width:200px;}input.fill.wide{width:260px;}
+input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+.q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+.q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+.opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+.tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+.btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+.btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+.check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+.answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+.answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";}.answer-key[open] summary::before{content:"▾";}
+.answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+.status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+.confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+.wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}.wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}.wf-table th{background:var(--accent-light);font-weight:700;}
+.navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+.nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+.completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+.completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+.big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+.completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+.hl{background:#ffe45c;border-radius:2px;}
+.hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+.hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">\u2190 Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 19</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+<div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Study all 37 words, then complete both exercises.</p></div>
+<div class="card"><h3>Word list</h3><div class="wordbank">
+<span class="chip">insight</span><span class="chip">inference</span><span class="chip">intellectual</span><span class="chip">implication</span><span class="chip">perceptual</span><span class="chip">subconsciously</span><span class="chip">recollection</span><span class="chip">stump</span><span class="chip">broadly</span><span class="chip">beforehand</span><span class="chip">detect</span><span class="chip">enable</span><span class="chip">promote</span><span class="chip">restore</span><span class="chip">inform</span><span class="chip">correlate</span><span class="chip">shift</span><span class="chip">reassuringly</span><span class="chip">amusement</span><span class="chip">chaos</span><span class="chip">leaps</span><span class="chip">come out of the blue</span><span class="chip">spike</span><span class="chip">slope</span><span class="chip">bump</span><span class="chip">crack</span><span class="chip">attach</span><span class="chip">tack</span><span class="chip">block out</span><span class="chip">grab</span><span class="chip">swing</span><span class="chip">cord</span><span class="chip">string</span><span class="chip">cell</span><span class="chip">capable</span><span class="chip">rush</span><span class="chip">escape</span>
+</div></div>
+<div class="card"><h4>Exercise A — Complete the text (20 gaps)</h4><p class="instr">Fill each gap with the correct word from the box. Use words from the first two rows of the word list.</p><div class="passage-text" id="vocabA-text"></div></div>
+<div class="card"><h4>Exercise B — Sentence completion (17 gaps)</h4><p class="instr">Complete each sentence with ONE word or phrase from the remaining words.</p><div id="vocabB-list" class="passage-text"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+<details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+<div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+<div class="card"><h3>Creative insight and the brain</h3>
+<div class="passage-text">Creative problem-solving often depends on a sudden insight — a moment of understanding that arrives not through deliberate effort but through subconscious processing. Researchers have broadly agreed that the most important factor in triggering genuine insight is not intellectual intensity but the ability to shift attention away from a problem entirely. This is because the analytical mind tends to fixate on familiar approaches, which can block more creative paths from emerging. Studies using EEG technology have been able to detect a characteristic spike in alpha wave activity in the right occipital cortex in the seconds immediately before a participant reports an "Aha!" moment. This neural signature suggests that the brain is actively blocking out external sensory information to protect a fragile subconscious connection from disruption. Reassuringly, research also confirms that positive emotions promote creative thinking: a mood of amusement or relaxed well-being lowers the brain's inhibitory filters and enables remote and unexpected associations to reach consciousness. A recollection of a seemingly unrelated past experience can sometimes inform the solution to a current problem — a fact that suggests creativity is deeply correlate with the breadth and richness of a person's accumulated experiences.</div>
+</div>
+<div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+<div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+<details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+<div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+<div class="card"><h3>The Neuroscience of Incubation, Alpha Waves, and Insight</h3><p class="instr">Advanced reading on dual-system cognition, dopamine, attentional gating, and EEG wave signatures — with full 37-word glossary and comprehension questions inside.</p><a class="btn link-out" href="article-day-19.html" target="_blank" rel="noopener">&#128196; Open article</a></div>
+<div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+<div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+<div class="card"><a class="btn link-out" href="passage_day_19.html" target="_blank" onclick="openTask4()">&#128214; Open main reading passage</a></div>
+<div class="status-line" id="task4Status">\u23f3 Waiting for you to submit the test in the new tab\u2026</div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">&#128221; Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+<div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the passage, then answer all questions below.</p></div>
+<div class="card"><h3>From Dead End to Breakthrough: The Cognitive Science of Insight</h3>
+<div class="passage-text">The experience of suddenly solving a problem that seemed impossible — the "Aha!" or Eureka moment — has fascinated psychologists and neuroscientists for decades. What makes the phenomenon particularly interesting is that it feels fundamentally different from ordinary analytical problem-solving. In analytical reasoning, solvers are aware of each step they take; they can monitor their own progress and adjust their approach in response to feedback. In insight problem-solving, by contrast, the solution seems to come out of the blue — arriving without warning and with a characteristic rush of certainty that the answer is correct.<br><br>
+Research by cognitive psychologist Mark Jung-Beeman and his colleagues at Northwestern University has helped clarify the neural basis of this distinction. Using EEG and fMRI simultaneously, Jung-Beeman's team was able to detect a specific neural signature that preceded insight solutions by approximately one second: a sudden burst of high-frequency gamma activity in the right anterior temporal lobe, along with a corresponding surge in alpha-wave power over the right visual cortex. This combination — the alpha "blackout" followed by the gamma burst — suggests that the brain first blocks out external sensory noise in order to protect the fragile subconscious connection, then rapidly binds the disparate elements of the solution together into a coherent whole.<br><br>
+Critically, the incubation period that precedes many insights is not a period of inactivity. During incubation, the brain continues to process the problem subconsciously, exploring associative leaps and distant semantic connections that the focused analytical mind would typically block out. This subconscious processing is informed by the full breadth of the person's accumulated recollections and experiences — a fact that may help explain why broad and diverse intellectual experience correlates so strongly with creative output.<br><br>
+The practical implications of this research are considerable. If insight is most likely to occur when the conscious mind steps back from a problem, then strategies that promote cognitive relaxation — walks, sleep, mindfulness, and even amusement — are not signs of laziness but genuinely productive strategies. Reassuringly, the most creative individuals are not necessarily those who work the hardest, but those who know when to stop working and let their subconscious take over.</div>
+</div>
+<div class="card"><h4>Section 1 — True / False / Not Given (5 questions)</h4><p class="instr">Write True, False, or Not Given based on the passage above.</p><div id="t5TFList"></div></div>
+<div class="card"><h4>Section 2 — Short answer (3 questions)</h4><p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+<div class="passage-text">
+<p>6. What characterises the feeling that accompanies the arrival of an insight solution?<br><input class="fill med" id="t5s6"></p>
+<p>7. What did the alpha wave surge over the visual cortex suggest the brain was doing?<br><input class="fill med" id="t5s7"></p>
+<p>8. According to the passage, what do broad and diverse intellectual experiences correlate with?<br><input class="fill med" id="t5s8"></p>
+</div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+<details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+<div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage carefully and answer the comprehension questions.</p></div>
+<div class="card"><h3>Passage A — Functional Fixedness and the Candle Problem</h3>
+<div class="passage-text">One of the most famous demonstrations of the barriers to creative thinking is Karl Duncker's candle problem, first described in 1945. Participants are given a candle, a box of tacks, and a book of matches, and asked to attach the candle to the wall so that it burns without dripping wax on the floor. Most people initially try to tack the candle directly to the wall or melt wax and use it as adhesive — neither of which works reliably. The solution is to tack the box itself to the wall and use it as a platform for the candle. The reason most people fail to detect this solution immediately is what psychologists call functional fixedness: the brain's tendency to perceive objects only in terms of their familiar function. The box is seen merely as a container for the tacks, not as a potential shelf. Crucially, research has shown that participants who watch a short comedy clip beforehand solve the candle problem significantly faster than control groups. This finding provides direct experimental evidence that positive affect — specifically, the amusement generated by humour — disrupts functional fixedness by broadening the brain's perceptual field, enabling it to see an object like the box in an unconventional light.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4><div id="t6aMcqList"></div>
+</div>
+<div class="card"><h3>Passage B — The Incubation Effect: Rest as a Cognitive Tool</h3>
+<div class="passage-text">The idea that "sleeping on a problem" actually works has moved from folk wisdom to established cognitive science. The incubation effect refers to the empirically documented phenomenon whereby a person who steps away from an unsolved problem often finds that a solution — or a promising new approach — comes to them during or after a period of rest or unrelated activity. A study published in the journal Psychological Science found that participants who were asked to work on a creative task, then instructed to take a break and perform an undemanding task before returning, produced significantly more creative solutions than those who worked on the problem without interruption. The mechanism behind this effect is thought to involve the spreading activation of semantic networks during restful states: when the brain is not focused on a specific goal, it explores a much broader range of associative connections, some of which correlate with the structure of the unsolved problem in ways that conscious analytical thinking had failed to reveal. Insights that emerge from this process characteristically come out of the blue, without the solver being aware of the subconscious work that made them possible.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4><div id="t6bMcqList"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+<details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+<div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+<div class="card"><h3>Passage 1 — Humour, Mood, and Cognitive Flexibility</h3>
+<div class="passage-text">Experimental evidence consistently shows that positive mood states — particularly those induced by amusement — enhance performance on tasks that require creative thinking, while having little or no effect on routine analytical tasks. A meta-analysis of forty-two separate studies found that participants in positive mood conditions generated significantly more unusual and original solutions on divergent thinking tests than participants in neutral or negative mood conditions. The mechanism appears to involve the release of dopamine, which lowers the brain's attentional filter and enables a broader range of information to enter working memory. Importantly, this broadened intake is specifically beneficial for insight-style problems: problems that require the solver to escape from conventional frameworks and detect an unexpected connection. Analytical problems, by contrast, are no easier when the solver is in a good mood — they require the focused narrowing of attention that positive affect tends to reduce.</div>
+<div id="t7p1List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 2 — Alpha Waves and the Quiet Mind</h3>
+<div class="passage-text">The discovery that alpha brain waves play a specific role in the preparation for insight has been one of the most compelling findings in cognitive neuroscience. Alpha oscillations, which operate in the 8–12 Hz frequency range, have long been associated with relaxed, unfocused states of awareness. For decades, they were regarded as a sign of mental idling — the brain simply marking time between more purposeful activities. The discovery that a dramatic surge in alpha power over the right occipital cortex reliably precedes insight solutions by approximately one second forced a fundamental revision of this interpretation. Alpha waves, it now appears, are not a sign of cognitive inactivity but rather an active neural mechanism: the brain using inhibitory oscillations to block out incoming visual information and protect a fragile subconscious association from being disrupted by the constant rush of external sensory data.</div>
+<div id="t7p2List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 3 — Sleep and Subconscious Problem-Solving</h3>
+<div class="passage-text">Among all the cognitive strategies associated with incubation, sleep appears to be the most powerful. During slow-wave sleep, the hippocampus repeatedly reactivates the neural patterns associated with recently learned information, transferring them to the neocortex for long-term storage. During REM sleep, by contrast, the brain enters a state of heightened associative activity: neuromodulatory systems that promote focused, logical thinking are suppressed, and the brain is free to make broad, spontaneous connections across widely separated areas of the cortex. Several classic historical insights are associated with the transition between sleep and waking — the hypnagogic state — including the chemist August Kekulé's famous insight into the ring structure of benzene. Whether or not these historical accounts are entirely accurate, the neurological evidence clearly supports the proposition that the sleeping brain is capable of creative work that the waking, analytically focused mind cannot perform.</div>
+<div id="t7p3List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 4 — The Prepared Mind and the Role of Knowledge</h3>
+<div class="passage-text">One of the most frequently misunderstood aspects of creative insight is the role of prior knowledge. Popular accounts of creativity sometimes suggest that na&iuml;ve, unconditioned thinking is the source of the best ideas — that the expert's mind is too rigidly structured to make genuinely fresh connections. The neurological evidence does not support this view. Insights, by definition, involve the unexpected binding of existing pieces of knowledge into a novel configuration. The more richly and diversely informed the brain's associative networks are, the greater the range of connections available for spontaneous activation during incubation. Expertise does not prevent insight; it informs it. The creative leaps of a skilled physicist, poet, or musician are not made in spite of their accumulated knowledge but because of it: the subconscious has a larger, more varied store of material to work with, and a broader set of patterns against which a novel association can be recognised and evaluated.</div>
+<div id="t7p4List" style="margin-top:12px;"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+<details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+<div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Vocabulary recap</h2><p class="task-sub">Five vocabulary exercises covering all 37 words from today.</p></div>
+<div class="card"><h4>Task A — Match the word to its definition (10 words)</h4>
+<p class="instr">Match each word or phrase to the correct definition (A–J).</p>
+<div class="wordbank" style="margin-bottom:12px;"><span class="chip">A. A sudden clear understanding of something previously puzzling</span><span class="chip">B. Relating to the ability to perceive things through the senses</span><span class="chip">C. A conclusion reached through reasoning from evidence</span><span class="chip">D. In a way that influences one without full conscious awareness</span><span class="chip">E. To give shape or character to something; to have an influence on</span><span class="chip">F. A sudden sharp increase in data</span><span class="chip">G. To find the solution to a difficult problem</span><span class="chip">H. To fasten or connect something to something else</span><span class="chip">I. The ability to do something; having the necessary skill</span><span class="chip">J. To have a mutual relationship in which one thing affects another</span></div>
+<div id="t8aList"></div>
+</div>
+<div class="card"><h4>Task B — Gap fill (10 sentences)</h4>
+<p class="instr">Complete each sentence with ONE word or phrase from the box.</p>
+<div class="wordbank" style="margin-bottom:12px;"><span class="chip">insight</span><span class="chip">stump</span><span class="chip">broadly</span><span class="chip">beforehand</span><span class="chip">enable</span><span class="chip">promote</span><span class="chip">restore</span><span class="chip">shift</span><span class="chip">amusement</span><span class="chip">chaos</span></div>
+<div id="t8bList" class="passage-text"></div>
+</div>
+<div class="card"><h4>Task C — Choose the correct word</h4>
+<p class="instr">Choose the best option (A or B) for each sentence.</p><div id="t8cList"></div>
+</div>
+<div class="card"><h4>Task D — Word families</h4>
+<p class="instr">Complete the table with the correct form of each word.</p>
+<table class="wf-table">
+<tr><th>Noun</th><th>Verb</th><th>Adjective</th></tr>
+<tr><td>insight</td><td>—</td><td><input class="fill short" id="wf1"></td></tr>
+<tr><td>inference</td><td><input class="fill short" id="wf2"></td><td>inferential</td></tr>
+<tr><td><input class="fill short" id="wf3"></td><td>—</td><td>intellectual</td></tr>
+<tr><td>implication</td><td><input class="fill short" id="wf4"></td><td>implied</td></tr>
+<tr><td>perception</td><td>perceive</td><td><input class="fill short" id="wf5"></td></tr>
+<tr><td>recollection</td><td><input class="fill short" id="wf6"></td><td>recollected</td></tr>
+<tr><td><input class="fill short" id="wf7"></td><td>correlate</td><td>correlational</td></tr>
+<tr><td>promotion</td><td><input class="fill short" id="wf8"></td><td>promotional</td></tr>
+<tr><td>detection</td><td><input class="fill short" id="wf9"></td><td>detectable</td></tr>
+<tr><td>chaos</td><td>—</td><td><input class="fill short" id="wf10"></td></tr>
+</table>
+</div>
+<div class="card"><h4>Task E — Error correction</h4>
+<p class="instr">Each sentence contains ONE incorrect vocabulary word. Write the correct word in the box.</p>
+<div id="t8eList" class="passage-text"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check all vocab tasks</button></div>
+<details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">\u2190 Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done \u2192</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">\u2713</div><div class="eyebrow">Day 19 of 30</div>
+  <h1>Congratulations \u2014 Day 19 complete! \U0001f389</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 20.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">\u2190 Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=19,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day19_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+
+// ── localStorage answer mirror (fixes blank-task on revisit) ────────────────
+var LS_ANS="sprint4_day19_ans";
+function saveAns(id,val){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");a[id]=val;localStorage.setItem(LS_ANS,JSON.stringify(a));}catch(e){}}
+function restoreAnswersFromLS(){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");Object.keys(a).forEach(function(id){if(id.startsWith("radio_")){var name=id.replace("radio_","");var el=document.querySelector("input[name=\""+name+"\"][value=\""+a[id]+"\"]");if(el)el.checked=true;}else{var el=document.getElementById(id);if(el)el.value=a[id];}});}catch(e){}}
+
+// ── lock completed day (makeRO) ──────────────────────────────────────────────
+var isLocked=false;
+function makeRO(){
+  isLocked=true;
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll(".btn.secondary").forEach(function(btn){if(btn.textContent.trim().startsWith("Check"))btn.style.display="none";});
+  document.querySelectorAll(".answer-key").forEach(function(el){el.classList.add("show");});
+  var db=document.getElementById("doneBtn");db.disabled=false;db.textContent="Next \u2192";db.style.background="#475569";
+  var banner=document.createElement("div");
+  banner.style.cssText="position:fixed;top:0;left:0;right:0;background:#1f9d55;color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:700;z-index:200;letter-spacing:.3px;";
+  banner.textContent="Review mode \u2014 Day 19 is complete. Your answers are saved and locked.";
+  document.body.insertBefore(banner,document.body.firstChild);
+}
+
+var debTimers={};
+function autosave(id,val){
+  saveAns(id,val);
+  if(!studentSession)return;
+  clearTimeout(debTimers[id]);
+  debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);
+}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(/^t8|^wf/.test(id))return 8;return 1;}
+function hookAutosave(){
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){
+    if(el.dataset.hooked)return;el.dataset.hooked="1";
+    el.addEventListener("input",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});
+    el.addEventListener("change",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});
+  });
+  document.querySelectorAll("input[type=radio]").forEach(function(el){
+    if(el.dataset.hooked)return;el.dataset.hooked="1";
+    el.addEventListener("change",function(){if(el.checked){saveAns("radio_"+el.name,el.value);autosave("radio_"+el.name,el.value);}});
+  });
+}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day19_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){if(isLocked){if(current<TOTAL_TASKS){current++;saveState();showTask(current);}return;}taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");makeRO();fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isLocked||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode||isLocked)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="\u2705 Passage submitted \u2014 score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB (37 words) ===== */
+var VA_segs=["Creative problem-solving often depends on a sudden ","/*1=insight*/","— a moment of understanding that arrives not through deliberate effort but through subconscious processing. A critical ","/*2=inference*/","from research is that the most powerful creative breakthroughs occur when a person is NOT actively trying to solve the problem. ","/*3=broadly*/","speaking, scientists have found that taking a break can ","/*4=enable*/","the brain to process information at a ","/*5=subconsciously*/","level. ","/*6=intellectual*/","effort alone is rarely sufficient; ","/*7=perceptual*/","openness — the willingness to notice unexpected connections — plays an equally important role. A researcher who goes ","/*8=beforehand*/","into an experiment with rigid expectations may fail to ","/*9=restore*/","the creative flexibility needed to see an unconventional answer. A rich ","/*10=recollection*/","of past experiences can ","/*11=inform*/","the search for solutions in ways that are difficult to predict. Difficult problems may ","/*12=stump*/","the analytical mind while simultaneously being worked on at a deeper level. A ","/*13=shift*/","in attention — a deliberate decision to step back from the ","/*14=chaos*/","of a difficult challenge — can ","/*15=promote*/","breakthrough thinking. EEG can ","/*16=detect*/","the precise neural signature of a creative breakthrough in the form of a characteristic alpha-wave surge; this activity can be shown to ","/*17=correlate*/","strongly with insight probability. ","/*18=reassuringly*/",", research confirms that laughter and ","/*19=amusement*/","genuinely help — the ","/*20=implication*/","being that a good mood relaxes the brain's filters and welcomes the unexpected associations that lead to discovery."];
+var VA_ans={1:"insight",2:"inference",3:"broadly",4:"enable",5:"subconsciously",6:"intellectual",7:"perceptual",8:"beforehand",9:"restore",10:"recollection",11:"inform",12:"stump",13:"shift",14:"chaos",15:"promote",16:"detect",17:"correlate",18:"reassuringly",19:"amusement",20:"implication"};
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){if(s.startsWith("/*")){var w=VA_ans[g];var cl=w.length>11?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+g+"\"> ";g++;}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_sents=[
+  {n:1,t:"The solution seemed to ___ without any prior warning.",ans:"come out of the blue",id:"vb1"},
+  {n:2,t:"In a ___ of excitement, she wrote down her solution before it faded.",ans:"rush",id:"vb2"},
+  {n:3,t:"The most creative thinkers are able to ___ the constraints of conventional thinking.",ans:"escape",id:"vb3"},
+  {n:4,t:"Progress in science often comes in ___, not in gradual incremental steps.",ans:"leaps",id:"vb4"},
+  {n:5,t:"EEG readings showed a sudden ___ in alpha wave activity just before the breakthrough.",ans:"spike",id:"vb5"},
+  {n:6,t:"The difficulty of the puzzles increased on a rising ___.",ans:"slope",id:"vb6"},
+  {n:7,t:"Every creative process hits a ___ before the final breakthrough arrives.",ans:"bump",id:"vb7"},
+  {n:8,t:"The team finally managed to ___ the code of creative thought.",ans:"crack",id:"vb8"},
+  {n:9,t:"We often ___ emotional significance to the moment of insight.",ans:"attach",id:"vb9"},
+  {n:10,t:"When one approach fails, try taking a different ___ entirely.",ans:"tack",id:"vb10"},
+  {n:11,t:"Alpha waves help the brain ___ external sensory noise before an insight occurs.",ans:"block out",id:"vb11"},
+  {n:12,t:"A fascinating puzzle can ___ the brain's attention even during rest.",ans:"grab",id:"vb12"},
+  {n:13,t:"A ___ toward a more positive mood can dramatically improve creative output.",ans:"swing",id:"vb13"},
+  {n:14,t:"The researcher used a ___ diagram to connect related ideas visually.",ans:"cord",id:"vb14"},
+  {n:15,t:"A ___ of small observations led to the final theoretical breakthrough.",ans:"string",id:"vb15"},
+  {n:16,t:"A single brain ___ can be part of multiple overlapping memory networks.",ans:"cell",id:"vb16"},
+  {n:17,t:"The subconscious mind is ___ of making connections the conscious mind misses.",ans:"capable",id:"vb17"}
+];
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var html="";VB_sents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+function checkVocab(){
+  var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}
+  var rB=0;VB_sents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/17");
+  document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" &nbsp;\u2022&nbsp; ")+"<br><br><b>B:</b><br>"+VB_sents.map(function(s){return s.n+". "+s.ans;}).join(" &nbsp;\u2022&nbsp; ");
+  document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();
+}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[
+  {n:1,s:"According to the passage, deliberate analytical effort is the most reliable way to trigger a creative insight.",tf:"False"},
+  {n:2,s:"The passage states that EEG can detect a spike in alpha wave activity before an Aha! moment.",tf:"True"},
+  {n:3,s:"The passage suggests that alpha waves protect a subconscious connection from disruption.",tf:"True"},
+  {n:4,s:"The passage states that negative emotions also promote creative thinking in the same way as amusement.",tf:"False"},
+  {n:5,s:"According to the passage, breadth and richness of experience correlates with creativity.",tf:"True"}
+];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var c=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[
+  {n:1,s:"In analytical reasoning, solvers are aware of each step they take and can monitor their progress.",tf:"True",opts:["True","False","Not Given"]},
+  {n:2,s:"Mark Jung-Beeman's research was conducted at Harvard University.",tf:"Not Given",opts:["True","False","Not Given"]},
+  {n:3,s:"The alpha wave surge and gamma burst occur simultaneously in the brain just before insight.",tf:"False",opts:["True","False","Not Given"]},
+  {n:4,s:"During incubation, the brain stops processing the problem entirely.",tf:"False",opts:["True","False","Not Given"]},
+  {n:5,s:"According to the passage, the most creative individuals are those who know when to stop working analytically.",tf:"True",opts:["True","False","Not Given"]}
+];
+(function buildT5TF(){var wrap=document.getElementById("t5TFList");var html="";t5TFData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\">";q.opts.forEach(function(opt){html+="<label><input type=\"radio\" name=\"t5tf"+q.n+"\" value=\""+opt+"\"> "+opt+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkTask5(){var rTF=0,rS=0;t5TFData.forEach(function(q){var c=document.querySelector("input[name=\"t5tf"+q.n+"\"]:checked");if(c&&c.value===q.tf)rTF++;});var shorts={t5s6:"rush of certainty",t5s7:"blocking out sensory noise",t5s8:"creative output"};["t5s6","t5s7","t5s8"].forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var v=el.value.trim().toLowerCase();var ok=(i===0&&(v.indexOf("rush")>=0||v.indexOf("certainty")>=0))||(i===1&&(v.indexOf("block")>=0||v.indexOf("sensory")>=0||v.indexOf("noise")>=0))||(i===2&&v.indexOf("creative")>=0);if(ok)rS++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("T/F/NG: "+rTF+"/5\nShort answer: "+rS+"/3");document.getElementById("ansKey5Body").innerHTML="<b>T/F/NG:</b> 1.True 2.Not Given 3.False 4.False 5.True<br><br><b>Short answer:</b><br>6. A rush of certainty<br>7. Blocking out (external) sensory noise<br>8. Creative output";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[
+  {n:1,q:"What is the correct solution to Duncker's candle problem?",opts:["Tack the candle directly to the wall using the tacks from the box.","Use melted wax to glue the candle to the wall.","Tack the empty box to the wall and use it as a shelf for the candle.","Hold the candle against the wall until the wax sets."],ans:"C",id:"t6a1"},
+  {n:2,q:"What does the passage identify as the primary reason most people fail to solve the candle problem immediately?",opts:["They do not understand the task instructions.","The tools provided are insufficient to complete the task.","Functional fixedness prevents them seeing the box as anything other than a container.","They do not have enough time to try all available approaches."],ans:"C",id:"t6a2"},
+  {n:3,q:"What effect does watching a comedy clip beforehand have on problem-solving?",opts:["It distracts participants and reduces their concentration.","It makes participants more competitive and motivated.","It broadens the perceptual field and helps overcome functional fixedness.","It improves performance equally on analytical and insight tasks."],ans:"C",id:"t6a3"},
+  {n:4,q:"According to the passage, what does the candle problem study demonstrate about positive affect?",opts:["It reliably improves all types of cognitive performance.","It directly disrupts functional fixedness by broadening the perceptual field.","It increases the speed of analytical reasoning more than creative reasoning.","It has no measurable effect on experimental problem-solving tasks."],ans:"B",id:"t6a4"},
+  {n:5,q:"The phrase 'functional fixedness' refers to",opts:["the brain's tendency to forget the function of familiar objects.","the inability to focus attention on a task for a sustained period.","perceiving objects only in terms of their familiar or standard function.","the cognitive overload caused by too many objects in a test environment."],ans:"C",id:"t6a5"}
+];
+var t6bData=[
+  {n:1,q:"What is the incubation effect?",opts:["The tendency to work harder on a problem the longer it remains unsolved.","The phenomenon whereby stepping away from an unsolved problem can lead to new solutions.","The effect of sleep deprivation on creative output over several weeks.","The increase in analytical performance that results from rest periods."],ans:"B",id:"t6b1"},
+  {n:2,q:"What did the study published in Psychological Science find?",opts:["Continuous work on a creative task produces the best results.","Short breaks of fewer than five minutes have no measurable effect.","Participants who took an incubation break produced more creative solutions.","Incubation only works when the break involves sleep."],ans:"C",id:"t6b2"},
+  {n:3,q:"What mechanism is thought to explain the incubation effect?",opts:["The exhaustion of unhelpful analytical pathways during the rest period.","The spreading activation of semantic networks during restful states.","The reduction of dopamine levels that occurs naturally during rest.","The physical restoration of neurons damaged by extended concentration."],ans:"B",id:"t6b3"},
+  {n:4,q:"How are insight solutions described in the passage?",opts:["They come gradually, following a clear sequence of logical steps.","They arrive only after the solver returns to analytical thinking.","They come out of the blue, without apparent awareness of the subconscious work involved.","They are always preceded by a clear feeling that a solution is close."],ans:"C",id:"t6b4"},
+  {n:5,q:"What does the passage suggest about analytical thinking during the incubation period?",opts:["It is more effective than subconscious processing for creative problems.","It fails to reveal connections that restful subconscious states can make.","It continues during incubation at a reduced level of intensity.","It permanently prevents subconscious insights from emerging."],ans:"B",id:"t6b5"}
+];
+function buildMcqBlock(data,prefix){var html="";data.forEach(function(q){html+="<div class=\"q-block\" id=\""+prefix+q.n+"Block\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\""+q.id+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});return html;}
+document.getElementById("t6aMcqList").innerHTML=buildMcqBlock(t6aData,"t6a");
+document.getElementById("t6bMcqList").innerHTML=buildMcqBlock(t6bData,"t6b");
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");var ok=c&&c.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+"Block");if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(c&&row.dataset.val===c.value)row.classList.add("wrong");});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,"t6a");var rB=checkMcqSet(t6bData,"t6b");alert("Passage A: "+rA+"/5\nPassage B: "+rB+"/5");document.getElementById("ansKey6Body").innerHTML="<b>Passage A:</b> 1.C 2.C 3.C 4.B 5.C<br><b>Passage B:</b> 1.B 2.C 3.B 4.C 5.B";document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,qs:[{n:1,s:"Positive mood states enhance performance on both creative and routine analytical tasks equally.",tf:"False"},{n:2,s:"Dopamine lowers the attentional filter, enabling a broader range of information to enter working memory.",tf:"True"},{n:3,s:"According to the passage, analytical problems are easier to solve when the person is in a good mood.",tf:"False"}]},
+  {pid:2,qs:[{n:1,s:"Alpha waves were historically regarded as a sign of active, purposeful mental processing.",tf:"False"},{n:2,s:"A dramatic surge in alpha power over the right occipital cortex precedes insight solutions by approximately one second.",tf:"True"},{n:3,s:"The passage suggests alpha waves are an active neural mechanism rather than a sign of inactivity.",tf:"True"}]},
+  {pid:3,qs:[{n:1,s:"During slow-wave sleep, the hippocampus transfers information to the neocortex for long-term storage.",tf:"True"},{n:2,s:"REM sleep involves the same tightly focused, logical thinking as analytical waking cognition.",tf:"False"},{n:3,s:"The passage states that the chemist August Kekulé solved the structure of benzene during slow-wave sleep.",tf:"False"}]},
+  {pid:4,qs:[{n:1,s:"The passage argues that naive, unconditioned thinking produces the best creative insights.",tf:"False"},{n:2,s:"According to the passage, insights involve binding existing pieces of knowledge into a novel configuration.",tf:"True"},{n:3,s:"The passage suggests that expertise prevents insight by making thinking too rigid and structured.",tf:"False"}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById("t7p"+p.pid+"List");var html="<p class=\"instr\">True or False?</p>";p.qs.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.qs.forEach(function(q){total++;var c=document.querySelector("input[name=\"t7p"+p.pid+"q"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});});alert("You got "+right+"/"+total+" correct.");var key="";t7Data.forEach(function(p){key+="<b>Passage "+p.pid+":</b> ";key+=p.qs.map(function(q){return q.n+"."+q.tf;}).join(" ");key+="<br>";});document.getElementById("ansKey7Body").innerHTML=key;document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== TASK 8 ===== */
+var t8aWords=["insight","perceptual","inference","subconsciously","inform","spike","crack","attach","capable","correlate"];
+var t8aAns={t8a1:"A",t8a2:"B",t8a3:"C",t8a4:"D",t8a5:"E",t8a6:"F",t8a7:"G",t8a8:"H",t8a9:"I",t8a10:"J"};
+(function buildT8A(){var wrap=document.getElementById("t8aList");var optHtml="<option value=\"\">--</option><option value=\"A\">A</option><option value=\"B\">B</option><option value=\"C\">C</option><option value=\"D\">D</option><option value=\"E\">E</option><option value=\"F\">F</option><option value=\"G\">G</option><option value=\"H\">H</option><option value=\"I\">I</option><option value=\"J\">J</option>";var html="";t8aWords.forEach(function(w,idx){html+="<div class=\"q-text\" style=\"margin-bottom:8px;font-size:15px;\">"+w+" &rarr; <select class=\"fill\" id=\"t8a"+(idx+1)+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+var t8bSents=[{n:1,t:"The ___ arrived without warning — she had not expected to solve it so quickly.",ans:"insight",id:"t8b1"},{n:2,t:"The hardest puzzle managed to ___ even the most experienced researchers.",ans:"stump",id:"t8b2"},{n:3,t:"___, scientists have confirmed that humour genuinely improves creative performance.",ans:"broadly",id:"t8b3"},{n:4,t:"Participants were told ___ that the test would include tasks of varying difficulty.",ans:"beforehand",id:"t8b4"},{n:5,t:"Relaxing the brain's filters will ___ unexpected connections to reach consciousness.",ans:"enable",id:"t8b5"},{n:6,t:"A positive mood can ___ creative thinking by broadening the attentional field.",ans:"promote",id:"t8b6"},{n:7,t:"A walk was enough to ___ her creative energy after several hours of fruitless work.",ans:"restore",id:"t8b7"},{n:8,t:"A deliberate ___ in attention away from the problem was all it took to trigger the breakthrough.",ans:"shift",id:"t8b8"},{n:9,t:"Watching a comedy clip induced genuine ___ in the participants and improved their problem-solving.",ans:"amusement",id:"t8b9"},{n:10,t:"The utter ___ of an open brainstorming session can actually inhibit the deeper work of insight.",ans:"chaos",id:"t8b10"}];
+(function buildT8B(){var wrap=document.getElementById("t8bList");var html="";t8bSents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill short\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+var t8cData=[{n:1,t:"The solution seemed to ___ (A: come out of the blue / B: block out) without any prior warning.",opts:["come out of the blue","block out"],ans:"A",id:"t8c1"},{n:2,t:"The team managed to ___ (A: attach / B: crack) the problem after three days of incubation.",opts:["attach","crack"],ans:"B",id:"t8c2"},{n:3,t:"In a ___ (A: rush / B: slope) of inspiration, she wrote down the solution before it could fade.",opts:["rush","slope"],ans:"A",id:"t8c3"},{n:4,t:"A change of ___ (A: cord / B: tack) — trying a completely different approach — led to the breakthrough.",opts:["cord","tack"],ans:"B",id:"t8c4"},{n:5,t:"The subconscious mind is fully ___ (A: capable / B: perceptual) of solving problems the conscious mind cannot.",opts:["capable","perceptual"],ans:"A",id:"t8c5"}];
+(function buildT8C(){var wrap=document.getElementById("t8cList");var html="";t8cData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.t+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\""+q.id+"\" value=\"A\"> A: "+q.opts[0]+"</label><label><input type=\"radio\" name=\""+q.id+"\" value=\"B\"> B: "+q.opts[1]+"</label></div></div>";});wrap.innerHTML=html;})();
+
+var wfAns={wf1:"insightful",wf2:"infer",wf3:"intellect",wf4:"imply",wf5:"perceptual",wf6:"recollect",wf7:"correlation",wf8:"promote",wf9:"detect",wf10:"chaotic"};
+
+var t8eSents=[{n:1,t:"The solution came out of the blue and arrived in a moment of complete chaos and planning.",wrong:"chaos",ans:"insight",id:"t8e1"},{n:2,t:"The EEG was able to stump a characteristic surge in alpha wave activity.",wrong:"stump",ans:"detect",id:"t8e2"},{n:3,t:"A shift toward relaxation can escape the brain's ability to make unexpected connections.",wrong:"escape",ans:"promote",id:"t8e3"},{n:4,t:"She tried a different tack after the first approach managed to restore her.",wrong:"restore",ans:"stump",id:"t8e4"},{n:5,t:"The rush she felt upon solving the problem was immediately recognisable as the recollection of certainty.",wrong:"recollection",ans:"rush",id:"t8e5"}];
+(function buildT8E(){var wrap=document.getElementById("t8eList");var html="";t8eSents.forEach(function(s){var disp=s.t.replace(s.wrong,"<u>"+s.wrong+"</u>");html+="<p>"+s.n+". "+disp+"<br>&nbsp;&nbsp;Correct word: <input class=\"fill short\" id=\""+s.id+"\"></p>";});wrap.innerHTML=html;})();
+
+function checkTask8(){var rA=0,rB=0,rC=0,rD=0,rE=0;
+  Object.keys(t8aAns).forEach(function(id){var sel=document.getElementById(id);if(sel&&sel.value===t8aAns[id])rA++;});
+  t8bSents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  t8cData.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");if(c&&c.value===q.ans)rC++;});
+  Object.keys(wfAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===wfAns[id].toLowerCase();if(ok)rD++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  t8eSents.forEach(function(s){var el=document.getElementById(s.id);if(!el)return;var ok=el.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rE++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  alert("Task A: "+rA+"/10\nTask B: "+rB+"/10\nTask C: "+rC+"/5\nTask D: "+rD+"/10\nTask E: "+rE+"/5");
+  document.getElementById("ansKey8Body").innerHTML="<b>A:</b> insight-A, perceptual-B, inference-C, subconsciously-D, inform-E, spike-F, crack-G, attach-H, capable-I, correlate-J<br><br><b>B:</b> 1.insight 2.stump 3.broadly 4.beforehand 5.enable 6.promote 7.restore 8.shift 9.amusement 10.chaos<br><br><b>C:</b> 1.A 2.B 3.A 4.B 5.A<br><br><b>D:</b> insightful / infer / intellect / imply / perceptual / recollect / correlation / promote / detect / chaotic<br><br><b>E:</b> 1.insight 2.detect 3.promote 4.stump 5.rush";
+  document.getElementById("ansKey8").classList.add("show");checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+// Restore from localStorage immediately (synchronous)
+restoreAnswersFromLS();
+// Lock if day already complete
+var _allDone=Object.keys(taskDone).every(function(k){return taskDone[k];});
+if(_allDone)makeRO();
+// Async Supabase restore
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day19";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
