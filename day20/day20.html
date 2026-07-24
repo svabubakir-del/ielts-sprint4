@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IELTS Sprint4 — Day 20</title>
+<style>
+:root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+*{box-sizing:border-box;}html,body{margin:0;height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+.brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+.daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+.teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+.dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+.content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+.task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+.task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+.task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+.card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+.instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+.wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;}
+.passage-text{line-height:1.85;font-size:15.5px;}
+input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+input.fill.short{width:80px;}input.fill.med{width:190px;}input.fill.wide{width:260px;}
+input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+.q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+.q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+.opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+.tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+.btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+.btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+.check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+.answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+.answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"\25B8";}.answer-key[open] summary::before{content:"\25BE";}
+.answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+.status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+.confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+.video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.t5-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14.5px;}
+.t5-table th,.t5-table td{border:1px solid var(--border);padding:10px 12px;vertical-align:top;}
+.t5-table th{background:var(--accent-light);font-weight:700;width:110px;}
+.dictation p{line-height:2.1;font-size:15.5px;}.speaker{font-weight:800;display:block;margin-top:10px;}
+audio{width:100%;max-width:480px;}
+.navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+.nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+.completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+.completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+.big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+.completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+.hl{background:#ffe45c;border-radius:2px;}
+.hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+.hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">&#8592; Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 20</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+<div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Study all 43 words, then complete both exercises.</p></div>
+<div class="card"><h3>Word list</h3><div class="wordbank">
+<span class="chip">interchangeably</span><span class="chip">strictly</span><span class="chip">volatile</span><span class="chip">confectionery</span><span class="chip">nostrils</span><span class="chip">irritants</span><span class="chip">mint</span><span class="chip">adapt</span><span class="chip">specialized</span><span class="chip">oral</span><span class="chip">cavity</span><span class="chip">identify</span><span class="chip">distinguish</span><span class="chip">mouthful</span><span class="chip">compound</span><span class="chip">suggest</span><span class="chip">patterning</span><span class="chip">measure</span><span class="chip">output</span><span class="chip">input</span><span class="chip">fragrance</span><span class="chip">grinding</span><span class="chip">assemble</span><span class="chip">acceptability</span><span class="chip">iterative</span><span class="chip">refinement</span><span class="chip">deem</span><span class="chip">interpreting</span><span class="chip">contribute substantially</span><span class="chip">commercialized</span><span class="chip">suck</span><span class="chip">chew</span><span class="chip">gum</span><span class="chip">swish</span><span class="chip">enhancers</span><span class="chip">light up</span><span class="chip">sensitive</span><span class="chip">alter</span><span class="chip">modifies</span><span class="chip">innate aversions</span><span class="chip">cuisine</span><span class="chip">fine-grained</span><span class="chip">complex</span>
+</div></div>
+<div class="card"><h4>Exercise A &#8212; Complete the text (20 gaps)</h4><p class="instr">Fill each gap with the correct word or phrase from the first section of the word list.</p><div class="passage-text" id="vocabA-text"></div></div>
+<div class="card"><h4>Exercise B &#8212; Sentence completion (23 gaps)</h4><p class="instr">Complete each sentence with ONE word or phrase from the remaining words.</p><div id="vocabB-list" class="passage-text"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+<details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+<div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+<div class="card"><h3>Taste, flavour, and the brain</h3>
+<div class="passage-text">Many people use the words "taste" and "flavour" interchangeably in everyday conversation, but scientific research shows they are strictly distinct phenomena. Taste is detected by the tongue's specialised receptors, which can identify only five basic qualities: sweet, salty, sour, bitter, and umami. Flavour, by contrast, is a complex neurological construction that the brain assembles from multiple sensory inputs simultaneously — primarily from gustation, retronasal olfaction, and the trigeminal nerve. When we chew food, body heat and mechanical grinding release volatile organic compounds, which travel upward through the pharynx and enter the nasal cavity from behind. The brain misattributes these smell signals to the mouth, creating the impression that flavour originates there. Chemical irritants such as capsaicin and menthol exploit the trigeminal pathway to produce the sensations we associate with spicy heat or cooling freshness. In modern food science, the process of creating synthetic flavours is highly iterative: flavourists repeatedly refine their formulations through rounds of testing until the product is deemed acceptable. Research suggests that retronasal olfaction may contribute substantially to the overall experience of flavour — some estimates place its contribution at over 80% of what we perceive.</div>
+</div>
+<div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+<div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+<details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+<div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+<div class="card"><h3>Multisensory Integration, Neuro-Flavoromics, and Industrial Synthesis</h3><p class="instr">Advanced reading on the tri-sensory matrix of flavour, gas chromatography, receptor blockers, and evolutionary taste psychology &#8212; with full 43-word glossary and comprehension questions inside.</p><a class="btn link-out" href="article-day-20.html" target="_blank" rel="noopener">&#128196; Open article</a></div>
+<div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+<div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+<div class="card"><a class="btn link-out" href="passage_day_20.html" target="_blank" onclick="openTask4()">&#128214; Open main reading passage</a></div>
+<div class="status-line" id="task4Status">&#9203; Waiting for you to submit the test in the new tab&#8230;</div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">&#128221; Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 14 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+<div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Listening &#8212; Complete the phrases</h2><p class="task-sub">Listen to four speakers, then complete the phrases each one uses.</p></div>
+<div class="card"><h3>Audio</h3><audio controls src="task5.mp3"></audio></div>
+<div class="card">
+<h4>Complete the phrases &#8212; Write NO MORE THAN THREE WORDS for each gap</h4>
+<p class="instr">Listen again and fill in each missing word or phrase.</p>
+<table class="t5-table">
+<tr><th>Speaker 1</th><td>work hard for <input class="fill" id="t5g1"> ; <input class="fill" id="t5g2"> something in life; life has its <input class="fill med" id="t5g3"></td></tr>
+<tr><th>Speaker 2</th><td>live life on <input class="fill" id="t5g4"> ; feel <input class="fill" id="t5g5"> ; your quality <input class="fill" id="t5g6"></td></tr>
+<tr><th>Speaker 3</th><td>have a <input class="fill" id="t5g7"> attitude; life is full of <input class="fill med" id="t5g8"></td></tr>
+<tr><th>Speaker 4</th><td>have a positive <input class="fill med" id="t5g9"> ; live life to <input class="fill" id="t5g10"> ; <input class="fill" id="t5g11"> a happy life</td></tr>
+</table>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+<details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+<div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Video &#8212; How to study effectively</h2><p class="task-sub">Watch the video, then complete all three exercises.</p></div>
+<div class="video-wrap"><iframe src="https://www.youtube.com/embed/TjPFZaMe2yw" title="How to study effectively" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+<div class="card"><h4>Part 1 &#8212; Multiple choice (10 questions)</h4><div id="vidMcqList"></div></div>
+<div class="card"><h4>Part 2 &#8212; Gap fill (15 words)</h4>
+<div class="wordbank"><span class="chip">hippocampus</span><span class="chip">neurons</span><span class="chip">neocortex</span><span class="chip">sleep</span><span class="chip">retrieve</span><span class="chip">flashcards</span><span class="chip">highlighting</span><span class="chip">mistakes</span><span class="chip">integrate</span><span class="chip">interleaving</span><span class="chip">retention</span><span class="chip">spacing</span><span class="chip">cramming</span><span class="chip">strengthened</span><span class="chip">knowledge</span></div>
+<div class="passage-text" id="vidGapList" style="margin-top:10px;"></div>
+</div>
+<div class="card"><h4>Part 3 &#8212; Vocabulary matching</h4><p class="instr">Match each word to its correct definition.</p><div id="vidMatchList"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkVideoTask()">Check answers</button></div>
+<details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+<div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Podcast &#8212; Endangered languages</h2></div>
+<div class="card"><h3>Audio</h3><audio controls src="task7.mp3"></audio></div>
+<div class="card dictation"><h4>Dictation &#8212; complete the gaps with the exact word(s) you hear</h4><div id="dictation-text"></div></div>
+<div class="card"><h4>Comprehension questions</h4><div id="comp-list"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkPodcast()">Check answers</button></div>
+<details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+<div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening test</h2><p class="task-sub">Open the test in a new tab, complete it, then enter your score. The walkthrough video will appear below.</p></div>
+<div class="card"><a class="btn link-out" href="Listening-20.html" target="_blank" rel="noopener">&#127911; Open full listening test</a></div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t8check" onchange="revealListeningWalkthrough()"><label for="t8check">I have completed the full listening test</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">&#128221; Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
+<div id="listeningWalkthrough" style="display:none;margin-top:18px;">
+<div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
+<div class="video-wrap"><iframe src="https://www.youtube.com/embed/8ZT9_DpNSc4" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+</div></div>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">&#8592; Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done &#8594;</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">&#10003;</div><div class="eyebrow">Day 20 of 30</div>
+  <h1>Congratulations &#8212; Day 20 complete! &#127881;</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 21.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">&#8592; Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=20,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day20_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+
+// localStorage answer mirror
+var LS_ANS="sprint4_day20_ans";
+function saveAns(id,val){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");a[id]=val;localStorage.setItem(LS_ANS,JSON.stringify(a));}catch(e){}}
+function restoreAnswersFromLS(){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");Object.keys(a).forEach(function(id){if(id.startsWith("radio_")){var name=id.replace("radio_","");var el=document.querySelector("input[name=\""+name+"\"][value=\""+a[id]+"\"]");if(el)el.checked=true;}else{var el=document.getElementById(id);if(el)el.value=a[id];}});}catch(e){}}
+
+// makeRO — lock completed day
+var isLocked=false;
+function makeRO(){
+  isLocked=true;
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll(".btn.secondary").forEach(function(btn){if(btn.textContent.trim().startsWith("Check"))btn.style.display="none";});
+  document.querySelectorAll(".answer-key").forEach(function(el){el.classList.add("show");});
+  var db=document.getElementById("doneBtn");db.disabled=false;db.textContent="Next \u2192";db.style.background="#475569";
+  var banner=document.createElement("div");
+  banner.style.cssText="position:fixed;top:0;left:0;right:0;background:#1f9d55;color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:700;z-index:200;";
+  banner.textContent="Review mode \u2014 Day 20 is complete. Your answers are saved and locked.";
+  document.body.insertBefore(banner,document.body.firstChild);
+}
+
+var debTimers={};
+function autosave(id,val){saveAns(id,val);if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^vq|^vg|^vm/.test(id))return 6;if(/^dict|^radio_comp/.test(id))return 7;if(id==="t8score"||id==="t8check")return 8;return 1;}
+function hookAutosave(){
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("input",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});el.addEventListener("change",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("change",function(){if(el.checked){saveAns("radio_"+el.name,el.value);autosave("radio_"+el.name,el.value);}});});
+}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day20_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){if(isLocked){if(current<TOTAL_TASKS){current++;saveState();showTask(current);}return;}taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");makeRO();fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isLocked||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode||isLocked)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);if(n===8){var c8=document.getElementById("t8check");return c8&&c8.checked;}var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="\u2705 Passage submitted \u2014 score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
+function revealListeningWalkthrough(){var cb=document.getElementById("t8check");var wt=document.getElementById("listeningWalkthrough");if(cb&&cb.checked&&wt)wt.style.display="block";refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB (43 words) ===== */
+var VA_segs=["Scientists use the terms \"taste\" and \"flavour\" ","/*1=interchangeably*/","in everyday speech, but ","/*2=strictly*/","speaking, they are distinct neurological phenomena. The key difference lies in ","/*3=volatile*/","chemical compounds \u2014 molecules that evaporate into the air during eating. Food manufacturers must ","/*4=adapt*/","their products to suit different regional markets, since ","/*5=specialized*/","taste preferences vary widely across cultures. What happens inside the ","/*6=oral*/","cavity during chewing is far more complex than it first appears: the brain does not simply ","/*7=identify*/","a single flavour from the mouth alone. To ","/*8=distinguish*/","one flavour from another, the brain must process multiple types of sensory data simultaneously. Each flavour can be understood as a chemical ","/*9=compound*/","\u2014 a combination of many different molecular signals. Research continues to ","/*10=suggest*/","that smell provides the majority of what we perceive as flavour. Understanding the ","/*11=patterning*/","of neural responses allows scientists to ","/*12=measure*/","the precise ","/*13=output*/","of taste receptor cells in response to specific chemical ","/*14=input*/","s. Armed with this knowledge, flavourists can ","/*15=assemble*/","synthetic flavour profiles from individual components. The process is highly ","/*16=iterative*/",": each round of ","/*17=refinement*/","brings the artificial product closer to its natural target. A formulation is only ","/*18=deem*/","ed acceptable when a trained panel gives its approval. Those compounds that pass testing ","/*19=contribute substantially*/","to the modern food industry's revenue, and are eventually ","/*20=commercialized*/","for widespread use in everything from confectionery to pharmaceuticals."];
+var VA_ans={1:"interchangeably",2:"strictly",3:"volatile",4:"adapt",5:"specialized",6:"oral",7:"identify",8:"distinguish",9:"compound",10:"suggest",11:"patterning",12:"measure",13:"output",14:"input",15:"assemble",16:"iterative",17:"refinement",18:"deem",19:"contribute substantially",20:"commercialized"};
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){if(s.startsWith("/*")){var w=VA_ans[g];var cl=w.length>15?"wide":w.length>8?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+g+"\"> ";g++;}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_sents=[
+  {n:1,t:"The flavouring added to ___ products like boiled sweets must release slowly during eating.",ans:"confectionery",id:"vb1"},
+  {n:2,t:"When we smell something directly, the scent enters through our ___ in the normal way.",ans:"nostrils",id:"vb2"},
+  {n:3,t:"Capsaicin and piperine are chemical ___ that stimulate the trigeminal nerve.",ans:"irritants",id:"vb3"},
+  {n:4,t:"The cooling sensation of ___ flavouring comes from menthol activating cold-sensitive receptors.",ans:"mint",id:"vb4"},
+  {n:5,t:"Volatile compounds are released from the food and fill the oral ___.",ans:"cavity",id:"vb5"},
+  {n:6,t:"With each ___ of food, a complex burst of volatile molecules is released into the throat.",ans:"mouthful",id:"vb6"},
+  {n:7,t:"The ___ of a fine wine comes primarily from retronasal olfaction rather than taste buds.",ans:"fragrance",id:"vb7"},
+  {n:8,t:"The ___ action of the molars during chewing releases volatile compounds from solid food.",ans:"grinding",id:"vb8"},
+  {n:9,t:"Consumer ___ trials determine whether a new flavour formulation meets market expectations.",ans:"acceptability",id:"vb9"},
+  {n:10,t:"The brain is constantly ___ incoming chemical signals to construct a unified flavour experience.",ans:"interpreting",id:"vb10"},
+  {n:11,t:"When you ___ on a boiled sweet, volatile compounds are slowly released into the oral cavity.",ans:"suck",id:"vb11"},
+  {n:12,t:"As you ___ food, heat and mechanical action release flavour compounds gradually.",ans:"chew",id:"vb12"},
+  {n:13,t:"Chewing ___ is designed to release its flavour compounds slowly over an extended period.",ans:"gum",id:"vb13"},
+  {n:14,t:"Wine tasters ___ the liquid around the mouth to increase retronasal volatile exposure.",ans:"swish",id:"vb14"},
+  {n:15,t:"Salty ___ allow manufacturers to reduce actual sodium content without affecting perceived taste.",ans:"enhancers",id:"vb15"},
+  {n:16,t:"Brain scans show the orbitofrontal cortex ___ far more intensely when flavour is complex.",ans:"lights up",id:"vb16"},
+  {n:17,t:"The trigeminal nerve is highly ___ to chemical irritants such as capsaicin and menthol.",ans:"sensitive",id:"vb17"},
+  {n:18,t:"Adding even a small amount of salt can ___ the perceived sweetness of a food product.",ans:"alter",id:"vb18"},
+  {n:19,t:"A salty enhancer ___ how the brain processes incoming sodium receptor signals.",ans:"modifies",id:"vb19"},
+  {n:20,t:"Infants display ___ to bitter and sour tastes across all cultures from birth.",ans:"innate aversions",id:"vb20"},
+  {n:21,t:"Exposure to a regional ___ can over time override strongly hardwired flavour aversions.",ans:"cuisine",id:"vb21"},
+  {n:22,t:"A ___ chemical analysis can identify hundreds of individual compounds in a single food sample.",ans:"fine-grained",id:"vb22"},
+  {n:23,t:"Flavour is a ___ neurological construction that cannot be reduced to taste alone.",ans:"complex",id:"vb23"}
+];
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var html="";VB_sents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+function checkVocab(){
+  var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase()||(VA_ans[i]==="deem"&&inp.value.trim().toLowerCase()==="deemed");if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}
+  var rB=0;VB_sents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase()||(s.ans==="lights up"&&inp.value.trim().toLowerCase()==="light up");if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/23");
+  document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" \u2022 ")+"<br><br><b>B:</b><br>"+VB_sents.map(function(s){return s.n+". "+s.ans;}).join(" \u2022 ");
+  document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();
+}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[
+  {n:1,s:"According to the passage, the tongue can identify only five basic taste qualities.",tf:"True"},
+  {n:2,s:"Retronasal olfaction involves volatile compounds entering the nasal cavity from behind during chewing.",tf:"True"},
+  {n:3,s:"The passage states that flavour is detected entirely within the mouth by taste receptors.",tf:"False"},
+  {n:4,s:"Chemical irritants like capsaicin and menthol activate the trigeminal nerve pathway.",tf:"True"},
+  {n:5,s:"According to the passage, retronasal olfaction plays only a minor role in the overall experience of flavour.",tf:"False"}
+];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var c=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5Ans={t5g1:"a living",t5g2:"achieve",t5g3:"ups and downs",t5g4:"the edge",t5g5:"alive",t5g6:"of life",t5g7:"negative",t5g8:"disappointments",t5g9:"outlook on life",t5g10:"the full",t5g11:"lead"};
+function checkTask5(){var r=0;Object.keys(t5Ans).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===t5Ans[id].toLowerCase();if(ok)r++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("You got "+r+"/11 correct.");document.getElementById("ansKey5Body").innerHTML="Speaker 1: 1.a living 2.achieve 3.ups and downs<br>Speaker 2: 4.the edge 5.alive 6.of life<br>Speaker 3: 7.negative 8.disappointments<br>Speaker 4: 9.outlook on life 10.the full 11.lead";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 VIDEO ===== */
+var vidMcqData=[
+  {n:1,q:"Where is a new memory first temporarily encoded?",opts:["The cerebellum","The neocortex","The hippocampus","The brain stem"],ans:"C"},
+  {n:2,q:"What strengthens the connections between neurons when learning?",opts:["Listening to music","Repeated activation of the same neurons","Drinking coffee","Highlighting notes"],ans:"B"},
+  {n:3,q:"Which brain area is mainly involved in long-term memory storage?",opts:["Hippocampus","Amygdala","Neocortex","Frontal lobe"],ans:"C"},
+  {n:4,q:"What is thought to help transfer information into long-term memory?",opts:["Watching videos","Exercise only","Sleep between study sessions","Drinking energy drinks"],ans:"C"},
+  {n:5,q:"Which study technique is recommended to strengthen memory?",opts:["Rereading textbooks repeatedly","Highlighting every sentence","Testing yourself with flashcards and quizzes","Listening to background music"],ans:"C"},
+  {n:6,q:"Why can making mistakes during self-testing actually help learning?",opts:["It reduces study time.","It forces the brain to connect new information with existing knowledge.","It improves handwriting.","It makes exams easier."],ans:"B"},
+  {n:7,q:"What is the benefit of mixing different subjects while studying?",opts:["It makes studying shorter.","It prevents boredom only.","It improves retention by forcing retrieval of different information.","It eliminates the need for revision."],ans:"C"},
+  {n:8,q:"What is the third study technique introduced in the video?",opts:["Highlighting notes","Spacing study sessions over multiple days","Reading aloud","Memorizing everything in one sitting"],ans:"B"},
+  {n:9,q:"How was the more successful group of surgical residents trained?",opts:["They studied for one day only.","They studied twice as long.","Their training was spread over four weeks.","They watched more surgery videos."],ans:"C"},
+  {n:10,q:"Why do these three study techniques work so well?",opts:["They reduce the amount of studying.","They are easier than traditional methods.","They are designed to work with how the brain naturally learns.","They require expensive technology."],ans:"C"}
+];
+(function buildVidMcq(){var wrap=document.getElementById("vidMcqList");var html="";vidMcqData.forEach(function(q){html+="<div class=\"q-block\" id=\"vmcq"+q.n+"\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\"vq"+q.n+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+
+var vidGapData=[
+  {n:1,t:"New memories are first temporarily stored in the ___.",ans:"hippocampus",id:"vg1"},
+  {n:2,t:"Learning repeatedly activates groups of ___.",ans:"neurons",id:"vg2"},
+  {n:3,t:"Long-term memories are mainly stored in the ___.",ans:"neocortex",id:"vg3"},
+  {n:4,t:"The transfer of memories into long-term storage is believed to happen partly during ___.",ans:"sleep",id:"vg4"},
+  {n:5,t:"Self-testing forces you to actively ___ information.",ans:"retrieve",id:"vg5"},
+  {n:6,t:"The video recommends studying with ___ and quizzes.",ans:"flashcards",id:"vg6"},
+  {n:7,t:"Simply rereading and ___ notes can create a false sense of competence.",ans:"highlighting",id:"vg7"},
+  {n:8,t:"Making ___ while studying can actually improve learning.",ans:"mistakes",id:"vg8"},
+  {n:9,t:"The brain can better ___ new information with what you already know.",ans:"integrate",id:"vg9"},
+  {n:10,t:"Mixing different topics during one study session is called ___.",ans:"interleaving",id:"vg10"},
+  {n:11,t:"This technique improves long-term ___.",ans:"retention",id:"vg11"},
+  {n:12,t:"___ your review over several days allows the brain to consolidate learning.",ans:"spacing",id:"vg12"},
+  {n:13,t:"The video warns that ___ the night before an exam is less effective.",ans:"cramming",id:"vg13"},
+  {n:14,t:"Repeated retrieval makes memories more ___.",ans:"strengthened",id:"vg14"},
+  {n:15,t:"These techniques help the brain organize and store ___ more effectively.",ans:"knowledge",id:"vg15"}
+];
+(function buildVidGap(){var wrap=document.getElementById("vidGapList");var html="";vidGapData.forEach(function(g){html+="<p>"+g.n+". "+g.t.replace("___","<input class=\"fill\" id=\""+g.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+var vidMatchData=[{n:1,term:"hippocampus",ans:"B"},{n:2,term:"neocortex",ans:"A"},{n:3,term:"neuron",ans:"C"},{n:4,term:"retrieve",ans:"D"},{n:5,term:"flashcard",ans:"E"},{n:6,term:"competence",ans:"F"},{n:7,term:"interleaving",ans:"G"},{n:8,term:"retention",ans:"H"},{n:9,term:"spacing",ans:"I"},{n:10,term:"cramming",ans:"J"},{n:11,term:"integrate",ans:"K"},{n:12,term:"consolidate",ans:"L"},{n:13,term:"strengthen",ans:"M"},{n:14,term:"cognitive",ans:"N"},{n:15,term:"retrieval",ans:"O"}];
+var vidMatchDefs={A:"The brain area involved in long-term memory storage",B:"The brain region where new memories are first encoded",C:"A nerve cell that carries information in the brain",D:"To recall information from memory",E:"A card used to test knowledge and memory",F:"The ability to do something successfully",G:"Mixing different topics or skills during study",H:"The ability to remember information over time",I:"Reviewing material over several study sessions",J:"Studying a large amount in a short period before an exam",K:"To combine new information with existing knowledge",L:"To strengthen and stabilize memories",M:"To make something stronger or more effective",N:"Related to thinking, learning, and understanding",O:"The process of recalling information from memory"};
+(function buildVidMatch(){var wrap=document.getElementById("vidMatchList");var letters=Object.keys(vidMatchDefs).sort();var optHtml="<option value=\"\">--</option>"+letters.map(function(l){return "<option value=\""+l+"\">"+l+"</option>";}).join("");var html="<p class=\"instr\" style=\"margin-bottom:12px;\">";letters.forEach(function(l){html+="<b>"+l+".</b> "+vidMatchDefs[l]+"<br>";});html+="</p>";vidMatchData.forEach(function(m){html+="<div class=\"q-text\" style=\"margin-bottom:7px;font-size:15px;\">"+m.n+". "+m.term+" &rarr; <select class=\"fill\" id=\"vm"+m.n+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+function checkVideoTask(){
+  var rMcq=0,rGap=0,rMatch=0;
+  vidMcqData.forEach(function(q){var chosen=document.querySelector("input[name=\"vq"+q.n+"\"]:checked");var ok=chosen&&chosen.value===q.ans;if(ok)rMcq++;var block=document.getElementById("vmcq"+q.n);if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(chosen&&row.dataset.val===chosen.value)row.classList.add("wrong");});}});
+  vidGapData.forEach(function(g){var inp=document.getElementById(g.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===g.ans.toLowerCase();if(ok)rGap++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  vidMatchData.forEach(function(m){var sel=document.getElementById("vm"+m.n);if(sel&&sel.value===m.ans)rMatch++;});
+  alert("MCQ: "+rMcq+"/10\nGap fill: "+rGap+"/15\nMatching: "+rMatch+"/15");
+  document.getElementById("ansKey6Body").innerHTML="<b>MCQ:</b> C B C C C B C B C C<br><b>Gap fill:</b> "+vidGapData.map(function(g){return g.n+"."+g.ans;}).join(" ")+"<br><b>Matching:</b> 1-B 2-A 3-C 4-D 5-E 6-F 7-G 8-H 9-I 10-J 11-K 12-L 13-M 14-N 15-O";
+  document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();
+}window.checkVideoTask=checkVideoTask;
+
+/* ===== TASK 7 PODCAST ===== */
+var dictAns={1:"endangered",2:"7000",3:"rich",4:"200",5:"Djinang",6:"English",7:"1960",8:"dictionary",9:"3500",10:"missionary",11:"heathens",12:"topsy",13:"marks",14:"right",15:"roots",16:"Djinang",17:"correct",18:"missionary",19:"heathen",20:"marks",21:"topsy",22:"right",23:"200",24:"dictionary",25:"linguistics",26:"English",27:"extinction",28:"Christianise",29:"children",30:"roots"};
+var dictLines=[
+  {sp:"Neil",t:"Hello. This is 6 Minute English from BBC Learning English. I'm Neil."},
+  {sp:"Phil",t:"And I'm Phil. We've heard greetings in different languages from around the world, but sadly these languages are all {1}."},
+  {sp:"Phil",t:"A recent study found that out of the world's {2} existing languages, about half are under threat."},
+  {sp:"Neil",t:"Australia was once one of the most linguistically {3} places on Earth. Before European settlers arrived, over {4} Aboriginal languages were spoken."},
+  {sp:"Phil",t:"I'll guess it's {5}."},
+  {sp:"Neil",t:"Many Aboriginal languages disappeared because of the brutal treatment of Aboriginal people. Children were removed from their mothers and sent away to learn {6}."},
+  {sp:"Phil",t:"The Aboriginal language Barngarla officially died in {7} when its last native speaker passed away."},
+  {sp:"Prof. Zuckermann",t:"I had a {8} written by a German Lutheran Christian missionary in 1844. It contained up to {9} words because he wanted to Christianise the Aboriginal people."},
+  {sp:"Phil",t:"A {10} is someone sent to another country to teach their religion."},
+  {sp:"Neil",t:"The missionary described Aboriginal people as {11}, an old-fashioned word for people who do not follow Christianity, Judaism or Islam."},
+  {sp:"Prof. Zuckermann",t:"It's {12}-turvy \u2014 righting the wrongs of the past by using a tool created for the completely opposite purpose."},
+  {sp:"Neil",t:"The phrase \"in quotation {13}\" can show the exact words someone else used or be used ironically."},
+  {sp:"Phil",t:"Professor Zuckermann wanted to {14} the wrongs of the past by helping restore the Barngarla language."},
+  {sp:"Neil",t:"Speaking your own language is about more than communication. It helps people understand their {15}."},
+  {sp:"Phil",t:"I answered {16}."},
+  {sp:"Neil",t:"And that was the {17} answer."},
+  {sp:"Neil",t:"A {18} is someone sent to another country to spread their religion."},
+  {sp:"Phil",t:"A {19} is an old-fashioned word for someone who follows no religion or a different religion."},
+  {sp:"Neil",t:"The phrase \"in quotation {20}\" shows someone else's exact words or can express irony."},
+  {sp:"Phil",t:"If something is {21}-turvy, it is upside down or disorganised."},
+  {sp:"Neil",t:"To {22} the wrongs of the past means to correct a historical injustice."},
+  {sp:"Phil",t:"Australia once had over {23} Aboriginal languages."},
+  {sp:"Neil",t:"The Barngarla language was brought back to life using a historical {24}."},
+  {sp:"Phil",t:"Professor Zuckermann is a professor of {25}."},
+  {sp:"Neil",t:"Many Aboriginal children were forced to learn {26}."},
+  {sp:"Phil",t:"Many endangered languages are at risk of {27}."},
+  {sp:"Neil",t:"The dictionary was originally written to {28} Aboriginal people."},
+  {sp:"Phil",t:"Today, Barngarla is spoken between parents and {29}."},
+  {sp:"Neil",t:"Saving languages helps people reconnect with their culture and their {30}."}
+];
+(function buildDict(){var el=document.getElementById("dictation-text");var html="";dictLines.forEach(function(line){var t=line.t.replace(/\{(\d+)\}/g,function(_,num){return "<input class=\"fill short\" id=\"dict"+num+"\">";});html+="<p><span class=\"speaker\">"+line.sp+"</span>"+t+"</p>";});el.innerHTML=html;})();
+
+var compData=[
+  {n:1,q:"According to the programme, why are many languages endangered?",opts:["People no longer enjoy learning languages.","Many communities have lost their native speakers because of historical and social pressures.","Technology has replaced spoken language.","Governments have banned all minority languages."],ans:"B"},
+  {n:2,q:"How was the Barngarla language revived?",opts:["Through old audio recordings.","By translating modern English books.","By using a dictionary written by a German missionary.","By teaching it only at universities."],ans:"C"},
+  {n:3,q:"What is a missionary?",opts:["A scientist studying languages.","Someone sent to another country to spread their religion.","A government official.","A translator."],ans:"B"},
+  {n:4,q:"What does \"right the wrongs of the past\" mean?",opts:["Rewrite history books.","Forget historical events.","Correct historical injustices.","Preserve old buildings."],ans:"C"},
+  {n:5,q:"Why does Professor Zuckermann describe his work as topsy-turvy?",opts:["The dictionary was upside down.","He used a tool originally created to replace an Aboriginal language to help revive it instead.","The language was too difficult to learn.","The dictionary was written in reverse order."],ans:"B"}
+];
+(function buildComp(){var wrap=document.getElementById("comp-list");var html="";compData.forEach(function(q){html+="<div class=\"q-block\" id=\"compBlock"+q.n+"\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\"comp"+q.n+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkPodcast(){
+  var rDict=0,rComp=0;
+  Object.keys(dictAns).forEach(function(n){var inp=document.getElementById("dict"+n);if(!inp)return;var ok=inp.value.trim().toLowerCase()===String(dictAns[n]).toLowerCase();if(ok)rDict++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  compData.forEach(function(q){var chosen=document.querySelector("input[name=\"comp"+q.n+"\"]:checked");var ok=chosen&&chosen.value===q.ans;if(ok)rComp++;var block=document.getElementById("compBlock"+q.n);if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(chosen&&row.dataset.val===chosen.value)row.classList.add("wrong");});}});
+  alert("Dictation: "+rDict+"/30\nComprehension: "+rComp+"/5");
+  document.getElementById("ansKey7Body").innerHTML="<b>Dictation:</b><br>"+Object.keys(dictAns).map(function(n){return n+". "+dictAns[n];}).join(" \u2022 ")+"<br><br><b>Comprehension:</b> 1.B 2.C 3.B 4.C 5.B";
+  document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();
+}window.checkPodcast=checkPodcast;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+restoreAnswersFromLS();
+var _allDone=Object.keys(taskDone).every(function(k){return taskDone[k];});
+if(_allDone)makeRO();
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day20";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
