@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relish the Flavour</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,sans-serif;display:flex;flex-direction:column;color:#111;background:#fff}
+.top{height:52px;border-bottom:1px solid #ddd;display:flex;justify-content:flex-end;align-items:center;gap:14px;padding:0 18px}
+.top button{border:0;background:#fff;color:#333;font-size:18px;width:32px;height:32px;border-radius:4px}
+.top button:hover{background:#f2f2f2}
+.banner{margin:14px 16px 0;padding:12px 18px;background:#f2f3f4;border:1px solid #ddd;border-radius:6px}
+.banner h2{margin:0 0 4px;font-size:18px}.banner p{margin:0}
+.split{flex:0 0 auto;height:82vh;display:flex;margin:12px 16px 0;border-top:1px solid #ddd}
+.pane{overflow:auto;padding:18px 26px 70px;min-width:180px}
+.left{width:50%;flex:0 0 auto}.right{flex:1}
+.divider{width:12px;border-left:2px solid #999;cursor:col-resize;position:relative}
+.divider:after{content:"";position:absolute;top:50%;left:-10px;width:20px;height:32px;margin-top:-16px;border:1px solid #ccc;border-radius:12px;background:#fff}
+h1{font-size:25px;margin:0 0 8px;line-height:1.25}.sub{font-size:18px;line-height:1.45;margin-top:0}
+.para{font-weight:700;margin-top:24px;font-size:18px}p{line-height:1.58;font-size:17px}
+.qgroup{margin-bottom:34px}.qgroup h3{font-size:22px;margin:0 0 10px}.qgroup p{margin:8px 0}
+.qnum{display:inline-flex;justify-content:center;align-items:center;min-width:30px;height:30px;border:1px solid #ddd;border-radius:5px;font-weight:700;margin-right:10px;background:#fff}
+.match-wrap{overflow-x:auto;border:1px solid #ddd;border-radius:6px 6px 0 0;padding:24px 28px 0;background:#fff}
+.match{border-collapse:collapse;min-width:900px;font-size:17px}
+.match th,.match td{border:0;border-right:2px solid #777;border-bottom:2px solid #777;text-align:center;vertical-align:middle}
+.match th:first-child,.match td:first-child{width:360px;text-align:left;border-right:3px solid #333}
+.match th{height:54px;font-weight:700}.match td{height:104px;padding:12px 10px}
+.qcell{display:grid;grid-template-columns:52px 1fr;gap:4px}.mnum{font-weight:700;text-align:center}.mtext{line-height:1.35}
+input[type=radio]{appearance:none;width:20px;height:20px;border:2px solid #d9d9d9;border-radius:50%;background:#fff;vertical-align:middle}
+input[type=radio]:checked{border-color:#c98292;box-shadow:inset 0 0 0 5px #fff;background:#c98292}
+.tf-row,.sel-row{margin:22px 0 30px}
+.statement{display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.4;margin-bottom:14px}
+.options{display:grid;gap:16px;margin-left:42px}.options label{display:flex;gap:12px;align-items:center;font-size:17px}
+.box{background:#f2f3f4;border:1px solid #ddd;border-radius:6px;padding:14px 18px;line-height:1.7;font-size:17px;margin:14px 0}
+.sel-row{display:flex;gap:12px;align-items:flex-start}.sel-row .txt{flex:1;font-size:17px;line-height:1.45}
+.select{font:inherit;border:1px solid #cfcfcf;border-radius:7px;background:#f7f8f9;padding:8px 28px 8px 14px;min-width:86px}
+.tools{position:absolute;z-index:50;display:none;background:#222;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.tools button{background:none;border:0;color:#fff;padding:6px 10px;font:inherit}.hl{background:#ffe45c}
+.bar{height:51px;border-top:1px solid #ddd;display:flex;align-items:center;gap:18px;padding:8px 16px;background:#fff}
+.tiles{display:flex;gap:6px;flex-wrap:wrap}.tile{min-width:30px;height:28px;border:1px solid #bbb;background:#fff;border-radius:3px}.tile.answered{background:#2b2b2b;color:#fff}
+.review{margin-left:auto;min-width:42px;height:34px;background:#ddd;border:0;border-radius:4px;font-weight:700}
+.overlay{position:fixed;inset:0;background:white;z-index:100;display:none;flex-direction:column;overflow:auto}
+.overlay.show{display:flex}.ovh{position:relative;padding:22px}.ovh h2{text-align:center;margin:0}.close{position:absolute;right:24px;top:18px;border:0;background:none;font-size:26px}
+.ovlist{max-width:830px;width:90%;margin:10px auto}.ovrow{width:100%;padding:18px 22px;border:1px solid #ddd;background:white;font:inherit;text-align:left}
+.submit{background:#cf3e45;color:white;border-color:#cf3e45;border-radius:6px;margin-bottom:18px;font-weight:700}
+.ok{background:#e8f6ee!important;color:#168a46!important;border-color:#168a46!important;font-weight:700}.no{background:#fdecec!important;color:#c73535!important;border-color:#c73535!important;font-weight:700}
+.corr{color:#168a46;font-weight:700;margin-left:8px}.tag{font-size:13px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:8px}
+.score{background:#f2f3f4;border:1px solid #ddd;border-radius:8px;padding:18px 22px;margin-bottom:18px}.score b{font-size:30px}
+@media(max-width:800px){.split{margin-left:8px;margin-right:8px}.pane{padding:14px}.match{min-width:820px}.left{width:48%}}
+</style>
+</head>
+<body>
+<header class="top"><a href="day20.html" style="position:absolute;left:14px;top:14px;font-weight:700;font-size:13px;color:#2563a8;text-decoration:none;z-index:5;">← Day 20</a><button title="Network">|||</button><button title="Notifications">o</button><button title="Menu">=</button></header>
+<div class="banner"><h2>Part 3</h2><p>Read the text and answer questions 27-40.</p></div>
+<div class="split" id="split">
+<section class="pane left" id="left">
+<div id="passage">
+<h1>Relish the Flavour - How the Brain Perceives Flavour</h1>
+
+<div class="para">A</div>
+<p>The terms "taste" and "flavour" are often used interchangeably. Strictly speaking, however, taste refers to five basic qualities: salty, sour, sweet, bitter, and umami (a characteristic of protein-rich foods such as meat and cheese). Smell plays an equally prominent role in flavour but is often underappreciated. Try holding your nose and popping a strawberry-flavoured sweet in your mouth. You will taste the sweetness but not the strawberry until you let go of your nose and the volatile chemicals from the confectionery enter your nostrils. To add to the complexity, irritants, such as carbonation or the coolness of mint, are detected not by taste or smell but by the trigeminal sense, part of the touch system adapted for the mouth.</p>
+<p>The brain receives information about what is in the mouth from receptors, proteins specialised in picking up specific molecules, located throughout the oral and nasal cavities. Receptors for smell were identified in the early 1990s, and those for sweet, bitter, and umami only in the past two years (sour and salty tastes were somewhat better understood). Gary Beauchamp, director of the Monell Chemical Senses Institute in Philadelphia, whose group contributed to some of the findings, notes that this is more progress than has been made about taste in the past 2,000 years. A receptor for capsaicin, the molecule that gives chilli peppers their bite, was identified only in 1997.</p>
+
+<div class="para">B</div>
+<p>The discovery of taste receptors has opened the door to mimicking, enhancing, or blocking them for desired effects, such as increasing the salty taste of low-sodium foods, reducing the bitterness of medicinal drugs, or enhancing the flavours in diets for the elderly to ensure proper nutrition. However, receptors are only part of the story. Scientists still do not fully understand how the brain distinguishes between a mouthful of milk and a bite of bread, or between chicken tikka masala from an Indian restaurant and one bought at a supermarket.</p>
+<p>Some researchers believe the brain's response to stimuli is a simple map of the receptors in the tongue and nose. However, a more compelling theory suggests that the overall pattern of signals creates a sense of specific flavours, which are judged based on past experiences. There are currently no useful algorithms to measure brain inputs and outputs against subjective reports of flavour sensations. This lack of measurement tools is an opportunity for neurophysiologists but a challenge for flavour and fragrance companies, whose ambition is to predict consumer preferences accurately.</p>
+
+<div class="para">C</div>
+<p>Throughout history, flavours have been prized for their ability to make food more enjoyable and to enliven cuisine. For example, in 408, Alaric the Visigoth demanded more than 1,000 kilograms of pepper as part of his price for lifting the siege of Rome. The industrial production of perfumes began in France in the 18th century to remove odours from leather gloves, leading to the logical development of the flavour industry. By the late 1700s, extracts and essential oils such as citrus were being produced in America. In 1874, Haarmann and Reimer in Germany became the first company to manufacture synthetic vanillin on an industrial scale.</p>
+<p>Initially, isolating and identifying gustatory ingredients was extremely challenging due to rudimentary analytical methods. The substances responsible for taste are present in trace amounts even in concentrated foods such as crushed raspberries. After 1950, improved analytical techniques allowed the detection of these trace ingredients, enabling companies to create chemical libraries with thousands of compounds.</p>
+
+<div class="para">D</div>
+<p>Flavours can be used off the shelf, modified, or created anew, depending on a customer's needs, following the GRAS principle (Generally Recognised As Safe). It is a constant challenge to be unique, says Bob Eilerman, leader of flavour research at Givaudan, a Swiss company. Givaudan scientists explore tropical rainforests in hot-air balloons to discover new tastes and ingredients, capturing their aromas on-site for analysis and recreation in the lab.</p>
+<p>The most potent flavoured chemicals are created through cooking, explains Anthony Blake, vice-president of food science at Firmenich in Geneva. Firmenich, Givaudan, and International Flavours and Fragrances, the industry leader in America, are the world's leading flavour and fragrance companies. For these companies, developing unique flavours often involves deploying techno-chefs and analysts who study ethnic cuisines to inspire new creations.</p>
+
+<div class="para">E</div>
+<p>Like artists blending pigments, professional flavourists combine 50-100 components to create a final flavour product. Acceptability is measured through sensory analysis, where panels of expert and consumer testers evaluate the product. Expert testers assess it against established standards (e.g., sweetness or vanilla intensity in ice cream), while consumer testers provide general feedback on whether they like it. This process involves multiple iterations of refinement between testers and flavourists until an acceptable taste is achieved.</p>
+<p>However, as Alex Hausler, director of flavour excellence at Givaudan, notes, humans are not the most reliable testing instruments. People have different taste receptors and subjective interpretations, leading to inconsistencies. Texture, too, plays a significant role in eating pleasure but remains poorly understood. Why is rubbery squid enjoyable, but rubbery toast is not? At the University of Bath, researchers are trying to match mechanical tests of texture with sensations such as crispness. While the food industry has developed methods to measure texture, such as poking peas with pins, these tests often fail to capture what happens during eating.</p>
+
+<div class="para">F</div>
+<p>The dynamics of flavour release, how flavours appear and disappear, also resist precise measurement. Researchers at the University of Nottingham have developed an instrument called MS-Nose, which analyses the aroma molecules in a person's breath while chewing. This technology, adopted by Firmenich, has sparked interest, although results are often unique to each individual.</p>
+<p>Physiological studies of flavour typically involve animals such as rats or bacteria with robust taste receptors. In humans, techniques like functional magnetic resonance imaging (fMRI) and positron emission tomography (PET) can track patterns of electrical activity in the brain in real time. Firmenich has also explored ways of matching particular food inputs with patterns of brain activity. However, these technologies are not yet sensitive or meaningful enough for flavour studies. At the Chemical Senses Institute, an alternative approach might involve modifying genes in animals to trace how the brain integrates sensory signals.</p>
+
+<div class="para">G</div>
+<p>Finding the right enhancer or blocker for a receptor often involves testing thousands of compounds, a task well-suited to automated systems. Companies like Senomyx in California use high-throughput screening to test compounds against taste receptors. Another biotech firm, Linguagen in New Jersey, focuses on developing flavour modifiers, particularly bitterness blockers.</p>
+
+<div class="para">H</div>
+<p>The mouth is the portal of entry to the gut, and taste is the final arbiter. Innate aversions to sour and bitter substances, caffeine, nicotine, strychnine, for example, and a liking for sweet and salty ones reflect the wise choices that humanity's ancestors made in a hostile environment. Beyond these protective and nutritional reflexes, however, taste preferences are largely a matter of culture and learning. The taste system is reasonably compliant, says Tom Scott, a neurophysiologist and dean of sciences at San Diego State University in California. Cultures are kept distinct by cuisines, and cuisines are distinguished by taste. But cuisines, like continents, have a habit of colliding. Ten years ago, few Americans cared for raw fish. Now they eat sushi almost as avidly as the Japanese. Moreover, "acquired tastes" often involve complex contradictions that play tricks within the brain. How else do you explain the liking for strong-smelling cheese or the East Asian fruit called durian that is so redolent of vomit that it is banned on public transport in some countries? Other effects resist reconciliation, like the unbearable sweetness that artichokes lend to wine. Flavour appears to belong to a family of subtle perceptions, such as recognising a voice or telling faces apart. But how does the central nervous system process all the information needed to make these fine-grained distinctions? The answer should help to develop cheaper and safer flavour compounds, as well as to perform tricks of alchemy such as turning tofu into steak. More fundamentally, identifying algorithms in the brain that transform taste into flavour, and comparing them with how people process complex sounds or tactile sensations, might reveal something about how perception really works.</p>
+</div>
+</section>
+<div class="divider" id="div"></div>
+<section class="pane right" id="right">
+<div class="qgroup">
+<h3>Questions 27-31</h3>
+<p><i>Reading Passage 3 has eight paragraphs, A-H. Which paragraph contains the following information?</i></p>
+<p><b><i>NB</i></b> <i>You may use any letter more than once.</i></p>
+<div class="match-wrap">
+<table class="match" id="grid">
+<thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th></tr></thead>
+<tbody>
+<tr id="q27"><td><div class="qcell"><span class="mnum">27.</span><span class="mtext">The process by which a new food flavour is agreed on</span></div></td><td><input type="radio" name="q27" value="A"></td><td><input type="radio" name="q27" value="B"></td><td><input type="radio" name="q27" value="C"></td><td><input type="radio" name="q27" value="D"></td><td><input type="radio" name="q27" value="E"></td><td><input type="radio" name="q27" value="F"></td><td><input type="radio" name="q27" value="G"></td><td><input type="radio" name="q27" value="H"></td></tr>
+<tr id="q28"><td><div class="qcell"><span class="mnum">28.</span><span class="mtext">The reason for some natural preferences</span></div></td><td><input type="radio" name="q28" value="A"></td><td><input type="radio" name="q28" value="B"></td><td><input type="radio" name="q28" value="C"></td><td><input type="radio" name="q28" value="D"></td><td><input type="radio" name="q28" value="E"></td><td><input type="radio" name="q28" value="F"></td><td><input type="radio" name="q28" value="G"></td><td><input type="radio" name="q28" value="H"></td></tr>
+<tr id="q29"><td><div class="qcell"><span class="mnum">29.</span><span class="mtext">The reason why flavour has not been researched in depth in the past</span></div></td><td><input type="radio" name="q29" value="A"></td><td><input type="radio" name="q29" value="B"></td><td><input type="radio" name="q29" value="C"></td><td><input type="radio" name="q29" value="D"></td><td><input type="radio" name="q29" value="E"></td><td><input type="radio" name="q29" value="F"></td><td><input type="radio" name="q29" value="G"></td><td><input type="radio" name="q29" value="H"></td></tr>
+<tr id="q30"><td><div class="qcell"><span class="mnum">30.</span><span class="mtext">The explanation of lack of consistency in sensory analysing data</span></div></td><td><input type="radio" name="q30" value="A"></td><td><input type="radio" name="q30" value="B"></td><td><input type="radio" name="q30" value="C"></td><td><input type="radio" name="q30" value="D"></td><td><input type="radio" name="q30" value="E"></td><td><input type="radio" name="q30" value="F"></td><td><input type="radio" name="q30" value="G"></td><td><input type="radio" name="q30" value="H"></td></tr>
+<tr id="q31"><td><div class="qcell"><span class="mnum">31.</span><span class="mtext">The wider benefits to the knowledge of researching flavours</span></div></td><td><input type="radio" name="q31" value="A"></td><td><input type="radio" name="q31" value="B"></td><td><input type="radio" name="q31" value="C"></td><td><input type="radio" name="q31" value="D"></td><td><input type="radio" name="q31" value="E"></td><td><input type="radio" name="q31" value="F"></td><td><input type="radio" name="q31" value="G"></td><td><input type="radio" name="q31" value="H"></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="qgroup">
+<h3>Questions 32-36</h3>
+<p>Do the following statements agree with the information given in the reading passage?</p>
+<p>Choose <b>TRUE</b> if the statement agrees with the information, choose <b>FALSE</b> if the statement contradicts the information, or choose <b>NOT GIVEN</b> if there is no information on this.</p>
+<div class="tf-row" id="q32"><div class="statement"><span class="qnum">32</span><span>Both taste and flavour can be experienced only in the mouth.</span></div><div class="options"><label><input type="radio" name="q32" value="TRUE"> TRUE</label><label><input type="radio" name="q32" value="FALSE"> FALSE</label><label><input type="radio" name="q32" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q33"><div class="statement"><span class="qnum">33</span><span>Some elements in flavour involve neither taste nor smell.</span></div><div class="options"><label><input type="radio" name="q33" value="TRUE"> TRUE</label><label><input type="radio" name="q33" value="FALSE"> FALSE</label><label><input type="radio" name="q33" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q34"><div class="statement"><span class="qnum">34</span><span>Ice-cream manufacturers are at the forefront of the research on flavour.</span></div><div class="options"><label><input type="radio" name="q34" value="TRUE"> TRUE</label><label><input type="radio" name="q34" value="FALSE"> FALSE</label><label><input type="radio" name="q34" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q35"><div class="statement"><span class="qnum">35</span><span>It is possible to accurately match the brain activity to the experience of flavour.</span></div><div class="options"><label><input type="radio" name="q35" value="TRUE"> TRUE</label><label><input type="radio" name="q35" value="FALSE"> FALSE</label><label><input type="radio" name="q35" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q36"><div class="statement"><span class="qnum">36</span><span>Research is being done to control the experience of taste.</span></div><div class="options"><label><input type="radio" name="q36" value="TRUE"> TRUE</label><label><input type="radio" name="q36" value="FALSE"> FALSE</label><label><input type="radio" name="q36" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+</div>
+
+<div class="qgroup">
+<h3>Questions 37-40</h3>
+<p>Look at the following statements and the list of researchers below. Match the person or organisation with their opinions.</p>
+<p><b><i>NB</i></b> <i>You may use any letter more than once.</i></p>
+<div class="box"><b>A</b> Givaudan<br><b>B</b> University of Bath<br><b>C</b> University of Nottingham<br><b>D</b> Firmenich<br><b>E</b> Chemical Senses Institute<br><b>F</b> Linguagen</div>
+<div class="sel-row" id="q37"><span class="qnum">37</span><span class="txt">matching brain activity and food input</span><select class="select" id="sel37"><option value="">37</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+<div class="sel-row" id="q38"><span class="qnum">38</span><span class="txt">use genetic modification to track flavour signals</span><select class="select" id="sel38"><option value="">38</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+<div class="sel-row" id="q39"><span class="qnum">39</span><span class="txt">matching textural qualities of food and sensation</span><select class="select" id="sel39"><option value="">39</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+<div class="sel-row" id="q40"><span class="qnum">40</span><span class="txt">identify elements in certain smells</span><select class="select" id="sel40"><option value="">40</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+</div>
+</section>
+</div>
+<footer class="bar"><b>Part 3</b><div class="tiles" id="tiles"></div><button class="review" id="review">OK</button></footer>
+<div class="tools" id="tools"><button data-act="hl">Highlight</button><button data-act="clear">Clear</button></div>
+<div class="overlay" id="submit"><div class="ovh"><h2>Submission page</h2><button class="close" onclick="document.getElementById('submit').classList.remove('show')">x</button></div><div class="ovlist" id="subwrap"></div></div>
+<script>
+(function(){
+var answers={27:'E',28:'H',29:'C',30:'E',31:'H',32:'FALSE',33:'TRUE',34:'NOT GIVEN',35:'FALSE',36:'TRUE',37:'D',38:'E',39:'B',40:'C'},done=false;
+var tiles=document.getElementById('tiles');
+for(var i=27;i<=40;i++){var b=document.createElement('button');b.className='tile';b.dataset.tile=i;b.textContent=i;b.onclick=function(){scrollToQuestion(+this.dataset.tile)};tiles.appendChild(b)}
+function answered(n){if(n<=36)return !!document.querySelector('input[name="q'+n+'"]:checked');return document.getElementById('sel'+n).value!==''}
+function refresh(){document.querySelectorAll('.tile').forEach(function(t){t.classList.toggle('answered',answered(+t.dataset.tile))})}
+function scrollToQuestion(n){document.getElementById('q'+n)?.scrollIntoView({behavior:'smooth',block:'center'})}
+document.addEventListener('change',refresh);
+
+var split=document.getElementById('split'),divider=document.getElementById('div'),left=document.getElementById('left'),drag=false;
+divider.onmousedown=function(){drag=true;document.body.style.userSelect='none'};
+window.onmouseup=function(){drag=false;document.body.style.userSelect=''};
+window.onmousemove=function(e){if(!drag)return;var r=split.getBoundingClientRect();left.style.width=Math.max(220,Math.min(r.width-240,e.clientX-r.left))+'px'};
+
+var tools=document.getElementById('tools');
+split.onmouseup=function(){setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return}var r=s.getRangeAt(0);if(!split.contains(r.commonAncestorContainer)){tools.style.display='none';return}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=(rc.left+scrollX)+'px';tools.style.top=Math.max(8,rc.top+scrollY-42)+'px'},1)};
+tools.onclick=function(e){var b=e.target.closest('button'),s=getSelection();if(!b||!s.rangeCount)return;var r=s.getRangeAt(0);if(b.dataset.act==='hl'){try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp)}catch(_){document.execCommand('hiliteColor',false,'#ffe45c')}}else{document.querySelectorAll('.hl').forEach(function(h){h.replaceWith(document.createTextNode(h.textContent))})}s.removeAllRanges();tools.style.display='none'};
+
+document.getElementById('review').onclick=function(){var a=0;for(var n=27;n<=40;n++)if(answered(n))a++;document.getElementById('subwrap').innerHTML='<p>You have answered <b>'+a+'</b> of 14 questions.</p><p><button class="ovrow submit" id="final">Submit test</button></p>';document.getElementById('final').onclick=grade;document.getElementById('submit').classList.add('show')};
+function tag(el,ok,msg){el.insertAdjacentHTML('beforeend','<span class="tag '+(ok?'ok':'no')+'">'+msg+'</span>')}
+function grade(){if(done)return;done=true;var score=0;
+for(var n=27;n<=36;n++){var row=document.getElementById('q'+n),picked=document.querySelector('input[name="q'+n+'"]:checked'),v=picked&&picked.value,ok=v===answers[n];if(ok)score++;row.querySelectorAll('input').forEach(function(i){i.disabled=true;if(i.value===answers[n])i.parentElement.classList.add('ok');if(v===i.value&&!ok)i.parentElement.classList.add('no')});var target=n<=31?row.cells[0]:row.querySelector('.statement');tag(target,ok,ok?'Correct':(v?'Incorrect':'No answer'))}
+for(var m=37;m<=40;m++){var s=document.getElementById('sel'+m),ok=s.value===answers[m];if(ok)score++;s.disabled=true;s.classList.add(ok?'ok':'no');if(!ok)s.insertAdjacentHTML('afterend','<span class="corr">-&gt; '+answers[m]+'</span>')}
+document.getElementById('right').insertAdjacentHTML('afterbegin','<div class="score">Your score: <b>'+score+' / 14</b></div>');document.getElementById('submit').classList.remove('show');document.getElementById('right').scrollTop=0;refresh()}
+refresh();
+})();
+</script>
+<section id="walkthroughBlock" style="display:none;padding:36px 28px 60px;background:#f2f3f4;border-top:2px solid #d0d0d0;">
+  <div style="max-width:960px;margin:0 auto;">
+    <h2 style="font-family:Arial,sans-serif;font-size:24px;margin:0 0 8px;">Walkthrough</h2>
+    <p style="font-family:Arial,sans-serif;color:#606060;margin:0 0 18px;">Great work — now watch this walkthrough of the passage and questions.</p>
+    <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 10px 32px rgba(0,0,0,.22);">
+      <iframe src="https://www.youtube.com/embed/pZqqn9zErbo" title="Walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var rightPane=document.getElementById('right');if(!rightPane)return;
+  var observer=new MutationObserver(function(mutations){mutations.forEach(function(m){m.addedNodes.forEach(function(node){if(node.nodeType===1&&node.className==='score'){var wt=document.getElementById('walkthroughBlock');if(wt){wt.style.display='block';setTimeout(function(){wt.scrollIntoView({behavior:'smooth',block:'start'});},500);}var scoreEl=node.querySelector('b');var score=scoreEl?(parseInt(scoreEl.textContent)||0):0;var msg={type:'sprint4-task-done',task:4,score:score,total:14};if(window.opener)window.opener.postMessage(msg,'*');else if(window.parent&&window.parent!==window)window.parent.postMessage(msg,'*');observer.disconnect();}});});});
+  observer.observe(rightPane,{childList:true,subtree:false});
+})();
+</script>
+</body>
+</html>
