@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -3415,6 +3415,21 @@ With the limited number of breeding pairs, survivorship becomes difficult for Af
             hideToolbar();
         }
     });
+})();
+</script>
+<script>
+(function(){
+  var LOCK_MIN=28, end=Date.now()+LOCK_MIN*60000;
+  var btn=document.getElementById('deliver-button');
+  if(!btn)return;
+  var orig=btn.innerHTML;
+  btn.disabled=true;btn.style.opacity='0.5';btn.style.cursor='not-allowed';
+  var iv=setInterval(function(){
+    var rem=Math.max(0,end-Date.now());
+    var m=Math.floor(rem/60000),s=Math.floor((rem%60000)/1000);
+    if(rem<=0){clearInterval(iv);btn.disabled=false;btn.style.opacity='';btn.style.cursor='';btn.innerHTML=orig;}
+    else btn.innerHTML='&#9203; Submit in '+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  },1000);
 })();
 </script>
 </body>
