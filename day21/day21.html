@@ -341,23 +341,31 @@ function checkIsCorrect(studentAns, correctAns){
   return String(correctAns).trim().toLowerCase() === sa;
 }
 function bandNum(b){ var n = parseFloat(b); return isNaN(n) ? null : n; }
-function calcOverallBand(rec){
-  var l = bandNum(rec.listening_band);
-  var r = bandNum(rec.reading_band);
-  var t1 = bandNum(rec.t1_band);
-  var t2 = bandNum(rec.t2_band);
-  var s = bandNum(rec.speaking_band);
-  var w = (t1!==null && t2!==null) ? (t1 + 2*t2)/3 : (t2!==null ? t2 : t1);
-  var parts = [l, r, w, s].filter(function(x){ return x !== null; });
-  if(parts.length === 0) return null;
-  var avg = parts.reduce(function(a,b){return a+b;},0) / parts.length;
+function roundToIELTSBand(avg){
   var whole = Math.floor(avg);
   var frac = avg - whole;
-  var rounded;
-  if(frac < 0.25) rounded = whole;
-  else if(frac < 0.75) rounded = whole + 0.5;
-  else rounded = whole + 1;
-  return rounded;
+  if(frac < 0.25) return whole;
+  if(frac < 0.75) return whole + 0.5;
+  return whole + 1;
+}
+function calcWritingBand(t1, t2){
+  // returns raw (unrounded) writing band contribution; 0 if neither task graded
+  if(t1===null && t2===null) return 0;
+  if(t1!==null && t2!==null) return (t1 + 2*t2)/3; // T2 counts double per IELTS convention
+  return t2!==null ? t2 : t1;
+}
+function calcOverallBand(rec){
+  // Missing / ungraded skills count as 0 and are still divided by 4 —
+  // an incomplete section should visibly lower the overall band, not be excluded.
+  var l = bandNum(rec.listening_band); if(l===null) l = 0;
+  var r = bandNum(rec.reading_band);   if(r===null) r = 0;
+  var t1 = bandNum(rec.t1_band);
+  var t2 = bandNum(rec.t2_band);
+  var w = calcWritingBand(t1, t2);
+  var s = bandNum(rec.speaking_band);  if(s===null) s = 0;
+  var sum = l + r + w + s;
+  var avg = sum / 4;
+  return roundToIELTSBand(avg);
 }
 
 // ── SUPABASE ────────────────────────────────────────────────────────────────
@@ -633,12 +641,8 @@ function bandOrDash(b){ return (b !== null && b !== undefined && b !== '') ? b :
 
 function renderSummaryCards(rec){
   var overall = calcOverallBand(rec);
-  var wBand = (function(){
-    var t1 = bandNum(rec.t1_band), t2 = bandNum(rec.t2_band);
-    if(t1===null && t2===null) return null;
-    if(t1!==null && t2!==null) return Math.round(((t1+2*t2)/3)*2)/2;
-    return t2!==null ? t2 : t1;
-  })();
+  var t1raw = bandNum(rec.t1_band), t2raw = bandNum(rec.t2_band);
+  var wBand = (t1raw===null && t2raw===null) ? null : roundToIELTSBand(calcWritingBand(t1raw, t2raw));
   var cards = [
     {label:'Listening', val: rec.listening_score!==null&&rec.listening_score!==undefined ? rec.listening_score+'/40' : '—', sub: rec.listening_band?'Band '+rec.listening_band:''},
     {label:'Reading', val: rec.reading_score!==null&&rec.reading_score!==undefined ? rec.reading_score+'/40' : '—', sub: rec.reading_band?'Band '+rec.reading_band:''},
