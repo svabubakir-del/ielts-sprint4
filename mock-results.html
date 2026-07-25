@@ -202,7 +202,7 @@ async function loadAll(){
     }
 
     // 3. Get students (filtered to this teacher's groups or all if admin)
-    var studQuery = db.from('students').select('id, name, group_id');
+    var studQuery = db.from('students').select('id, full_name, group_id');
     if(session.role !== 'admin' && myGroupIds.length > 0){
       studQuery = studQuery.in('group_id', myGroupIds);
     }
@@ -211,7 +211,7 @@ async function loadAll(){
 
     (studRes.data || []).forEach(function(s){
       allStudents[s.id] = {
-        name: s.name || 'Student',
+        name: s.full_name || 'Student',
         group_id: s.group_id,
         group_name: groupMap[s.group_id] || 'Unassigned'
       };
