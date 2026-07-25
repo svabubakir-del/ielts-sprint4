@@ -50,6 +50,8 @@
   .mat-card{ display:block; background:var(--card); border:1.5px solid var(--border); border-radius:10px; padding:16px 14px; text-decoration:none; color:var(--text); transition:transform .15s,box-shadow .15s; }
   .mat-card:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.08); border-color:var(--accent); }
   .mat-card.relax{ border-color:#f0c36d; }
+  .mat-card.mock{ border-color:var(--accent); background:linear-gradient(135deg,var(--accent-light),#fff); }
+  .mat-card.mock .mat-num{ color:var(--accent); }
   .mat-num{ font-size:26px; font-weight:800; color:var(--accent); line-height:1; margin-bottom:4px; }
   .mat-card.relax .mat-num{ color:var(--success); }
   .mat-label{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
@@ -137,7 +139,6 @@
 <body>
 
 <header class="topbar">
-  <a href="mock-results.html">📊 Mock Exam Results</a>
   <div class="brand">IELTS <span>Sprint4</span></div>
   <span class="badge" id="groupBadge">—</span>
   <span style="color:var(--muted);font-size:14px;font-weight:600;" id="teacherName">—</span>
@@ -236,12 +237,20 @@
 
   /* ---- MATERIALS GRID ---- */
   (function buildMaterials(){
-    var RELAX=[7,14,21,28];
+    var RELAX=[7,14,28];
+    var MOCK_DAY=21;
     var grid=document.getElementById('materialsGrid');
     var html='';
     for(var d=1;d<=30;d++){
       var isRelax=RELAX.includes(d);
       var padded=String(d).padStart(2,'0');
+      if(d===MOCK_DAY){
+        html+='<a href="mock-results.html" class="mat-card mock">'+
+          '<div class="mat-num">'+padded+'</div>'+
+          '<div class="mat-label">&#127919; Mock Exam</div>'+
+        '</a>';
+        continue;
+      }
       html+='<a href="day'+d+'/day'+d+'.html?teacher=true" class="mat-card'+(isRelax?' relax':'')+'">'+
         '<div class="mat-num">'+padded+'</div>'+
         '<div class="mat-label">'+(isRelax?'Recovery':'Day '+d)+'</div>'+
@@ -384,6 +393,11 @@
   }
 
   function showTaskBreakdown(day, studentId){
+    // Day 21 is the Mock Exam — show real exam data instead of task/answers table
+    if(day === 21){
+      showMockExamBreakdown(studentId);
+      return;
+    }
     const prog = allProgress[studentId] || {};
     const dayProg = prog[day] || {};
     const total = RELAX_DAYS.includes(day) ? 1 : TASKS_PER_DAY;
@@ -430,6 +444,46 @@
     });
   }
   window.showTaskBreakdown = showTaskBreakdown;
+
+  /* ---- MOCK EXAM BREAKDOWN (Day 21) ---- */
+  function showMockExamBreakdown(studentId){
+    document.getElementById('breakdownTitle').textContent = 'Day 21 — Mock Exam';
+    document.getElementById('breakdownRows').innerHTML = '<div style="color:var(--muted);font-size:13px;">Loading mock exam results…</div>';
+    document.getElementById('taskBreakdown').style.display = 'block';
+
+    supabase.from('mock_exams')
+      .select('*')
+      .eq('student_id', studentId)
+      .order('submitted_at', {ascending:false})
+      .limit(1)
+      .then(function(res){
+        var rows = (res && res.data) || [];
+        if(rows.length === 0){
+          document.getElementById('breakdownRows').innerHTML =
+            '<div class="no-answers">This student has not taken the mock exam yet.</div>';
+          return;
+        }
+        var e = rows[0];
+        var ls = e.listening_score !== null && e.listening_score !== undefined ? e.listening_score + ' / 40' : '—';
+        var lb = e.listening_band ? ' (Band ' + e.listening_band + ')' : '';
+        var rs = e.reading_score !== null && e.reading_score !== undefined ? e.reading_score + ' / 40' : '—';
+        var rb = e.reading_band ? ' (Band ' + e.reading_band + ')' : '';
+        var w1 = e.writing_t1_words || 0;
+        var w2 = e.writing_t2_words || 0;
+        var submittedDate = e.submitted_at ? new Date(e.submitted_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '—';
+
+        var html = '';
+        html += '<div class="task-row"><span class="task-name">&#127911; Listening</span><span class="task-status done">' + ls + lb + '</span></div>';
+        html += '<div class="task-row"><span class="task-name">&#128214; Reading</span><span class="task-status done">' + rs + rb + '</span></div>';
+        html += '<div class="task-row"><span class="task-name">&#9999;&#65039; Writing Task 1</span><span class="task-status ' + (w1>0?'done':'pending') + '">' + w1 + ' words' + (e.t1_band?' — Band '+e.t1_band:'') + '</span></div>';
+        html += '<div class="task-row"><span class="task-name">&#9999;&#65039; Writing Task 2</span><span class="task-status ' + (w2>0?'done':'pending') + '">' + w2 + ' words' + (e.t2_band?' — Band '+e.t2_band:'') + '</span></div>';
+        html += '<div style="font-size:12.5px;color:var(--muted);margin:10px 0 14px;">Submitted: ' + submittedDate + '</div>';
+        html += '<a href="mock-results.html?student=' + studentId + '" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:8px;">Open full answers &amp; leave feedback &#8594;</a>';
+
+        document.getElementById('breakdownRows').innerHTML = html;
+      });
+  }
+  window.showMockExamBreakdown = showMockExamBreakdown;
 
   function formatFieldLabel(fieldId){
     if(fieldId.startsWith('va')) return 'Vocab A — gap ' + fieldId.replace('va','');
