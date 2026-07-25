@@ -472,6 +472,19 @@ async function saveToSupabase(){
   showResults();
   if(!studentSession){ console.warn('No student session'); return; }
   var db = getSB(); if(!db) return;
+
+  // Mark Day 21 as complete in the standard progress table (so the dashboard shows it)
+  try {
+    await db.from('progress').upsert({
+      student_id: studentSession.id,
+      day: 21,
+      task: 1,
+      completed: true,
+      completed_at: new Date().toISOString()
+    }, {onConflict: 'student_id,day,task'});
+  } catch(progErr){
+    console.warn('Progress table update failed (non-critical):', progErr);
+  }
   var payload = {
     student_id:          studentSession.id,
     exam_date:           examData.exam_date,
@@ -496,12 +509,14 @@ async function saveToSupabase(){
     var notice = document.getElementById('savingNotice');
     notice.classList.add('show');
   } catch(err){
-    console.error('Save failed:', err);
-    document.getElementById('savingNotice').textContent =
-      '⚠️ Could not save automatically. Please screenshot your results.';
-    document.getElementById('savingNotice').style.borderColor='#f59e0b';
-    document.getElementById('savingNotice').style.color='#f59e0b';
-    document.getElementById('savingNotice').classList.add('show');
+    console.error('MOCK EXAM SAVE FAILED — full error object:', err);
+    console.error('Payload attempted:', payload);
+    var errMsg = (err && (err.message || err.error_description || err.hint || err.details)) || JSON.stringify(err) || 'unknown error';
+    var errBox = document.getElementById('saveError');
+    if(errBox){
+      errBox.style.display = 'block';
+      errBox.textContent = '\u26a0\ufe0f Could not save automatically: ' + errMsg + '. Please screenshot this page and send it to your mentor.';
+    }
   }
 }
 
