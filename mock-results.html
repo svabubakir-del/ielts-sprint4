@@ -524,7 +524,8 @@ function buildDetail(sid, exam){
 }
 
 function bandOptions(selected){
-  var bands = ['','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0'];
+  var bands = [''];
+  for(var i=1; i<=9; i+=0.5){ bands.push(i.toFixed(1)); }
   return bands.map(function(b){
     return '<option value="' + b + '"' + (b === String(selected || '') ? ' selected' : '') + '>' + (b || '&#8212; Select band') + '</option>';
   }).join('');
