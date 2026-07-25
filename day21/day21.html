@@ -84,6 +84,21 @@ body{background:#f7f8fa;color:#1a1a1a;display:flex;flex-direction:column;min-hei
 .save-error-box{background:#fbeaea;border:1px solid #fca5a5;border-radius:8px;padding:12px 16px;color:#d23a3a;font-size:13px;margin-bottom:16px;display:none;}
 .dashboard-btn{background:#0F5C6B;color:#fff;border:none;border-radius:10px;padding:13px 28px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
 .dashboard-btn:hover{background:#0c4a57;}
+.summary-card{background:#f7f8fa;border:1px solid #e2e4e8;border-radius:10px;padding:14px 10px;text-align:center;}
+.summary-card .sc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:#6b7280;margin-bottom:6px;}
+.summary-card .sc-value{font-size:22px;font-weight:800;color:#0F5C6B;}
+.summary-card.overall{background:#e6eef0;border-color:#0F5C6B;}
+.summary-card.overall .sc-value{font-size:26px;}
+.rtab{padding:9px 16px;font-size:13.5px;font-weight:700;color:#6b7280;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;}
+.rtab.active{color:#0F5C6B;border-bottom-color:#0F5C6B;}
+.ans-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.ans-table th{background:#f0f4f5;padding:8px 10px;text-align:left;font-weight:700;border-bottom:2px solid #e2e4e8;}
+.ans-table td{padding:7px 10px;border-bottom:1px solid #f0f2f4;}
+.ans-correct{color:#1f9d55;font-weight:700;}
+.ans-wrong{color:#d23a3a;font-weight:700;}
+.essay-view{background:#f7f8fa;border:1px solid #e2e4e8;border-radius:8px;padding:16px;font-family:Georgia,serif;font-size:14.5px;line-height:1.8;white-space:pre-wrap;max-height:340px;overflow-y:auto;margin-bottom:14px;}
+.feedback-view{background:#e6eef0;border:1px solid #cbd5e1;border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.7;}
+.feedback-view .fv-label{font-size:12px;font-weight:700;color:#0F5C6B;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
 </style>
 </head>
 <body>
@@ -103,6 +118,45 @@ body{background:#f7f8fa;color:#1a1a1a;display:flex;flex-direction:column;min-hei
   <div class="prog-step" id="prog3"></div>
   <div class="prog-step" id="prog4"></div>
   <div class="prog-step" id="prog5"></div>
+</div>
+
+<!-- SCREEN: RESULTS READY (announcement before viewing) -->
+<div class="screen" id="screen-ready">
+  <div class="intro-wrap">
+    <div style="font-size:60px;margin-bottom:18px;">&#127881;</div>
+    <h1 style="color:#1f9d55;">Great! Your results are ready</h1>
+    <p>Your mentor has finished reviewing your mock exam. You can now see your scores, band estimates, and detailed feedback.</p>
+    <div id="readySubmittedDate" style="font-size:13px;color:#6b7280;margin-bottom:28px;"></div>
+    <button class="start-btn" onclick="showResultsDetail()">See My Results &#8594;</button>
+  </div>
+</div>
+
+<!-- SCREEN: RESULTS DETAIL -->
+<div class="screen" id="screen-results">
+  <div class="writing-wrap">
+    <div class="writing-inner">
+
+      <div class="writing-card">
+        <h3>Overall summary</h3>
+        <div id="summaryCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-top:6px;"></div>
+      </div>
+
+      <div class="writing-card">
+        <div class="detail-tabs-student" id="resultsTabs" style="display:flex;gap:4px;border-bottom:2px solid #e2e4e8;margin-bottom:16px;flex-wrap:wrap;">
+          <div class="rtab active" data-tab="listening" onclick="switchResultsTab('listening',this)">&#127911; Listening</div>
+          <div class="rtab" data-tab="reading" onclick="switchResultsTab('reading',this)">&#128214; Reading</div>
+          <div class="rtab" data-tab="writing1" onclick="switchResultsTab('writing1',this)">&#9999;&#65039; Writing T1</div>
+          <div class="rtab" data-tab="writing2" onclick="switchResultsTab('writing2',this)">&#9999;&#65039; Writing T2</div>
+          <div class="rtab" data-tab="speaking" onclick="switchResultsTab('speaking',this)">&#127908; Speaking</div>
+        </div>
+        <div id="resultsTabContent"></div>
+      </div>
+
+      <div style="text-align:center;padding:10px 0 30px;">
+        <a href="../student-dashboard.html" class="dashboard-btn">&#8592; Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- SCREEN 1: INTRO -->
@@ -261,6 +315,50 @@ var examData = {
 var currentSection = 'intro';
 var timerInterval = null;
 var timerSeconds = 0;
+
+// ── ANSWER KEYS (for results detail view) ────────────────────────────────────
+var LISTENING_KEY = {
+  'q1': ['central'],'q2': ['address'],'q3': ['pool'],'q4': ['reception'],'q5': ['view'],
+  'q6': ['price', 'prices'],'q7': ['spanish'],'q8': ['july'],'q9': ['903036602'],'q10': ['cliffton'],
+  'q11': 'A','q12': 'C','q13': 'C','q14': 'B','q15': 'C','q16': 'F','q17': 'B','q18': 'A','q19': 'E','q20': 'D',
+  'q21': 'C','q22': 'A','q23': 'A','q24': 'A','q25': 'E','q26': 'G','q27': 'C','q28': 'A','q29': 'B','q30': 'H',
+  'q31': ['temperature'],'q32': ['movements'],'q33': ['bones'],'q34': ['bushes'],'q35': ['roots'],
+  'q36': ['sharks'],'q37': ['chicks'],'q38': ['feathers'],'q39': ['space', 'spaces'],'q40': ['diversity']
+};
+var READING_KEY = {
+  '1': 'FALSE','2': 'NOT GIVEN','3': 'TRUE','4': 'FALSE','5': 'NOT GIVEN','6': 'FALSE',
+  '7': 'His diaries','8': '3/Three years','9': 'Chains','10': 'Governor Philip','11': 'June 1789','12': 'China','13': 'Botany Bay',
+  '14': 'A','15': 'D','16': 'B','17': 'D','18': 'C','19': 'B','20': 'D','21': 'A',
+  '22': 'workplace injury','23': '16.6 weeks','24': '7%','25': 'golf','26': 'massage',
+  '27': 'C','28': 'D','29': 'B','30': 'A','31': 'D','32': 'C',
+  '33': 'marketing teams','34': 'external designers','35': 'consumers','36': 'in-house designers','37': 'design engineers',
+  '38': 'B','39': 'B','40': 'A'
+};
+function checkIsCorrect(studentAns, correctAns){
+  if(studentAns === undefined || studentAns === null || String(studentAns).trim()==='') return null;
+  var sa = String(studentAns).trim().toLowerCase();
+  if(Array.isArray(correctAns)) return correctAns.some(function(c){ return String(c).trim().toLowerCase() === sa; });
+  return String(correctAns).trim().toLowerCase() === sa;
+}
+function bandNum(b){ var n = parseFloat(b); return isNaN(n) ? null : n; }
+function calcOverallBand(rec){
+  var l = bandNum(rec.listening_band);
+  var r = bandNum(rec.reading_band);
+  var t1 = bandNum(rec.t1_band);
+  var t2 = bandNum(rec.t2_band);
+  var s = bandNum(rec.speaking_band);
+  var w = (t1!==null && t2!==null) ? (t1 + 2*t2)/3 : (t2!==null ? t2 : t1);
+  var parts = [l, r, w, s].filter(function(x){ return x !== null; });
+  if(parts.length === 0) return null;
+  var avg = parts.reduce(function(a,b){return a+b;},0) / parts.length;
+  var whole = Math.floor(avg);
+  var frac = avg - whole;
+  var rounded;
+  if(frac < 0.25) rounded = whole;
+  else if(frac < 0.75) rounded = whole + 0.5;
+  else rounded = whole + 1;
+  return rounded;
+}
 
 // ── SUPABASE ────────────────────────────────────────────────────────────────
 var _sb = null;
@@ -521,6 +619,107 @@ async function saveToSupabase(){
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
+// ── RESULTS DETAIL RENDERING ──────────────────────────────────────────────────
+function showResultsDetail(){
+  if(!loadedExamRecord) return;
+  showScreen('results');
+  document.getElementById('headerLabel').textContent = 'Your Mock Exam Results';
+  renderSummaryCards(loadedExamRecord);
+  switchResultsTab('listening', document.querySelector('.rtab[data-tab="listening"]'));
+}
+window.showResultsDetail = showResultsDetail;
+
+function bandOrDash(b){ return (b !== null && b !== undefined && b !== '') ? b : '—'; }
+
+function renderSummaryCards(rec){
+  var overall = calcOverallBand(rec);
+  var wBand = (function(){
+    var t1 = bandNum(rec.t1_band), t2 = bandNum(rec.t2_band);
+    if(t1===null && t2===null) return null;
+    if(t1!==null && t2!==null) return Math.round(((t1+2*t2)/3)*2)/2;
+    return t2!==null ? t2 : t1;
+  })();
+  var cards = [
+    {label:'Listening', val: rec.listening_score!==null&&rec.listening_score!==undefined ? rec.listening_score+'/40' : '—', sub: rec.listening_band?'Band '+rec.listening_band:''},
+    {label:'Reading', val: rec.reading_score!==null&&rec.reading_score!==undefined ? rec.reading_score+'/40' : '—', sub: rec.reading_band?'Band '+rec.reading_band:''},
+    {label:'Writing', val: wBand!==null ? 'Band '+wBand : '—', sub: ''},
+    {label:'Speaking', val: rec.speaking_band ? 'Band '+rec.speaking_band : '—', sub: ''}
+  ];
+  var html = cards.map(function(c){
+    return '<div class="summary-card"><div class="sc-label">'+c.label+'</div><div class="sc-value">'+c.val+'</div>'+(c.sub?'<div style="font-size:12px;color:#6b7280;margin-top:2px;">'+c.sub+'</div>':'')+'</div>';
+  }).join('');
+  html += '<div class="summary-card overall"><div class="sc-label">Overall</div><div class="sc-value">'+(overall!==null?overall:'—')+'</div></div>';
+  document.getElementById('summaryCards').innerHTML = html;
+}
+
+function switchResultsTab(tab, el){
+  document.querySelectorAll('.rtab').forEach(function(t){t.classList.remove('active');});
+  if(el) el.classList.add('active');
+  var rec = loadedExamRecord;
+  var content = document.getElementById('resultsTabContent');
+  if(!rec){ content.innerHTML=''; return; }
+
+  if(tab === 'listening'){
+    content.innerHTML = buildAnswerTable(rec.listening_answers || {}, LISTENING_KEY, 40, true);
+  } else if(tab === 'reading'){
+    content.innerHTML = buildAnswerTable(rec.reading_answers || {}, READING_KEY, 40, false);
+  } else if(tab === 'writing1'){
+    content.innerHTML = buildEssayView(rec.writing_t1_text, rec.writing_t1_words, rec.t1_feedback, rec.t1_band);
+  } else if(tab === 'writing2'){
+    content.innerHTML = buildEssayView(rec.writing_t2_text, rec.writing_t2_words, rec.t2_feedback, rec.t2_band);
+  } else if(tab === 'speaking'){
+    content.innerHTML = buildSpeakingView(rec.speaking_feedback, rec.speaking_band);
+  }
+}
+window.switchResultsTab = switchResultsTab;
+
+function buildAnswerTable(answers, key, total, useQPrefix){
+  var rows = '';
+  for(var i=1; i<=total; i++){
+    var k = useQPrefix ? 'q'+i : String(i);
+    var raw = answers[String(i)];
+    var hasAns = raw !== undefined && raw !== null && String(raw).trim() !== '';
+    var studentVal = hasAns ? String(raw) : 'N/A';
+    var correct = key[k];
+    var isCorrect = hasAns ? checkIsCorrect(raw, correct) : null;
+    var cellClass = isCorrect === true ? 'ans-correct' : isCorrect === false ? 'ans-wrong' : '';
+    var correctDisplay = Array.isArray(correct) ? correct[0] : correct;
+    rows += '<tr><td style="color:#6b7280;font-weight:700;">'+i+'</td>'+
+      '<td class="'+cellClass+'">'+escHtml(studentVal)+(isCorrect===true?' ✓':isCorrect===false?' ✗':'')+'</td>'+
+      '<td style="color:#6b7280;">'+(isCorrect===false?escHtml(String(correctDisplay)):'')+'</td></tr>';
+  }
+  return '<table class="ans-table"><thead><tr><th>#</th><th>Your Answer</th><th>Correct Answer</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+function buildEssayView(text, words, feedback, band){
+  var html = '<div style="margin-bottom:10px;font-size:13px;color:#6b7280;font-weight:700;">'+(words||0)+' words</div>';
+  html += '<div class="essay-view">'+escHtml(text || '(not submitted)')+'</div>';
+  if(feedback || band){
+    html += '<div class="feedback-view">';
+    html += '<div class="fv-label">Mentor Feedback'+(band?' — Band '+band:'')+'</div>';
+    html += '<div>'+escHtml(feedback || 'No written feedback provided.')+'</div>';
+    html += '</div>';
+  } else {
+    html += '<div style="color:#94a3b8;font-size:13px;font-style:italic;">Your mentor has not left feedback for this task yet.</div>';
+  }
+  return html;
+}
+
+function buildSpeakingView(feedback, band){
+  if(!feedback && !band){
+    return '<div style="color:#94a3b8;font-size:14px;">Your mentor has not recorded speaking feedback yet.</div>';
+  }
+  var html = '<div class="feedback-view">';
+  html += '<div class="fv-label">Mentor Feedback'+(band?' — Band '+band:'')+'</div>';
+  html += '<div>'+escHtml(feedback || 'No written feedback provided.')+'</div>';
+  html += '</div>';
+  return html;
+}
+
+function escHtml(str){
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 (function waitSdk(){
   if(window.supabase){
     // Check if student already submitted mock exam
@@ -530,27 +729,41 @@ async function saveToSupabase(){
   }
 })();
 
+var loadedExamRecord = null;
+
 async function checkAlreadySubmitted(){
   if(!studentSession){ return; } // no session = just show intro
   var db = getSB(); if(!db) return;
   try {
     var res = await db.from('mock_exams')
-      .select('id,submitted_at,exam_date')
+      .select('*')
       .eq('student_id', studentSession.id)
       .not('submitted_at', 'is', null)
+      .order('submitted_at', {ascending:false})
       .limit(1);
     if(res.data && res.data.length > 0){
-      // Already submitted — show locked screen
       var rec = res.data[0];
+      loadedExamRecord = rec;
       var dateStr = rec.submitted_at
         ? new Date(rec.submitted_at).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
         : (rec.exam_date || '');
-      var dateEl = document.getElementById('submittedDate');
-      if(dateEl && dateStr) dateEl.textContent = 'Submitted: ' + dateStr;
+
       document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-      document.getElementById('screen-done').classList.add('active');
       document.getElementById('timerDisplay').style.display='none';
-      document.getElementById('headerLabel').textContent='Mock Exam — Submitted';
+
+      if(rec.results_published){
+        // Show "results ready" screen
+        var dateEl2 = document.getElementById('readySubmittedDate');
+        if(dateEl2 && dateStr) dateEl2.textContent = 'Submitted: ' + dateStr;
+        document.getElementById('screen-ready').classList.add('active');
+        document.getElementById('headerLabel').textContent='Mock Exam — Results Ready';
+      } else {
+        // Still waiting for mentor
+        var dateEl = document.getElementById('submittedDate');
+        if(dateEl && dateStr) dateEl.textContent = 'Submitted: ' + dateStr;
+        document.getElementById('screen-done').classList.add('active');
+        document.getElementById('headerLabel').textContent='Mock Exam — Submitted';
+      }
     }
     // else: normal intro is already shown
   } catch(e){ console.warn('Could not check submission status:', e); }
