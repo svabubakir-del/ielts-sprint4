@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -4252,6 +4252,24 @@
             hideToolbar();
         }
     });
+})();
+</script>
+<script>
+(function(){
+  var LOCK_MIN=50, end=Date.now()+LOCK_MIN*60000;
+  function getBtn(){return document.querySelector('#deliver-btn,#deliver-button,.deliver-button,[id*=deliver]');}
+  setTimeout(function(){
+    var btn=getBtn();if(!btn)return;
+    var orig=btn.innerHTML;
+    btn.disabled=true;btn.style.opacity='0.5';btn.style.cursor='not-allowed';
+    var iv=setInterval(function(){
+      var b=getBtn();if(!b){clearInterval(iv);return;}
+      var rem=Math.max(0,end-Date.now());
+      var m=Math.floor(rem/60000),s=Math.floor((rem%60000)/1000);
+      if(rem<=0){clearInterval(iv);b.disabled=false;b.style.opacity='';b.style.cursor='';b.innerHTML=orig;}
+      else{b.disabled=true;b.innerHTML='&#9203; '+(m<10?'0':'')+m+':'+(s<10?'0':'')+s+' remaining';}
+    },1000);
+  },800);
 })();
 </script>
 </body>
