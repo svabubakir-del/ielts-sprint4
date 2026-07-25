@@ -139,6 +139,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
 (function(){
 "use strict";
 
+var LISTENING_KEY = {
+  'q1': ['central'],'q2': ['address'],'q3': ['pool'],'q4': ['reception'],'q5': ['view'],
+  'q6': ['price', 'prices'],'q7': ['spanish'],'q8': ['july'],'q9': ['903036602'],'q10': ['cliffton'],
+  'q11': 'A','q12': 'C','q13': 'C','q14': 'B','q15': 'C','q16': 'F','q17': 'B','q18': 'A','q19': 'E','q20': 'D',
+  'q21': 'C','q22': 'A','q23': 'A','q24': 'A','q25': 'E','q26': 'G','q27': 'C','q28': 'A','q29': 'B','q30': 'H',
+  'q31': ['temperature'],'q32': ['movements'],'q33': ['bones'],'q34': ['bushes'],'q35': ['roots'],
+  'q36': ['sharks'],'q37': ['chicks'],'q38': ['feathers'],'q39': ['space', 'spaces'],'q40': ['diversity']
+};
+var READING_KEY = {
+  '1': 'FALSE','2': 'NOT GIVEN','3': 'TRUE','4': 'FALSE','5': 'NOT GIVEN','6': 'FALSE',
+  '7': 'His diaries','8': '3/Three years','9': 'Chains','10': 'Governor Philip','11': 'June 1789','12': 'China','13': 'Botany Bay',
+  '14': 'A','15': 'D','16': 'B','17': 'D','18': 'C','19': 'B','20': 'D','21': 'A',
+  '22': 'workplace injury','23': '16.6 weeks','24': '7%','25': 'golf','26': 'massage',
+  '27': 'C','28': 'D','29': 'B','30': 'A','31': 'D','32': 'C',
+  '33': 'marketing teams','34': 'external designers','35': 'consumers','36': 'in-house designers','37': 'design engineers',
+  '38': 'B','39': 'B','40': 'A'
+};
+
+function checkIsCorrect(studentAns, correctAns){
+  if(studentAns === undefined || studentAns === null || String(studentAns).trim()==='') return null; // not answered
+  var sa = String(studentAns).trim().toLowerCase();
+  if(Array.isArray(correctAns)){
+    return correctAns.some(function(c){ return String(c).trim().toLowerCase() === sa; });
+  }
+  return String(correctAns).trim().toLowerCase() === sa;
+}
+
 // ── AUTH ────────────────────────────────────────────────────────────────────
 var session = null;
 try {
@@ -337,10 +364,12 @@ function buildCard(sid, info, exam){
     var rb = exam.reading_band ? ' B' + exam.reading_band : '';
     var wt1 = exam.writing_t1_words || 0;
     var wt2 = exam.writing_t2_words || 0;
+    var sentBadge = exam.results_published ? '<span class="pill" style="background:#e6f6ec;color:#1f9d55;">&#10003; Sent</span>' : '<span class="pill" style="background:#fef3c7;color:#92400e;">&#9203; Pending review</span>';
     pillsHtml = '<div class="score-pills">' +
       '<span class="pill listen">&#127911; L: ' + ls + lb + '</span>' +
       '<span class="pill read">&#128214; R: ' + rs + rb + '</span>' +
       '<span class="pill write">&#9999;&#65039; W: T1:' + wt1 + 'w T2:' + wt2 + 'w</span>' +
+      sentBadge +
       '</div>';
   } else {
     pillsHtml = '<div class="score-pills"><span class="pill pending">Not submitted</span></div>';
@@ -384,28 +413,46 @@ function buildDetail(sid, exam){
     '<div class="detail-tab active" onclick="switchTab(\'' + sid + '\',\'listening\',this)">&#127911; Listening Answers</div>' +
     '<div class="detail-tab" onclick="switchTab(\'' + sid + '\',\'reading\',this)">&#128214; Reading Answers</div>' +
     '<div class="detail-tab" onclick="switchTab(\'' + sid + '\',\'writing\',this)">&#9999;&#65039; Writing Essays</div>' +
+    '<div class="detail-tab" onclick="switchTab(\'' + sid + '\',\'speaking\',this)">&#127908; Speaking</div>' +
   '</div>';
 
   // Listening answers pane
   var liAnswers = exam.listening_answers || {};
   var liRows = '';
   for(var i=1;i<=40;i++){
-    var ans = liAnswers[String(i)] || '&#8212;';
-    liRows += '<tr><td style="color:#6b7280;font-weight:700;">' + i + '</td><td>' + esc(String(ans)) + '</td></tr>';
+    var key = 'q'+i;
+    var rawAns = liAnswers[String(i)];
+    var hasAns = rawAns !== undefined && rawAns !== null && String(rawAns).trim() !== '';
+    var ans = hasAns ? String(rawAns) : 'N/A';
+    var correct = LISTENING_KEY[key];
+    var isCorrect = hasAns ? checkIsCorrect(rawAns, correct) : null;
+    var cellClass = isCorrect === true ? 'correct-cell' : isCorrect === false ? 'wrong-cell' : '';
+    var correctDisplay = Array.isArray(correct) ? correct[0] : correct;
+    liRows += '<tr><td style="color:#6b7280;font-weight:700;">' + i + '</td>' +
+      '<td class="' + cellClass + '">' + esc(ans) + (isCorrect===true?' &#10003;':isCorrect===false?' &#10007;':'') + '</td>' +
+      '<td class="ans-key">' + (isCorrect===false ? esc(String(correctDisplay)) : '') + '</td></tr>';
   }
   var liPane = '<div class="tab-pane active" id="pane-' + sid + '-listening">' +
-    '<table class="answer-table"><thead><tr><th>#</th><th>Student Answer</th></tr></thead><tbody>' + liRows + '</tbody></table>' +
+    '<table class="answer-table"><thead><tr><th>#</th><th>Student Answer</th><th>Correct Answer</th></tr></thead><tbody>' + liRows + '</tbody></table>' +
   '</div>';
 
   // Reading answers pane
   var rAnswers = exam.reading_answers || {};
   var rRows = '';
   for(var j=1;j<=40;j++){
-    var rans = rAnswers[String(j)] || '&#8212;';
-    rRows += '<tr><td style="color:#6b7280;font-weight:700;">' + j + '</td><td>' + esc(String(rans)) + '</td></tr>';
+    var rkey = String(j);
+    var rawRAns = rAnswers[rkey];
+    var hasRAns = rawRAns !== undefined && rawRAns !== null && String(rawRAns).trim() !== '';
+    var rans = hasRAns ? String(rawRAns) : 'N/A';
+    var rCorrect = READING_KEY[rkey];
+    var rIsCorrect = hasRAns ? checkIsCorrect(rawRAns, rCorrect) : null;
+    var rCellClass = rIsCorrect === true ? 'correct-cell' : rIsCorrect === false ? 'wrong-cell' : '';
+    rRows += '<tr><td style="color:#6b7280;font-weight:700;">' + j + '</td>' +
+      '<td class="' + rCellClass + '">' + esc(rans) + (rIsCorrect===true?' &#10003;':rIsCorrect===false?' &#10007;':'') + '</td>' +
+      '<td class="ans-key">' + (rIsCorrect===false ? esc(String(rCorrect)) : '') + '</td></tr>';
   }
   var rPane = '<div class="tab-pane" id="pane-' + sid + '-reading">' +
-    '<table class="answer-table"><thead><tr><th>#</th><th>Student Answer</th></tr></thead><tbody>' + rRows + '</tbody></table>' +
+    '<table class="answer-table"><thead><tr><th>#</th><th>Student Answer</th><th>Correct Answer</th></tr></thead><tbody>' + rRows + '</tbody></table>' +
   '</div>';
 
   // Writing pane
@@ -443,7 +490,37 @@ function buildDetail(sid, exam){
     '</div>' +
   '</div>';
 
-  return overview + tabs + liPane + rPane + wPane;
+  // Speaking pane (no recording — manual band + feedback entry)
+  var sPane = '<div class="tab-pane" id="pane-' + sid + '-speaking">' +
+    '<div style="background:#f7f8fa;border:1px solid #e2e4e8;border-radius:8px;padding:16px;margin-bottom:16px;font-size:13.5px;color:#6b7280;">' +
+      '&#8505;&#65039; The platform does not record speaking. Conduct the speaking test separately with this student, then enter their band score and feedback below.' +
+    '</div>' +
+    '<div class="feedback-area" style="margin-top:0;">' +
+      '<label class="feedback-label">Feedback for Speaking:</label>' +
+      '<textarea class="feedback-textarea" id="fb-speaking-' + sid + '" placeholder="Write your feedback here&#8230;">' + esc(exam.speaking_feedback || '') + '</textarea>' +
+      '<div class="band-row">' +
+        '<label style="font-size:13px;font-weight:700;">Band:</label>' +
+        '<select class="band-select" id="band-speaking-' + sid + '">' + bandOptions(exam.speaking_band) + '</select>' +
+        '<button class="save-feedback-btn" id="savebtn-speaking-' + sid + '" onclick="saveFeedback(\'' + examId + '\',\'' + sid + '\',\'speaking\')">Save Feedback</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  // Send Results section
+  var isPublished = !!exam.results_published;
+  var sendSection = '<div style="margin-top:24px;padding-top:20px;border-top:2px solid #e2e4e8;">';
+  if(isPublished){
+    sendSection += '<div style="background:#e6f6ec;border:1px solid #6ee7b7;border-radius:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">' +
+      '<span style="color:#1f9d55;font-weight:700;font-size:14px;">&#10003; Results sent to student</span>' +
+      '<button class="save-feedback-btn" style="background:#fff;color:#0F5C6B;border:1px solid #0F5C6B;" onclick="sendResults(\'' + examId + '\',\'' + sid + '\')">Re-send / Update</button>' +
+    '</div>';
+  } else {
+    sendSection += '<button class="save-feedback-btn" style="background:#1f9d55;padding:12px 24px;font-size:15px;" onclick="sendResults(\'' + examId + '\',\'' + sid + '\')">&#128228; Send Results to Student</button>' +
+    '<p style="font-size:12.5px;color:#94a3b8;margin-top:8px;">The student will not see any scores or feedback until you click this button.</p>';
+  }
+  sendSection += '</div>';
+
+  return overview + tabs + liPane + rPane + wPane + sPane + sendSection;
 }
 
 function bandOptions(selected){
@@ -507,6 +584,39 @@ async function saveFeedback(examId, sid, task){
   }
 }
 window.saveFeedback = saveFeedback;
+
+// ── SEND RESULTS TO STUDENT ────────────────────────────────────────────────
+async function sendResults(examId, sid){
+  var info = allStudents[sid] || {};
+  var msg = 'Send results to ' + (info.name || 'this student') + '? They will immediately be able to see their scores, essays, and your feedback.';
+  if(!confirm(msg)) return;
+
+  var db = getSB(); if(!db) return;
+  try {
+    var res = await db.from('mock_exams').update({
+      results_published: true,
+      results_published_at: new Date().toISOString()
+    }).eq('id', examId);
+    if(res.error) throw res.error;
+    // refresh this card's data
+    var examIdx = allExams.findIndex(function(e){ return e.id === examId; });
+    if(examIdx >= 0){
+      allExams[examIdx].results_published = true;
+    }
+    applyFilters();
+    // re-expand the card so mentor sees updated state
+    setTimeout(function(){
+      var card = document.querySelector('.student-card[data-sid="' + sid + '"]');
+      if(card){
+        toggleCard(sid);
+        card.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    }, 100);
+  } catch(err){
+    alert('Failed to send results: ' + (err.message || JSON.stringify(err)));
+  }
+}
+window.sendResults = sendResults;
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function esc(str){
