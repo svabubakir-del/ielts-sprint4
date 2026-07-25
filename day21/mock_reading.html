@@ -3163,6 +3163,19 @@
               if(window.parent&&window.parent!==window)window.parent.postMessage(msg,'*');
               if(window.opener)window.opener.postMessage(msg,'*');
             })();
+            setTimeout(function(){
+              document.querySelectorAll('.correct,.incorrect,.correct-answer-text,.correct-answer-display,[class*="correct-ans"]').forEach(function(el){
+                if(el.classList.contains('correct-answer-text')||el.classList.contains('correct-answer-display')){
+                  el.style.display='none';
+                } else {
+                  el.classList.remove('correct','incorrect');
+                }
+              });
+              var ov=document.createElement('div');
+              ov.style.cssText='position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;font-family:-apple-system,Arial,sans-serif;text-align:center;padding:24px;';
+              ov.innerHTML='<div style="font-size:64px;margin-bottom:16px;">&#10003;</div><h2 style="font-size:24px;font-weight:800;color:#1f9d55;margin-bottom:10px;">Section Submitted</h2><p style="color:#6b7280;font-size:15px;max-width:360px;">Your answers have been recorded. Please return to the exam window to continue.</p>';
+              document.body.appendChild(ov);
+            }, 50);
             document.body.classList.add('results-mode');
             document.getElementById('results-modal').classList.remove('hidden');
             
