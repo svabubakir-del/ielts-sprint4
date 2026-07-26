@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IELTS Sprint4 — Day 22</title>
+<style>
+:root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+*{box-sizing:border-box;}html,body{margin:0;height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+.brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+.daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+.teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+.dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+.content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+.task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+.task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+.task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+.card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+.instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+.wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+.passage-text{line-height:1.85;font-size:15.5px;}
+input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+input.fill.short{width:90px;}input.fill.med{width:200px;}input.fill.wide{width:260px;}
+input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+.q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+.q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+.opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+.tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+.btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+.btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+.check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+.answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+.answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";}.answer-key[open] summary::before{content:"▾";}
+.answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+.status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+.confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+.wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}.wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}.wf-table th{background:var(--accent-light);font-weight:700;}
+.navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+.nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+.completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+.completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+.big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+.completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+.hl{background:#ffe45c;border-radius:2px;}
+.hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+.hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 22</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+<div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+<div class="card"><h3>Word list</h3><div class="wordbank">
+<span class="chip">camouflage</span><span class="chip">decentralized</span><span class="chip">cognition</span><span class="chip">invertebrate</span><span class="chip">chromatophore</span><span class="chip">mimicry</span><span class="chip">dexterity</span><span class="chip">elusive</span><span class="chip">predation</span><span class="chip">distributed</span><span class="chip">embedded</span><span class="chip">manipulate</span><span class="chip">perceive</span><span class="chip">startling</span><span class="chip">formidable</span><span class="chip">versatile</span><span class="chip">unravel</span><span class="chip">intricate</span><span class="chip">remarkable</span><span class="chip">vulnerable</span>
+</div></div>
+<div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+<div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+<details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+<div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+<div class="card"><h3>The octopus: an alien intelligence in our oceans</h3>
+<div class="passage-text">The octopus possesses one of the most unusual nervous systems in the animal kingdom. Rather than concentrating neural tissue in a single central brain, roughly two-thirds of an octopus's neurons are distributed throughout its eight arms, allowing each arm to sense, decide, and move with a striking degree of independence. This decentralized architecture supports one of the animal's most remarkable talents: near-instant camouflage. Thousands of chromatophores embedded in the skin can expand or contract within a fraction of a second, allowing the octopus to match the color and texture of its surroundings. This is all the more formidable given that octopuses are colorblind, leading some scientists to hypothesize that light-sensitive proteins in the skin itself may allow the animal to perceive color without using its eyes at all. Certain species take camouflage further through active mimicry, imitating the appearance and movement of far more dangerous animals to avoid predation. Researchers continue trying to unravel exactly how such intricate, coordinated behavior emerges from a nervous system with no single command center — a genuinely elusive question that challenges long-held assumptions about where complex cognition can arise.</div>
+</div>
+<div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+<div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+<details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+<div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+<div class="card"><h3>The Distributed Mind: Cognition and Camouflage in Cephalopods</h3><p class="instr">Advanced reading on decentralized nervous systems, chromatophores, mimicry, and manipulation in octopuses — with full vocabulary glossary and comprehension questions inside.</p><a class="btn link-out" href="article-day-22.html" target="_blank" rel="noopener">📄 Open article</a></div>
+<div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+<div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+<div class="card"><a class="btn link-out" href="passage_day_22.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+<div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+<div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the passage, then answer all questions below.</p></div>
+<div class="card"><h3>The Cephalopod Paradox: Short Lives, Complex Minds</h3>
+<div class="passage-text">One of the most persistent puzzles in the study of cephalopod cognition is what researchers sometimes call the cephalopod paradox: the striking mismatch between the octopus's remarkable cognitive sophistication and its exceptionally short lifespan. Most octopus species live no more than one to two years, and many die shortly after reproducing. This is highly unusual among animals capable of complex learning, tool use, and problem-solving, since such abilities typically evolve in long-lived species that can pass knowledge between generations or refine behavior over repeated experience.<br><br>
+Vertebrate examples of advanced cognition — primates, corvids, cetaceans — are almost universally long-lived, social animals that invest heavily in learning from others and often care for their young over extended periods. Octopuses, by contrast, are largely solitary and asocial, and most species provide no parental care beyond guarding their eggs until they hatch, after which the mother typically dies. There is, in short, no evident mechanism for cultural transmission of learned behavior between octopus generations, which makes their individual cognitive achievements all the more startling.<br><br>
+One hypothesis holds that octopus intelligence evolved not for long-term planning or social cooperation, but as a moment-to-moment survival tool in a uniquely dangerous environment. Having lost the protective shell of their molluscan ancestors over evolutionary time, octopuses became acutely vulnerable to predation, and researchers argue that sophisticated real-time problem-solving — rapidly assessing a threat and improvising an escape, whether through camouflage, mimicry, or manipulation of the environment — offered a more immediate survival advantage than any capacity for long-term learning ever could.<br><br>
+This hypothesis remains difficult to test directly, and an elusive full explanation for the cephalopod paradox has not yet emerged. What is clear is that octopus intelligence, whatever its evolutionary origin, evolved along an entirely separate path from vertebrate cognition, making these animals one of the most valuable natural experiments available for understanding how intelligence can arise from fundamentally different biological starting points.</div>
+</div>
+<div class="card"><h4>Section 1 — True / False / Not Given (5 questions)</h4>
+<p class="instr">Write True, False, or Not Given based on the passage above.</p>
+<div id="t5TFList"></div>
+</div>
+<div class="card"><h4>Section 2 — Short answer (3 questions)</h4>
+<p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+<div class="passage-text">
+<p>6. What is the term used to describe the mismatch between octopus intelligence and lifespan?<br><input class="fill med" id="t5s6"></p>
+<p>7. What do most vertebrate examples of advanced cognition have in common, besides being long-lived?<br><input class="fill med" id="t5s7"></p>
+<p>8. What did octopuses lose over evolutionary time that made them more vulnerable to predation?<br><input class="fill med" id="t5s8"></p>
+</div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+<details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+<div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage carefully and answer the comprehension questions.</p></div>
+<div class="card"><h3>Passage A — The Mimic Octopus and Behavioral Flexibility</h3>
+<div class="passage-text">Discovered in the coastal waters of Indonesia in the late 1990s, the mimic octopus quickly became one of the most studied examples of animal mimicry. Unlike simple camouflage, which involves matching the background, the mimic octopus actively imitates the appearance and movement of other, more dangerous marine animals — flattening its body and rippling its arms to resemble a venomous flatfish, or extending two arms in opposite directions across the seafloor to imitate the banded pattern of a sea snake. What has drawn the most scientific attention is not the mimicry itself but the apparent flexibility behind it: field observations suggest the octopus selects which animal to imitate based on the specific predator threatening it at that moment, rather than performing a single fixed disguise regardless of context. This implies the animal must perceive and assess its immediate surroundings before selecting an appropriate response — a level of behavioral flexibility rarely documented in invertebrates, and one that continues to shape how researchers think about the relationship between nervous system architecture and adaptive intelligence.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+<div id="t6aMcqList"></div>
+</div>
+<div class="card"><h3>Passage B — Skin as a Sensory Organ</h3>
+<div class="passage-text">Perhaps the most startling recent discovery in cephalopod biology concerns the skin itself. Researchers studying cuttlefish and octopus tissue have identified light-sensitive proteins, called opsins, embedded directly in skin cells — the same class of proteins found in the retinas of eyes. This has led to the hypothesis that cephalopods may be able to detect light, and possibly even distinguish wavelengths associated with different colors, through their skin, entirely independent of their eyes. If confirmed, this would help resolve a longstanding puzzle: how a colorblind animal manages to camouflage so precisely against colored backgrounds. Critics of the hypothesis note that detecting light is not the same as processing complex visual information, and caution that the skin's light sensitivity may serve a more limited function, such as fine-tuning the timing of camouflage responses rather than providing full color vision. Nevertheless, the discovery has opened an entirely new avenue of research into how sensory perception might be distributed across an organism's body rather than confined to specialized organs.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+<div id="t6bMcqList"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+<details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+<div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+<div class="card"><h3>Passage 1 — Tool Use in Octopuses</h3>
+<div class="passage-text">In 2009, researchers documented veined octopuses in Indonesian waters collecting discarded coconut shell halves, carrying them across the seafloor while curled awkwardly around their own bodies, and later assembling the two halves together to form a protective shelter. This behavior was considered remarkable because carrying the shells provided no immediate benefit and arguably made the octopus more vulnerable to predation during transport — the payoff came later, when the assembled shelter was needed. Many researchers consider this one of the clearest examples of tool use in an invertebrate, since the octopus appeared to anticipate a future need rather than simply reacting to an immediate threat.</div>
+<div id="t7p1List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 2 — Observational Learning</h3>
+<div class="passage-text">A frequently cited 1992 study reported that octopuses could learn to solve a simple task — choosing between a red ball and a white ball to receive a food reward — simply by observing another octopus perform the task successfully. If accurate, this would represent a striking example of social learning in an animal with no evident capacity for parental teaching or extended social contact. However, subsequent attempts to replicate the original findings have produced mixed results, and some researchers remain skeptical that octopuses truly learn through observation in the way primates or birds do. The debate remains unresolved and illustrates how difficult it can be to draw firm conclusions about cognition in animals whose sensory and nervous systems differ so dramatically from our own.</div>
+<div id="t7p2List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 3 — The Cost of Camouflage</h3>
+<div class="passage-text">While camouflage offers octopuses a formidable defense against predation, maintaining the ability is not without cost. Producing and controlling thousands of chromatophores requires continuous neural signaling, and the muscles surrounding each pigment sac must remain in a state of readiness to contract or expand within milliseconds. Researchers estimate that this places a measurable metabolic demand on the animal, meaning that even when an octopus is at rest and displaying no visible pattern, its skin is far from biologically idle. This continuous physiological cost may help explain why octopuses spend a considerable portion of their time hidden in dens rather than exposed on open terrain, where the demands of sustained camouflage would be greatest.</div>
+<div id="t7p3List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 4 — Why Cephalopods Matter to Neuroscience</h3>
+<div class="passage-text">Beyond their intrinsic biological interest, cephalopods have become an important model organism for neuroscience precisely because their nervous systems evolved entirely independently from those of vertebrates. Any cognitive or sensory capability that both lineages have independently developed — such as complex problem-solving, camouflage-based communication, or flexible behavioral responses to threat — offers researchers a natural experiment in convergent evolution. If two nervous systems built on completely different architectural principles arrive at similar cognitive outcomes, it suggests that certain forms of intelligence may not depend on any single biological blueprint, but can emerge whenever a nervous system faces comparable evolutionary pressures. This makes the octopus, despite its short lifespan and solitary existence, one of the most scientifically valuable animals for understanding the raw ingredients of intelligence itself.</div>
+<div id="t7p4List" style="margin-top:12px;"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+<details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 -->
+<section class="task" id="task8" data-task="8">
+<div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Vocabulary recap</h2><p class="task-sub">Five vocabulary exercises using all 20 words from today.</p></div>
+<div class="card"><h4>Task A — Match the word to its definition (10 words)</h4>
+<p class="instr">Match each word to the correct definition (A–J).</p>
+<div class="wordbank" style="margin-bottom:12px;"><span class="chip">A. Not controlled from a single central point</span><span class="chip">B. Difficult to find, catch, or achieve</span><span class="chip">C. Fixed firmly and deeply within a surrounding structure</span><span class="chip">D. To become aware of something through the senses</span><span class="chip">E. Surprising or shocking in a striking way</span><span class="chip">F. Inspiring fear or respect through impressive capability</span><span class="chip">G. Able to adapt or be used in many different ways</span><span class="chip">H. Very complicated or detailed in structure</span><span class="chip">I. Worthy of attention because unusual or exceptional</span><span class="chip">J. Susceptible to being harmed or attacked</span></div>
+<div id="t8aList"></div>
+</div>
+<div class="card"><h4>Task B — Gap fill (10 sentences)</h4>
+<p class="instr">Complete each sentence with ONE word from the box.</p>
+<div class="wordbank" style="margin-bottom:12px;"><span class="chip">camouflage</span><span class="chip">cognition</span><span class="chip">invertebrate</span><span class="chip">mimicry</span><span class="chip">dexterity</span><span class="chip">predation</span><span class="chip">distributed</span><span class="chip">manipulate</span><span class="chip">unravel</span><span class="chip">remarkable</span></div>
+<div id="t8bList" class="passage-text"></div>
+</div>
+<div class="card"><h4>Task C — Choose the correct word</h4>
+<p class="instr">Choose the best option (A or B) for each sentence.</p>
+<div id="t8cList"></div>
+</div>
+<div class="card"><h4>Task D — Word families</h4>
+<p class="instr">Complete the table with the correct form of each word.</p>
+<table class="wf-table">
+<tr><th>Noun</th><th>Verb</th><th>Adjective</th></tr>
+<tr><td>cognition</td><td>—</td><td><input class="fill short" id="wf1"></td></tr>
+<tr><td><input class="fill short" id="wf2"></td><td>camouflage</td><td>camouflaged</td></tr>
+<tr><td>perception</td><td>perceive</td><td><input class="fill short" id="wf3"></td></tr>
+<tr><td>manipulation</td><td>manipulate</td><td><input class="fill short" id="wf4"></td></tr>
+<tr><td><input class="fill short" id="wf5"></td><td>—</td><td>vulnerable</td></tr>
+<tr><td>distribution</td><td><input class="fill short" id="wf6"></td><td>distributed</td></tr>
+<tr><td><input class="fill short" id="wf7"></td><td>—</td><td>elusive</td></tr>
+<tr><td>versatility</td><td>—</td><td><input class="fill short" id="wf8"></td></tr>
+<tr><td>predator</td><td>—</td><td><input class="fill short" id="wf9"></td></tr>
+<tr><td><input class="fill short" id="wf10"></td><td>—</td><td>intricate</td></tr>
+</table>
+</div>
+<div class="card"><h4>Task E — Error correction</h4>
+<p class="instr">Each sentence contains ONE incorrect vocabulary word. Write the correct word in the box.</p>
+<div id="t8eList" class="passage-text"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask8()">Check all vocab tasks</button></div>
+<details class="answer-key" id="ansKey8"><summary>Answer key</summary><div class="answer-key-body" id="ansKey8Body"></div></details>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 22 of 30</div>
+  <h1>Congratulations — Day 22 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 23.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=22,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day22_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+
+var LS_ANS="sprint4_day22_ans";
+function saveAns(id,val){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");a[id]=val;localStorage.setItem(LS_ANS,JSON.stringify(a));}catch(e){}}
+function restoreAnswersFromLS(){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");Object.keys(a).forEach(function(id){if(id.startsWith("radio_")){var name=id.replace("radio_","");var el=document.querySelector("input[name=\""+name+"\"][value=\""+a[id]+"\"]");if(el)el.checked=true;}else{var el=document.getElementById(id);if(el)el.value=a[id];}});}catch(e){}}
+
+var isLocked=false;
+function makeRO(){
+  isLocked=true;
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll(".btn.secondary").forEach(function(btn){if(btn.textContent.trim().startsWith("Check"))btn.style.display="none";});
+  document.querySelectorAll(".answer-key").forEach(function(el){el.classList.add("show");});
+  var db=document.getElementById("doneBtn");db.disabled=false;db.textContent="Next \u2192";db.style.background="#475569";
+  var banner=document.createElement("div");
+  banner.style.cssText="position:fixed;top:0;left:0;right:0;background:#1f9d55;color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:700;z-index:200;";
+  banner.textContent="Review mode \u2014 Day 22 is complete. Your answers are saved and locked.";
+  document.body.insertBefore(banner,document.body.firstChild);
+}
+
+var debTimers={};
+function autosave(id,val){saveAns(id,val);if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(/^t8|^wf/.test(id))return 8;return 1;}
+function hookAutosave(){
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("input",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});el.addEventListener("change",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("change",function(){if(el.checked){saveAns("radio_"+el.name,el.value);autosave("radio_"+el.name,el.value);}});});
+}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day22_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){if(isLocked){if(current<TOTAL_TASKS){current++;saveState();showTask(current);}return;}taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");makeRO();fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isLocked||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode||isLocked)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="\u2705 Passage submitted \u2014 score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var VA_segs=["The octopus is one of the most cognitively surprising creatures known to science, largely because its neurons are ","/*1=distributed*/"," across its arms rather than concentrated in a single organ. This ","/*2=decentralized*/"," architecture allows each arm to move and sense with striking independence, complicating any simple picture of animal ","/*3=cognition*/",". As an ","/*4=invertebrate*/"," with no shell or skeleton, the octopus is highly ","/*5=vulnerable*/"," to attack, and its most famous defense is ","/*6=camouflage*/",": thousands of ","/*7=chromatophore*/","s ","/*8=embedded*/"," in the skin can be triggered to reveal or hide pigment almost instantly. This is all the more ","/*9=startling*/"," given that octopuses are colorblind, a fact that remains genuinely ","/*10=elusive*/"," to fully explain. Certain species go further, using active ","/*11=mimicry*/"," to imitate more dangerous animals and reduce their risk of ","/*12=predation*/",". Their arms also display extraordinary ","/*13=dexterity*/",", allowing them to ","/*14=manipulate*/"," small objects with remarkable precision. Researchers continue to ","/*15=unravel*/"," exactly how such ","/*16=intricate*/"," coordination is possible without a centralized brain, a genuinely ","/*17=remarkable*/"," scientific puzzle. Its ","/*18=versatile*/"," arms serve equally well in locomotion, feeding, and defense, and its capacity to ","/*19=perceive*/"," subtle changes in its surroundings makes it a ","/*20=formidable*/"," survivor despite its physical fragility."];
+var VA_ans={1:"distributed",2:"decentralized",3:"cognition",4:"invertebrate",5:"vulnerable",6:"camouflage",7:"chromatophore",8:"embedded",9:"startling",10:"elusive",11:"mimicry",12:"predation",13:"dexterity",14:"manipulate",15:"unravel",16:"intricate",17:"remarkable",18:"versatile",19:"perceive",20:"formidable"};
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){if(s.startsWith("/*")){var w=VA_ans[g];var cl=w.length>11?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+g+"\"> ";g++;}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_words=["camouflage","decentralized","cognition","invertebrate","chromatophore","mimicry","dexterity","elusive","predation","distributed","embedded","manipulate","perceive","startling","formidable"];
+var VB_defs={A:"The disguising of an animal's appearance to blend with its surroundings",B:"Not controlled from a single central point",C:"The mental processes involved in acquiring knowledge",D:"An animal lacking a backbone or internal skeleton",E:"A pigment-containing cell in the skin capable of changing color",F:"The close imitation of another organism's appearance, often for defense",G:"Skill and precision in using the hands or limbs",H:"Difficult to find, catch, or achieve",I:"The act of one animal hunting and killing another for food",J:"Spread out across a wide area rather than concentrated",K:"Fixed firmly and deeply within a surrounding structure",L:"To handle or control something skillfully",M:"To become aware of something through the senses",N:"Surprising or shocking in a striking way",O:"Inspiring fear or respect through impressive capability"};
+var VB_ans={1:"A",2:"B",3:"C",4:"D",5:"E",6:"F",7:"G",8:"H",9:"I",10:"J",11:"K",12:"L",13:"M",14:"N",15:"O"};
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var letters=Object.keys(VB_defs).sort();var optHtml="<option value=\"\">--</option>"+letters.map(function(l){return "<option value=\""+l+"\">"+l+"</option>";}).join("");var html="<p class=\"instr\" style=\"margin-bottom:12px;\">";letters.forEach(function(l){html+="<b>"+l+".</b> "+VB_defs[l]+"<br>";});html+="</p>";VB_words.forEach(function(w,idx){var n=idx+1;html+="<div class=\"q-text\" style=\"margin-bottom:8px;\">"+n+". "+w+" &rarr; <select class=\"fill\" id=\"vb"+n+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById("vb"+j);if(sel&&sel.value===VB_ans[j])rB++;}alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/15");document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" &nbsp;\u2022&nbsp; ")+"<br><br><b>B:</b><br>"+VB_words.map(function(w,i){return (i+1)+". "+VB_ans[i+1];}).join(" &nbsp;\u2022&nbsp; ");document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[
+  {n:1,s:"Roughly two-thirds of an octopus's neurons are located in its central brain rather than its arms.",tf:"False"},
+  {n:2,s:"Chromatophores can expand or contract within a fraction of a second.",tf:"True"},
+  {n:3,s:"Octopuses are able to camouflage even though they are colorblind.",tf:"True"},
+  {n:4,s:"According to the passage, all octopus species practice active mimicry of dangerous animals.",tf:"False"},
+  {n:5,s:"Researchers have fully explained how a decentralized nervous system coordinates complex behavior.",tf:"False"}
+];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var c=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[
+  {n:1,s:"Most octopus species live for many years, similar to long-lived vertebrates known for advanced cognition.",tf:"False",opts:["True","False","Not Given"]},
+  {n:2,s:"Most primates and corvids known for advanced cognition are long-lived and social.",tf:"True",opts:["True","False","Not Given"]},
+  {n:3,s:"Octopus mothers typically survive well beyond the hatching of their eggs to care for their young.",tf:"False",opts:["True","False","Not Given"]},
+  {n:4,s:"The passage confirms with certainty that octopus intelligence evolved solely as a real-time survival tool.",tf:"Not Given",opts:["True","False","Not Given"]},
+  {n:5,s:"Octopuses are considered valuable for understanding intelligence because their nervous system evolved separately from vertebrates.",tf:"True",opts:["True","False","Not Given"]}
+];
+(function buildT5TF(){var wrap=document.getElementById("t5TFList");var html="";t5TFData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\">";q.opts.forEach(function(opt){html+="<label><input type=\"radio\" name=\"t5tf"+q.n+"\" value=\""+opt+"\"> "+opt+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkTask5(){var rTF=0,rS=0;t5TFData.forEach(function(q){var c=document.querySelector("input[name=\"t5tf"+q.n+"\"]:checked");if(c&&c.value===q.tf)rTF++;});["t5s6","t5s7","t5s8"].forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var v=el.value.trim().toLowerCase();var ok=(i===0&&v.indexOf("paradox")>=0)||(i===1&&(v.indexOf("social")>=0||v.indexOf("long-lived")>=0))||(i===2&&v.indexOf("shell")>=0);if(ok)rS++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("T/F/NG: "+rTF+"/5\nShort answer: "+rS+"/3");document.getElementById("ansKey5Body").innerHTML="<b>T/F/NG:</b> 1.False 2.True 3.False 4.Not Given 5.True<br><br><b>Short answer:</b><br>6. (The cephalopod) paradox<br>7. Social (and long-lived)<br>8. (Their protective) shell";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[
+  {n:1,q:"What distinguishes the mimic octopus's behavior from simple camouflage?",opts:["It only changes its skin color, never its body shape.","It actively imitates the appearance and movement of other animals.","It relies entirely on hiding in dark crevices.","It only occurs during mating season."],ans:"B",id:"t6a1"},
+  {n:2,q:"According to the passage, what has drawn the most scientific attention regarding the mimic octopus?",opts:["The bright colors it displays while hunting","The apparent flexibility in selecting which animal to imitate","The size of its brain compared to other cephalopods","Its ability to survive in freshwater environments"],ans:"B",id:"t6a2"},
+  {n:3,q:"What must the mimic octopus do before selecting which animal to imitate?",opts:["Consult with other octopuses nearby","Perceive and assess its immediate surroundings","Wait for a change in water temperature","Return to a fixed shelter location"],ans:"B",id:"t6a3"},
+  {n:4,q:"What is notable about this behavioral flexibility according to the passage?",opts:["It is common among most invertebrate species.","It is rarely documented in invertebrates.","It has only been observed in laboratory settings.","It contradicts all previous theories of camouflage."],ans:"B",id:"t6a4"},
+  {n:5,q:"Where was the mimic octopus first discovered?",opts:["The coastal waters of Australia","The coastal waters of Indonesia","The deep waters of the Atlantic","The coral reefs of the Caribbean"],ans:"B",id:"t6a5"}
+];
+var t6bData=[
+  {n:1,q:"What have researchers identified embedded in cuttlefish and octopus skin cells?",opts:["Chromatophore-blocking enzymes","Light-sensitive proteins called opsins","Additional layers of pigment","Muscle fibers identical to those in the eye"],ans:"B",id:"t6b1"},
+  {n:2,q:"What puzzle might the discovery of skin-based light sensitivity help resolve?",opts:["Why octopuses have short lifespans","How a colorblind animal camouflages precisely against colored backgrounds","Why octopus arms can regenerate","How octopuses communicate with each other"],ans:"B",id:"t6b2"},
+  {n:3,q:"What caution do critics of the skin-sensing hypothesis raise?",opts:["That the skin cannot detect any light at all","That detecting light is not the same as processing complex visual information","That the discovery has been completely disproven","That cuttlefish and octopuses have different skin structures"],ans:"B",id:"t6b3"},
+  {n:4,q:"What alternative, more limited function do critics suggest the skin's light sensitivity might serve?",opts:["Detecting the presence of predators only","Fine-tuning the timing of camouflage responses","Regulating body temperature","Assisting with digestion of food"],ans:"B",id:"t6b4"},
+  {n:5,q:"What broader research question does this discovery raise, according to the passage?",opts:["Whether sensory perception might be distributed across the body rather than confined to specialized organs","Whether octopuses can survive without eyes entirely","Whether all invertebrates share the same skin structure","Whether camouflage is more important than mimicry"],ans:"A",id:"t6b5"}
+];
+function buildMcqBlock(data,prefix){var html="";data.forEach(function(q){html+="<div class=\"q-block\" id=\""+prefix+q.n+"Block\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\""+q.id+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});return html;}
+document.getElementById("t6aMcqList").innerHTML=buildMcqBlock(t6aData,"t6a");
+document.getElementById("t6bMcqList").innerHTML=buildMcqBlock(t6bData,"t6b");
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");var ok=c&&c.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+"Block");if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(c&&row.dataset.val===c.value)row.classList.add("wrong");});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,"t6a");var rB=checkMcqSet(t6bData,"t6b");alert("Passage A: "+rA+"/5\nPassage B: "+rB+"/5");document.getElementById("ansKey6Body").innerHTML="<b>Passage A:</b> 1.B 2.B 3.B 4.B 5.B<br><b>Passage B:</b> 1.B 2.B 3.B 4.B 5.A";document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,qs:[{n:1,s:"Veined octopuses were observed collecting coconut shell halves and assembling them into shelters.",tf:"True"},{n:2,s:"Carrying the coconut shells provided the octopus with an immediate defensive benefit during transport.",tf:"False"},{n:3,s:"This behavior is considered one of the clearest examples of tool use in an invertebrate.",tf:"True"}]},
+  {pid:2,qs:[{n:1,s:"The 1992 study found that octopuses could learn a task by observing another octopus perform it.",tf:"True"},{n:2,s:"All subsequent attempts to replicate the original findings were fully successful.",tf:"False"},{n:3,s:"The passage states that the debate over observational learning in octopuses is fully resolved.",tf:"False"}]},
+  {pid:3,qs:[{n:1,s:"Maintaining camouflage requires continuous neural signaling even when no visible pattern is displayed.",tf:"True"},{n:2,s:"The passage states that camouflage places no measurable metabolic demand on the octopus.",tf:"False"},{n:3,s:"This physiological cost may explain why octopuses spend considerable time hidden in dens.",tf:"True"}]},
+  {pid:4,qs:[{n:1,s:"Cephalopod nervous systems evolved entirely independently from those of vertebrates.",tf:"True"},{n:2,s:"The passage argues that intelligence can only emerge from one specific biological blueprint.",tf:"False"},{n:3,s:"Octopuses are considered valuable for neuroscience despite their short lifespan and solitary existence.",tf:"True"}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById("t7p"+p.pid+"List");var html="<p class=\"instr\">True or False?</p>";p.qs.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.qs.forEach(function(q){total++;var c=document.querySelector("input[name=\"t7p"+p.pid+"q"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});});alert("You got "+right+"/"+total+" correct.");var key="";t7Data.forEach(function(p){key+="<b>Passage "+p.pid+":</b> ";key+=p.qs.map(function(q){return q.n+"."+q.tf;}).join(" ");key+="<br>";});document.getElementById("ansKey7Body").innerHTML=key;document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== TASK 8 ===== */
+var t8aWords=["decentralized","elusive","embedded","perceive","startling","formidable","versatile","intricate","remarkable","vulnerable"];
+var t8aAns={t8a1:"A",t8a2:"B",t8a3:"C",t8a4:"D",t8a5:"E",t8a6:"F",t8a7:"G",t8a8:"H",t8a9:"I",t8a10:"J"};
+(function buildT8A(){var wrap=document.getElementById("t8aList");var optHtml="<option value=\"\">--</option><option value=\"A\">A</option><option value=\"B\">B</option><option value=\"C\">C</option><option value=\"D\">D</option><option value=\"E\">E</option><option value=\"F\">F</option><option value=\"G\">G</option><option value=\"H\">H</option><option value=\"I\">I</option><option value=\"J\">J</option>";var html="";t8aWords.forEach(function(w,idx){html+="<div class=\"q-text\" style=\"margin-bottom:8px;font-size:15px;\">"+w+" &rarr; <select class=\"fill\" id=\"t8a"+(idx+1)+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+var t8bSents=[{n:1,t:"Octopuses use ___ to blend seamlessly with rocks and coral on the seafloor.",ans:"camouflage",id:"t8b1"},{n:2,t:"Scientists are still trying to fully understand octopus ___ given its unusual nervous system.",ans:"cognition",id:"t8b2"},{n:3,t:"As an ___, the octopus lacks any internal skeleton or protective shell.",ans:"invertebrate",id:"t8b3"},{n:4,t:"Some species use active ___ to imitate more dangerous marine animals.",ans:"mimicry",id:"t8b4"},{n:5,t:"The octopus's arms display remarkable ___ when handling small objects.",ans:"dexterity",id:"t8b5"},{n:6,t:"Camouflage significantly reduces an octopus's risk of ___ from larger predators.",ans:"predation",id:"t8b6"},{n:7,t:"Most of the octopus's neurons are ___ throughout its eight arms.",ans:"distributed",id:"t8b7"},{n:8,t:"Researchers observed octopuses learning to ___ objects with surprising precision.",ans:"manipulate",id:"t8b8"},{n:9,t:"Scientists continue to ___ the mystery of how decentralized arms coordinate so precisely.",ans:"unravel",id:"t8b9"},{n:10,t:"The octopus's problem-solving abilities are ___ for a creature with no centralized brain.",ans:"remarkable",id:"t8b10"}];
+(function buildT8B(){var wrap=document.getElementById("t8bList");var html="";t8bSents.forEach(function(s){html+="<p>"+s.n+". "+s.t.replace("___","<input class=\"fill short\" id=\""+s.id+"\">")+"</p>";});wrap.innerHTML=html;})();
+
+var t8cData=[{n:1,t:"The octopus's arms are considered highly ___ (A: versatile / B: elusive), serving equally in locomotion, feeding, and defense.",opts:["versatile","elusive"],ans:"A",id:"t8c1"},{n:2,t:"A full explanation for skin-based color sensing remains genuinely ___ (A: formidable / B: elusive).",opts:["formidable","elusive"],ans:"B",id:"t8c2"},{n:3,t:"Coordinating eight semi-independent arms requires managing genuinely ___ (A: intricate / B: vulnerable) behavior.",opts:["intricate","vulnerable"],ans:"A",id:"t8c3"},{n:4,t:"Without a shell, octopuses are highly ___ (A: startling / B: vulnerable) to a wide range of predators.",opts:["startling","vulnerable"],ans:"B",id:"t8c4"},{n:5,t:"The speed of an octopus's camouflage response is genuinely ___ (A: startling / B: embedded) to witness.",opts:["startling","embedded"],ans:"A",id:"t8c5"}];
+(function buildT8C(){var wrap=document.getElementById("t8cList");var html="";t8cData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.t+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\""+q.id+"\" value=\"A\"> A: "+q.opts[0]+"</label><label><input type=\"radio\" name=\""+q.id+"\" value=\"B\"> B: "+q.opts[1]+"</label></div></div>";});wrap.innerHTML=html;})();
+
+var wfAns={wf1:"cognitive",wf2:"camouflage",wf3:"perceptive",wf4:"manipulative",wf5:"vulnerability",wf6:"distribute",wf7:"elude",wf8:"versatile",wf9:"predatory",wf10:"intricacy"};
+
+var t8eSents=[{n:1,t:"The octopus uses embedded to blend seamlessly with its rocky surroundings.",wrong:"embedded",ans:"camouflage",id:"t8e1"},{n:2,t:"Each arm contains a cluster of neurons capable of independent unravel and movement.",wrong:"unravel",ans:"cognition",id:"t8e2"},{n:3,t:"The chromatophores are dexterity in the outer layers of the skin.",wrong:"dexterity",ans:"embedded",id:"t8e3"},{n:4,t:"Researchers continue to formidable exactly how decentralized arms coordinate so precisely.",wrong:"formidable",ans:"unravel",id:"t8e4"},{n:5,t:"Without a shell, the octopus is highly remarkable to a wide range of predators.",wrong:"remarkable",ans:"vulnerable",id:"t8e5"}];
+(function buildT8E(){var wrap=document.getElementById("t8eList");var html="";t8eSents.forEach(function(s){var disp=s.t.replace(s.wrong,"<u>"+s.wrong+"</u>");html+="<p>"+s.n+". "+disp+"<br>&nbsp;&nbsp;Correct word: <input class=\"fill short\" id=\""+s.id+"\"></p>";});wrap.innerHTML=html;})();
+
+function checkTask8(){var rA=0,rB=0,rC=0,rD=0,rE=0;
+  Object.keys(t8aAns).forEach(function(id){var sel=document.getElementById(id);if(sel&&sel.value===t8aAns[id])rA++;});
+  t8bSents.forEach(function(s){var inp=document.getElementById(s.id);if(!inp)return;var ok=inp.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rB++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");});
+  t8cData.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");if(c&&c.value===q.ans)rC++;});
+  Object.keys(wfAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase()===wfAns[id].toLowerCase();if(ok)rD++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  t8eSents.forEach(function(s){var el=document.getElementById(s.id);if(!el)return;var ok=el.value.trim().toLowerCase()===s.ans.toLowerCase();if(ok)rE++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});
+  alert("Task A: "+rA+"/10\nTask B: "+rB+"/10\nTask C: "+rC+"/5\nTask D: "+rD+"/10\nTask E: "+rE+"/5");
+  document.getElementById("ansKey8Body").innerHTML="<b>A:</b> decentralized-A, elusive-B, embedded-C, perceive-D, startling-E, formidable-F, versatile-G, intricate-H, remarkable-I, vulnerable-J<br><br><b>B:</b> 1.camouflage 2.cognition 3.invertebrate 4.mimicry 5.dexterity 6.predation 7.distributed 8.manipulate 9.unravel 10.remarkable<br><br><b>C:</b> 1.A 2.B 3.A 4.B 5.A<br><br><b>D:</b> cognitive / camouflage / perceptive / manipulative / vulnerability / distribute / elude / versatile / predatory / intricacy<br><br><b>E:</b> 1.camouflage 2.cognition 3.embedded 4.unravel 5.vulnerable";
+  document.getElementById("ansKey8").classList.add("show");checkedTasks[8]=true;refreshDoneButton();
+}window.checkTask8=checkTask8;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+restoreAnswersFromLS();
+var _allDone=Object.keys(taskDone).every(function(k){return taskDone[k];});
+if(_allDone)makeRO();
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day22";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
