@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What if everything had a barcode?</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;display:flex;flex-direction:column;color:#111;background:#fff}.top{height:52px;border-bottom:1px solid #ddd;display:flex;justify-content:flex-end;align-items:center;gap:14px;padding:0 18px}.top button{border:0;background:#fff;color:#333;font-size:18px;width:32px;height:32px;border-radius:4px}.top button:hover{background:#f2f2f2}.banner{margin:14px 16px 0;padding:12px 18px;background:#f2f3f4;border:1px solid #ddd;border-radius:6px}.banner h2{margin:0 0 4px;font-size:18px}.banner p{margin:0}.split{flex:0 0 auto;height:82vh;display:flex;margin:12px 16px 0;border-top:1px solid #ddd}.pane{overflow:auto;padding:18px 26px 70px;min-width:180px}.left{width:50%;flex:0 0 auto}.right{flex:1}.divider{width:12px;border-left:2px solid #999;cursor:col-resize;position:relative}.divider:after{content:"";position:absolute;top:50%;left:-10px;width:20px;height:32px;margin-top:-16px;border:1px solid #ccc;border-radius:12px;background:#fff}h1{font-size:25px;margin:0 0 8px;line-height:1.25}.sub{font-size:18px;line-height:1.45;margin-top:0}.para{font-weight:700;margin-top:24px;font-size:18px}p{line-height:1.58;font-size:17px}.qgroup{margin-bottom:34px}.qgroup h3{font-size:22px;margin:0 0 10px}.qgroup p{margin:8px 0}.notes{font-size:17px;line-height:1.7}.notes h4{font-size:19px;margin:18px 0 8px}.note-row{margin:10px 0}.gap{font:inherit;border:1px solid #999;border-radius:4px;background:#fff;padding:5px 8px;width:190px;text-align:center;margin:0 5px}.tf-row{margin:22px 0 30px}.statement{display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.4;margin-bottom:14px}.qnum{display:inline-flex;justify-content:center;align-items:center;min-width:30px;height:30px;border:1px solid #ddd;border-radius:5px;font-weight:700;background:#fff}.options{display:grid;gap:16px;margin-left:42px}.options label{display:flex;gap:12px;align-items:center;font-size:17px}input[type=radio]{appearance:none;width:20px;height:20px;border:2px solid #d9d9d9;border-radius:50%;background:#fff;vertical-align:middle}input[type=radio]:checked{border-color:#c98292;box-shadow:inset 0 0 0 5px #fff;background:#c98292}.tools{position:absolute;z-index:50;display:none;background:#222;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.2)}.tools button{background:none;border:0;color:#fff;padding:6px 10px;font:inherit}.hl{background:#ffe45c}.bar{height:51px;border-top:1px solid #ddd;display:flex;align-items:center;gap:18px;padding:8px 16px;background:#fff}.tiles{display:flex;gap:6px;flex-wrap:wrap}.tile{min-width:30px;height:28px;border:1px solid #bbb;background:#fff;border-radius:3px}.tile.answered{background:#2b2b2b;color:#fff}.review{margin-left:auto;min-width:42px;height:34px;background:#ddd;border:0;border-radius:4px;font-weight:700}.overlay{position:fixed;inset:0;background:white;z-index:100;display:none;flex-direction:column;overflow:auto}.overlay.show{display:flex}.ovh{position:relative;padding:22px}.ovh h2{text-align:center;margin:0}.close{position:absolute;right:24px;top:18px;border:0;background:none;font-size:26px}.ovlist{max-width:830px;width:90%;margin:10px auto}.ovrow{width:100%;padding:18px 22px;border:1px solid #ddd;background:white;font:inherit;text-align:left}.submit{background:#cf3e45;color:white;border-color:#cf3e45;border-radius:6px;margin-bottom:18px;font-weight:700}.ok{background:#e8f6ee!important;color:#168a46!important;border-color:#168a46!important;font-weight:700}.no{background:#fdecec!important;color:#c73535!important;border-color:#c73535!important;font-weight:700}.corr{color:#168a46;font-weight:700;margin-left:8px}.tag{font-size:13px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:8px}.score{background:#f2f3f4;border:1px solid #ddd;border-radius:8px;padding:18px 22px;margin-bottom:18px}.score b{font-size:30px}@media(max-width:800px){.split{margin-left:8px;margin-right:8px}.pane{padding:14px}.left{width:48%}.gap{width:150px}}
+</style>
+</head>
+<body>
+<header class="top"><a href="day22.html" style="position:absolute;left:14px;top:14px;font-weight:700;font-size:13px;color:#2563a8;text-decoration:none;z-index:5;">← Day 22</a><button title="Network">|||</button><button title="Notifications">o</button><button title="Menu">=</button></header>
+<div class="banner"><h2>Part 1</h2><p>Read the text and answer questions 1-13.</p></div>
+<div class="split" id="split">
+<section class="pane left" id="left">
+<div id="passage">
+<h1>What if everything had a barcode?</h1>
+<p class="sub">A vast new database will let us catalogue every plant and animal on the planet and identify them in seconds. Sanjida O'Connell reports</p>
+<p>Imagine going for a walk and spotting a wild flower. Its beauty and fragrance delight you, but the name eludes you. No problem. You whip out a hand-held scanner, about the size of a mobile phone, and pop a fragment of a leaf into the device. A few seconds, and the read-out tells you that you're looking at a pyramidal orchid. Satisfied, you continue on your way. Sound far-fetched? Not at all. Scientists are currently creating a DNA barcode for every species of plant and animal on the planet. It won't be long before everyone, from experts to amateurs, will be able to scan the world's flora and fauna as if they were checking out groceries at a supermarket, to look up or confirm their identities.</p>
+<p>There are numerous practical uses too. Such a device would let you scan fish at the fishmongers to check if it's been labelled properly, work out exactly what is in your mixed vegetable soup, and confirm whether a piece of furniture really has come from a renewable forest, as the retailer claims. It would also assist forensic science teams, who could quickly identify the pollen on suspect, to link him to a particular location; customs officials, in their efforts to prevent disease-carrying pests being taken across national borders; and environmental inspectors assessing water quality, who need to work out what microbes are lurking in a particular sample.</p>
+<p>It was Professor Paul Hebert, a biologist from the University of Guelph in Canada, who came up with the idea of DNA barcoding the natural world. The inspiration came while he was walking up and down the aisles of a supermarket, marveling at the ability of the store to keep track of all the lines stocked and sold using the thick and thin lines that make up a barcode. Could scientists, he wondered, exploit a barcode system to record the millions of species on earth via their DNA?</p>
+<p>The compilation of a planetary inventory began more than 250 years ago, with the Swedish life classifier Carl Linnaeus. In 1758, he founded the science of taxonomy - a method of classifying living things based on physical and behavioral characteristics. To date, scientists have classified about 1.7 million organisms, a small fraction of the total number of species, which has been estimated at anywhere between 5 and 30 million. But taxonomy is difficult and time-consuming. Many species, such as the different kinds of flies, look remarkably similar. Only an expert who has spent years examining a particular group can distinguish one from another. Even the experts may be stumped however, when presented with an egg, an embryo, a seedling or a root. The next problem is that we are running out of time in which to complete the inventory. The International Union for the Conservation of Nature estimates that a quarter of the world's population of mammals are threatened with extinction.</p>
+<p>So, Hebert's idea centered on finding a fragment of DNA that would disclose the identity of a species without having to decode its entire genetic code. He envisaged a 'DNA barcode reader', similar to the scanners at retail checkouts. Outlining his idea in Scientific American, Hebert writes: 'An inspector at a busy seaport, a hiker on a mountain trail, or a scientist in a lab could insert a sample containing DNA - a snippet of whisker, say, or the leg of an insect - into the device, which would detect the sequence of nucleic acids in the barcode segment. This information would be instantly relayed to a reference database, a public library of DNA barcodes. Anyone, anywhere, could identify species.'</p>
+<p>To create the barcode, Hebert proposed the use of a section of DNA, from the energy-producing units found in all cells. He selected a gene that gives rise to an enzyme known as CO1. This gene is small enough to be quickly and easily deciphered but has sufficient variation for us to be able to tell most animal species apart. You and I, for instance, will have different versions of CO1, but they will be similar enough to show that we're both humans and not chimpanzees.</p>
+<p>In 2013, Hebert and his team published their first results. They showed that the barcode system could identify the group an animal came from, for example, whether it was a vertebrate, a worm or an insect, and even the species when it was stored in the barcode library. After five more years of work, results indicate that animals can now be identified by their barcodes in 98 per cent of cases. Early results have confirmed the additional benefits of the new system: for example, caterpillars of the tropical butterfly Astraptes fulgerator, which was first recognized as a species in 1775, all look very similar, and were assumed to belong to a single species. Barcoding has shown there are 100 different kinds.</p>
+<p>Of course, the value of the system depends on a comprehensive reference library of the DNA (COI) barcodes of established species. The Barcode of Life Data (BOLD) Systems is an enormous international collaboration supported by 150 institutions in 45 countries. To date, it has compiled more than 5,000,000 records from 500,000 species. The consortium is hoping that the world's birds will be barcoded by 2011. 'People have watched birds for so long that they might think every different tweet has been heard, every different color observed, but barcoding may prove otherwise,' says Professor Mark Stockle, professor of the human environment at Rockefeller University, New York, who works with Hebert. He estimates that out of the world's 100,000 bird species, DNA barcoding will distinguish at least 1,000 new ones.</p>
+</div>
+</section>
+<div class="divider" id="div"></div>
+<section class="pane right" id="right">
+<div class="qgroup">
+<h3>Questions 1-8</h3>
+<p><i>Complete the sentences below.</i></p>
+<p><i>Choose <b>NO MORE THAN THREE WORDS AND/OR A NUMBER</b> from the passage for each answer.</i></p>
+<div class="notes">
+<h4>Problems with taxonomy</h4>
+<div class="note-row">- only <input class="gap" id="gap1" placeholder="1"> species have been classified so far</div>
+<div class="note-row">- difficult to distinguish between species of certain creatures, for example <input class="gap" id="gap2" placeholder="2"></div>
+<div class="note-row">- possibility of a large number of species of <input class="gap" id="gap3" placeholder="3"> dying out soon</div>
+<h4>Hebert's system</h4>
+<div class="note-row">- decided to create a device called a <input class="gap" id="gap4" placeholder="4">, like ones used in shops</div>
+<div class="note-row">- chose a <input class="gap" id="gap5" placeholder="5"> that produces a substance called CO1</div>
+<div class="note-row">- sample of CO1 read by the device and matched with those kept in the <input class="gap" id="gap6" placeholder="6"></div>
+<div class="note-row">- current results show that <input class="gap" id="gap7" placeholder="7"> of animal species can be identified in this way</div>
+<div class="note-row">- results show different species being identified, e.g. of <input class="gap" id="gap8" placeholder="8"></div>
+</div>
+</div>
+<div class="qgroup">
+<h3>Questions 9-13</h3>
+<p>Do the following statements agree with the information given in Reading Passage 1?</p>
+<p>Choose <b>TRUE</b> if the statement agrees with the information, choose <b>FALSE</b> if the statement contradicts the information, or choose <b>NOT GIVEN</b> if there is no information on this.</p>
+<div class="tf-row" id="q9"><div class="statement"><span class="qnum">9</span><span>The writer believes that the barcode system will be widely used by the general public.</span></div><div class="options"><label><input type="radio" name="q9" value="TRUE"> TRUE</label><label><input type="radio" name="q9" value="FALSE"> FALSE</label><label><input type="radio" name="q9" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q10"><div class="statement"><span class="qnum">10</span><span>It is likely that the barcode device will show that many foods and goods have not been correctly described.</span></div><div class="options"><label><input type="radio" name="q10" value="TRUE"> TRUE</label><label><input type="radio" name="q10" value="FALSE"> FALSE</label><label><input type="radio" name="q10" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q11"><div class="statement"><span class="qnum">11</span><span>Hebert got the idea for DNA barcoding from someone who worked at a supermarket.</span></div><div class="options"><label><input type="radio" name="q11" value="TRUE"> TRUE</label><label><input type="radio" name="q11" value="FALSE"> FALSE</label><label><input type="radio" name="q11" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q12"><div class="statement"><span class="qnum">12</span><span>The number of organizations supporting Hebert's barcoding project is growing all the time.</span></div><div class="options"><label><input type="radio" name="q12" value="TRUE"> TRUE</label><label><input type="radio" name="q12" value="FALSE"> FALSE</label><label><input type="radio" name="q12" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+<div class="tf-row" id="q13"><div class="statement"><span class="qnum">13</span><span>A large number of new bird species have already been identified by the DNA barcode system.</span></div><div class="options"><label><input type="radio" name="q13" value="TRUE"> TRUE</label><label><input type="radio" name="q13" value="FALSE"> FALSE</label><label><input type="radio" name="q13" value="NOT GIVEN"> NOT GIVEN</label></div></div>
+</div>
+</section>
+</div>
+<footer class="bar"><b>Part 1</b><div class="tiles" id="tiles"></div><button class="review" id="review">OK</button></footer>
+<div class="tools" id="tools"><button data-act="hl">Highlight</button><button data-act="clear">Clear</button></div>
+<div class="overlay" id="submit"><div class="ovh"><h2>Submission page</h2><button class="close" onclick="document.getElementById('submit').classList.remove('show')">x</button></div><div class="ovlist" id="subwrap"></div></div>
+<script>
+(function(){
+var gapAnswers={
+1:['1.7 million','about 1.7 million'],
+2:['flies','different kinds of flies'],
+3:['mammals'],
+4:['DNA barcode reader','barcode reader'],
+5:['gene'],
+6:['barcode library','reference database'],
+7:['98 per cent','98 percent'],
+8:['caterpillars','tropical butterfly','Astraptes fulgerator']
+};
+var tfAnswers={9:'TRUE',10:'TRUE',11:'FALSE',12:'NOT GIVEN',13:'FALSE'},done=false;
+var tiles=document.getElementById('tiles');for(var i=1;i<=13;i++){var b=document.createElement('button');b.className='tile';b.dataset.tile=i;b.textContent=i;b.onclick=function(){scrollToQuestion(+this.dataset.tile)};tiles.appendChild(b)}
+function answered(n){if(n<=8)return document.getElementById('gap'+n).value.trim()!=='';return !!document.querySelector('input[name="q'+n+'"]:checked')}
+function refresh(){document.querySelectorAll('.tile').forEach(function(t){t.classList.toggle('answered',answered(+t.dataset.tile))})}
+function scrollToQuestion(n){(n<=8?document.getElementById('gap'+n):document.getElementById('q'+n))?.scrollIntoView({behavior:'smooth',block:'center'})}
+document.addEventListener('change',refresh);document.addEventListener('input',refresh);
+var split=document.getElementById('split'),divider=document.getElementById('div'),left=document.getElementById('left'),drag=false;divider.onmousedown=function(){drag=true;document.body.style.userSelect='none'};window.onmouseup=function(){drag=false;document.body.style.userSelect=''};window.onmousemove=function(e){if(!drag)return;var r=split.getBoundingClientRect();left.style.width=Math.max(220,Math.min(r.width-240,e.clientX-r.left))+'px'};
+var tools=document.getElementById('tools');split.onmouseup=function(){setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed||!s.rangeCount){tools.style.display='none';return}var r=s.getRangeAt(0);if(!split.contains(r.commonAncestorContainer)){tools.style.display='none';return}var rc=r.getBoundingClientRect();tools.style.display='flex';tools.style.left=(rc.left+scrollX)+'px';tools.style.top=Math.max(8,rc.top+scrollY-42)+'px'},1)};tools.onclick=function(e){var b=e.target.closest('button'),s=getSelection();if(!b||!s.rangeCount)return;var r=s.getRangeAt(0);if(b.dataset.act==='hl'){try{var sp=document.createElement('span');sp.className='hl';r.surroundContents(sp)}catch(_){document.execCommand('hiliteColor',false,'#ffe45c')}}else{document.querySelectorAll('.hl').forEach(function(h){h.replaceWith(document.createTextNode(h.textContent))})}s.removeAllRanges();tools.style.display='none'};
+document.getElementById('review').onclick=function(){var a=0;for(var n=1;n<=13;n++)if(answered(n))a++;document.getElementById('subwrap').innerHTML='<p>You have answered <b>'+a+'</b> of 13 questions.</p><p><button class="ovrow submit" id="final">Submit test</button></p>';document.getElementById('final').onclick=grade;document.getElementById('submit').classList.add('show')};
+function norm(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function tag(el,ok,msg){el.insertAdjacentHTML('afterend','<span class="tag '+(ok?'ok':'no')+'">'+msg+'</span>')}
+function grade(){if(done)return;done=true;var score=0;
+for(var n=1;n<=8;n++){var input=document.getElementById('gap'+n),v=norm(input.value),ok=gapAnswers[n].some(function(a){return v===norm(a)});if(ok)score++;input.disabled=true;input.classList.add(ok?'ok':'no');if(!ok)input.insertAdjacentHTML('afterend','<span class="corr">-&gt; '+gapAnswers[n][0]+'</span>')}
+for(var m=9;m<=13;m++){var row=document.getElementById('q'+m),picked=document.querySelector('input[name="q'+m+'"]:checked'),v=picked&&picked.value,ok=v===tfAnswers[m];if(ok)score++;row.querySelectorAll('input').forEach(function(i){i.disabled=true;if(i.value===tfAnswers[m])i.parentElement.classList.add('ok');if(v===i.value&&!ok)i.parentElement.classList.add('no')});tag(row.querySelector('.statement'),ok,ok?'Correct':(v?'Incorrect':'No answer'))}
+document.getElementById('right').insertAdjacentHTML('afterbegin','<div class="score">Your score: <b>'+score+' / 13</b></div>');document.getElementById('submit').classList.remove('show');document.getElementById('right').scrollTop=0;refresh()}
+refresh();
+})();
+</script>
+<section id="walkthroughBlock" style="display:none;padding:36px 28px 60px;background:#f2f3f4;border-top:2px solid #d0d0d0;">
+  <div style="max-width:960px;margin:0 auto;">
+    <h2 style="font-family:Arial,sans-serif;font-size:24px;margin:0 0 8px;">Walkthrough</h2>
+    <p style="font-family:Arial,sans-serif;color:#606060;margin:0 0 18px;">Great work — now watch this walkthrough of the passage and questions.</p>
+    <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 10px 32px rgba(0,0,0,.22);">
+      <iframe src="https://www.youtube.com/embed/w3WHIXp2UcQ" title="Walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var rightPane=document.getElementById('right');if(!rightPane)return;
+  var observer=new MutationObserver(function(mutations){mutations.forEach(function(m){m.addedNodes.forEach(function(node){if(node.nodeType===1&&node.className==='score'){var wt=document.getElementById('walkthroughBlock');if(wt){wt.style.display='block';setTimeout(function(){wt.scrollIntoView({behavior:'smooth',block:'start'});},500);}var scoreEl=node.querySelector('b');var score=scoreEl?(parseInt(scoreEl.textContent)||0):0;var msg={type:'sprint4-task-done',task:4,score:score,total:13};if(window.opener)window.opener.postMessage(msg,'*');else if(window.parent&&window.parent!==window)window.parent.postMessage(msg,'*');observer.disconnect();}});});});
+  observer.observe(rightPane,{childList:true,subtree:false});
+})();
+</script>
+</body>
+</html>
