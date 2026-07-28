@@ -177,7 +177,7 @@ This dietary acquisition hypothesis remains an active area of investigation, and
 <div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After finishing, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
 <div id="listeningWalkthrough" style="display:none;margin-top:18px;">
 <div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
-<div class="video-wrap"><iframe id="t8WalkFrame" src="" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+<div class="video-wrap"><iframe id="t8WalkFrame" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
 </div></div>
 </section>
 
@@ -254,7 +254,7 @@ window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-
 function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
 // TODO: set this once the Listening-23.html + walkthrough video ID are provided
 var TASK8_WALKTHROUGH_ID="b-hVCzq0-AI";
-function revealListeningWalkthrough(){var cb=document.getElementById("t8check");var wt=document.getElementById("listeningWalkthrough");if(cb&&cb.checked&&wt){wt.style.display="block";var frame=document.getElementById("t8WalkFrame");if(frame&&TASK8_WALKTHROUGH_ID&&!frame.src)frame.src="https://www.youtube.com/embed/"+TASK8_WALKTHROUGH_ID;}refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
+function revealListeningWalkthrough(){var cb=document.getElementById("t8check");var wt=document.getElementById("listeningWalkthrough");if(cb&&cb.checked&&wt){wt.style.display="block";var frame=document.getElementById("t8WalkFrame");if(frame&&TASK8_WALKTHROUGH_ID)frame.src="https://www.youtube.com/embed/"+TASK8_WALKTHROUGH_ID;}refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
 function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
 
 /* ===== TASK 1 VOCAB ===== */
