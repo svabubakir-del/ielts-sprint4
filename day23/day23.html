@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -254,7 +253,7 @@ var t4msg=false;
 window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="\u2705 Passage submitted \u2014 score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
 function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
 // TODO: set this once the Listening-23.html + walkthrough video ID are provided
-var TASK8_WALKTHROUGH_ID="";
+var TASK8_WALKTHROUGH_ID="b-hVCzq0-AI";
 function revealListeningWalkthrough(){var cb=document.getElementById("t8check");var wt=document.getElementById("listeningWalkthrough");if(cb&&cb.checked&&wt){wt.style.display="block";var frame=document.getElementById("t8WalkFrame");if(frame&&TASK8_WALKTHROUGH_ID&&!frame.src)frame.src="https://www.youtube.com/embed/"+TASK8_WALKTHROUGH_ID;}refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
 function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
 
