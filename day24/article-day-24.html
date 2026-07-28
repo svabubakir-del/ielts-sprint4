@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Article — Invisible Compasses: The Science of Migratory Bird Navigation</title>
+<style>
+:root{--ac:#0F5C6B;--ad:#0c4a57;--bg:#f7f8fa;--ca:#fff;--bd:#e2e4e8;--tx:#1a1a1a;--mu:#6b7280;}
+*{box-sizing:border-box;}body{margin:0;background:var(--bg);color:var(--tx);font-family:Georgia,serif;line-height:1.78;}
+.topbar{background:var(--ca);border-bottom:1px solid var(--bd);padding:14px 24px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+.topbar a{color:var(--ac);text-decoration:none;font-weight:700;font-size:14px;}
+.wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+.kicker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;text-transform:uppercase;letter-spacing:1.5px;font-size:12.5px;color:var(--ac);font-weight:700;margin-bottom:10px;}
+h1{font-size:28px;margin:0 0 8px;line-height:1.2;}.byline{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--mu);font-size:14px;margin-bottom:28px;}
+p{margin:0 0 18px;font-size:17px;}
+h2{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:20px;margin:34px 0 12px;color:var(--ad);border-bottom:2px solid var(--bd);padding-bottom:8px;}
+.diagram{background:#f0f4f5;border:1px solid var(--bd);border-radius:8px;padding:16px 20px;font-family:monospace;font-size:12px;margin:18px 0;color:var(--ad);line-height:1.9;white-space:pre-wrap;}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14px;}
+th,td{border:1px solid var(--bd);padding:10px 12px;vertical-align:top;}th{background:#eef3f4;font-weight:700;}td.term{font-weight:700;color:var(--ad);}
+.qs{background:var(--ca);border:1px solid var(--bd);border-radius:10px;padding:22px;margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;display:none;}
+.qs h3{margin:0 0 14px;font-size:16px;color:var(--ad);}
+.q-block{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd);font-size:15px;}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+.opts{display:flex;flex-direction:column;gap:5px;margin:8px 0 0 4px;}
+.opt-row{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;}.opt-row input{width:15px;height:15px;}
+.opt-row.correct{color:#1f9d55;font-weight:700;}.opt-row.wrong{color:#d23a3a;}
+input.fill{font:inherit;font-size:14px;padding:3px 7px;width:220px;border:1px solid #aab2bb;border-radius:5px;}
+input.fill.ok{border-color:#1f9d55;background:#e6f6ec;color:#1f9d55;font-weight:700;}input.fill.no{border-color:#d23a3a;background:#fbeaea;color:#d23a3a;}
+.btn{background:var(--ac);color:#fff;border:none;border-radius:7px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}
+.answer-key{margin-top:14px;border:1px solid var(--bd);border-radius:8px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+.answer-key summary{cursor:pointer;list-style:none;padding:10px 14px;background:#eef3f4;color:var(--ad);font-weight:700;font-size:14px;}
+.answer-key summary::-webkit-details-marker{display:none;}
+.answer-key-body{padding:12px 16px;font-size:14px;line-height:1.7;}
+.confirm-area{margin-top:22px;padding:14px;background:#eef3f4;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+.hl{background:#ffe45c;border-radius:2px;}
+.hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+.hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<div class="topbar"><a href="javascript:window.close()">← Back to Day 24</a></div>
+<div class="wrap">
+<div class="kicker">Background Reading // Ornithology &amp; Sensory Biology</div>
+<h1>Invisible Compasses: The Science of Migratory Bird Navigation</h1>
+<div class="byline">Prepared for IELTS Sprint4 — Day 24 &nbsp;·&nbsp; Level: Advanced / Band 7.5–8.5</div>
+
+<p>Every year, billions of birds undertake migratory journeys spanning thousands of kilometres, often returning to the exact same nesting site with remarkable precision. Many species complete their first migration entirely alone, having never previously travelled the route, which rules out learning from experienced adults as the primary mechanism. This observation has driven decades of research into how birds navigate with such accuracy, and has revealed at least three distinct, and possibly interacting, navigational systems.</p>
+
+<h2>Magnetoreception: Sensing an Invisible Field</h2>
+<p>Perhaps the most puzzling of these systems is magnetoreception — the ability to detect and orient using the Earth's geomagnetic field. Two competing hypotheses currently dominate research into how this sense might function.</p>
+
+<div class="diagram">[Earth's Geomagnetic Field]
+              │
+   ┌──────────┴───────────┐
+   ▼                      ▼
+[Radical-Pair Mechanism]   [Magnetite-Based Mechanism]
+• Light-sensitive protein   • Iron-oxide crystals
+  in the retina             • Located in upper beak
+• Chemical reaction         • Acts as a physical
+  sensitive to field angle    compass needle
+• May allow birds to        • Provides directional
+  "see" magnetic field         information
+  as a visual overlay</div>
+
+<p>The radical-pair hypothesis proposes that a light-sensitive protein called cryptochrome, located in the bird's retina, undergoes a chemical reaction affected by the angle of the surrounding magnetic field. This would allow the bird to perceive magnetic information as a subtle visual overlay, effectively allowing it to "see" the field. The magnetite hypothesis, by contrast, proposes that tiny iron-oxide crystals located in the upper beak function as a physical compass needle, providing more direct directional information. Empirical evidence has been found to support both mechanisms in different species, and many researchers now suspect the two systems may operate in tandem rather than as mutually exclusive alternatives.</p>
+
+<h2>Celestial Cues: The Sun and Star Compass</h2>
+<p>Magnetoreception is not the only navigational tool available to migratory birds. Many species also rely on celestial cues, calibrating an internal sun compass using the pattern of polarized light visible in the sky even under partial cloud cover. Because the sun's position changes throughout the day, this compass must be continuously recalibrated against the bird's own internal circadian clock to remain accurate.</p>
+<p>Nocturnal migrants, which make up a substantial proportion of long-distance migratory species, instead appear to rely on a star compass, using the rotational center of the night sky — the point around which the stars appear to rotate — as a fixed reference point. Laboratory experiments using planetarium projections have demonstrated that young birds raised without any exposure to a stable night sky fail to develop a normal star compass, suggesting this ability is calibrated through early experience rather than being entirely instinctive.</p>
+
+<div class="diagram">[Daytime Migrants]              [Nocturnal Migrants]
+Sun compass                     Star compass
+calibrated by                   calibrated by
+polarized light                 rotational center
+patterns                        of night sky
+     │                                │
+     └────────────┬───────────────────┘
+                   ▼
+     [Continuously cross-checked against
+        internal circadian clock]</div>
+
+<h2>Disruption Experiments and the Limits of Current Understanding</h2>
+<p>Much of what researchers know about avian navigation comes from disruption experiments, in which one navigational cue is deliberately altered or removed to observe the resulting effect on a bird's behaviour. Birds exposed to an artificially altered magnetic field in a controlled setting reliably show disorientation, reorienting themselves according to the artificial field rather than true geomagnetic north — strong evidence that magnetoreception genuinely contributes to navigation rather than being a secondary or vestigial sense.</p>
+<p>Naturally occurring magnetic anomalies — localized irregularities in the Earth's field caused by unusual geological formations — have also been shown to disrupt migratory behaviour in the wild, with birds occasionally showing measurable delays or detours when crossing these regions. However, the precise threshold at which a magnetic disturbance becomes strong enough to meaningfully affect navigation, and the degree to which birds cross-reference conflicting cues from different systems when one becomes unreliable, remain active areas of investigation. What is clear is that migratory navigation is not governed by any single innate mechanism, but by a genuinely integrated system in which multiple sensory cues are cross-checked to sustain the extraordinary endurance and accuracy of these journeys.</p>
+
+<h2>Vocabulary Glossary — Day 24</h2>
+<table>
+<tr><th>Word / Phrase</th><th>Definition</th><th>Example</th></tr>
+<tr><td class="term">migratory</td><td>Relating to the seasonal movement of animals from one region to another.</td><td>Many migratory bird species travel thousands of kilometres each year.</td></tr>
+<tr><td class="term">magnetoreception</td><td>The ability of an organism to detect and respond to a magnetic field.</td><td>Magnetoreception allows birds to orient themselves using the Earth's geomagnetic field.</td></tr>
+<tr><td class="term">innate</td><td>Present from birth rather than acquired through learning or experience.</td><td>Researchers debate whether star compass navigation is entirely innate.</td></tr>
+<tr><td class="term">celestial</td><td>Relating to the sky or outer space, especially the sun, moon, and stars.</td><td>Nocturnal migrants rely heavily on celestial cues to navigate at night.</td></tr>
+<tr><td class="term">polarized</td><td>Describing light waves that vibrate in a single, restricted plane or direction.</td><td>Birds can detect patterns of polarized light even under partial cloud cover.</td></tr>
+<tr><td class="term">orient</td><td>To determine one's position and adjust direction accordingly.</td><td>Birds use multiple cues to orient themselves during long migratory journeys.</td></tr>
+<tr><td class="term">disperse</td><td>To spread out over a wide area.</td><td>Young birds often disperse widely before settling on a breeding territory.</td></tr>
+<tr><td class="term">endurance</td><td>The ability to sustain prolonged physical or mental effort.</td><td>Long-distance migration requires exceptional physical endurance.</td></tr>
+<tr><td class="term">instinctive</td><td>Arising from natural impulse rather than conscious reasoning or learning.</td><td>Some aspects of bird navigation appear to be instinctive rather than learned.</td></tr>
+<tr><td class="term">threshold</td><td>The point or level at which an effect begins to occur.</td><td>Scientists are still investigating the threshold at which a magnetic disturbance affects navigation.</td></tr>
+<tr><td class="term">cue</td><td>A signal or piece of information that prompts a particular action or response.</td><td>Migratory birds rely on a combination of magnetic and celestial cues.</td></tr>
+<tr><td class="term">compass</td><td>An instrument or internal system used to determine direction.</td><td>Many bird species develop an internal star compass during early development.</td></tr>
+<tr><td class="term">geomagnetic</td><td>Relating to the magnetism of the Earth.</td><td>The Earth's geomagnetic field provides a directional reference for many migratory species.</td></tr>
+<tr><td class="term">hypothesis</td><td>A proposed explanation for a phenomenon, used as a basis for further investigation.</td><td>The radical-pair hypothesis proposes a chemical basis for magnetic sensing.</td></tr>
+<tr><td class="term">empirical</td><td>Based on observation or experiment rather than theory alone.</td><td>Empirical evidence supports both leading hypotheses of magnetoreception.</td></tr>
+<tr><td class="term">calibrate</td><td>To adjust or set a system accurately in relation to a standard or reference.</td><td>Birds must continuously calibrate their sun compass against their internal clock.</td></tr>
+<tr><td class="term">disorientation</td><td>A state of confusion regarding direction or position.</td><td>Artificially altered magnetic fields reliably produce disorientation in test birds.</td></tr>
+<tr><td class="term">navigate</td><td>To plan and follow a route or course, especially over a long distance.</td><td>Migratory birds navigate using an integrated system of multiple sensory cues.</td></tr>
+<tr><td class="term">precise</td><td>Exact and accurate; free from significant error.</td><td>Many species return to the same nesting site with astonishing precise accuracy.</td></tr>
+<tr><td class="term">anomaly</td><td>Something that deviates from what is standard, normal, or expected.</td><td>Localized magnetic anomalies can disrupt migratory behaviour in certain regions.</td></tr>
+</table>
+
+<div class="confirm-area">
+  <label style="display:flex;align-items:center;gap:10px;font-weight:600;font-size:14.5px;cursor:pointer;">
+    <input type="checkbox" id="readCheck" style="width:18px;height:18px;" onchange="revealQs()">
+    I have finished reading the article
+  </label>
+</div>
+
+<div class="qs" id="comprehension">
+<h3>Section 1 — Academic Vocabulary Enhancement</h3>
+<p style="font-size:14px;color:var(--mu);margin-bottom:14px;">Find the word or phrase in the article that matches each formal definition.</p>
+<div class="q-block">1. (n. — Paragraph 2): The ability of an organism to detect and respond to a magnetic field.<br><input class="fill" id="vq1" placeholder="Find in text…"></div>
+<div class="q-block">2. (v. — Paragraph 4): To adjust or set a system accurately in relation to a standard or reference.<br><input class="fill" id="vq2" placeholder="Find in text…"></div>
+<div class="q-block">3. (n. — Paragraph 5): Something that deviates from what is standard, normal, or expected.<br><input class="fill" id="vq3" placeholder="Find in text…"></div>
+<div class="q-block">4. (n. — Paragraph 5): A state of confusion regarding direction or position.<br><input class="fill" id="vq4" placeholder="Find in text…"></div>
+
+<h3 style="margin-top:24px;">Section 2 — Multiple Choice</h3>
+<div class="q-block" id="mcq1"><div style="margin-bottom:8px;font-size:15px;">1. Why do researchers believe young birds do not simply learn migration routes from experienced adults?</div><div class="opts">
+<label class="opt-row" data-val="A"><input type="radio" name="mcq1" value="A"> A) Adult birds refuse to travel with young birds.</label>
+<label class="opt-row" data-val="B"><input type="radio" name="mcq1" value="B"> B) Many species complete their first migration entirely alone.</label>
+<label class="opt-row" data-val="C"><input type="radio" name="mcq1" value="C"> C) Young birds cannot fly long distances at all.</label>
+<label class="opt-row" data-val="D"><input type="radio" name="mcq1" value="D"> D) Migration routes change completely every year.</label>
+</div></div>
+<div class="q-block" id="mcq2"><div style="margin-bottom:8px;font-size:15px;">2. What does the radical-pair hypothesis propose about magnetoreception?</div><div class="opts">
+<label class="opt-row" data-val="A"><input type="radio" name="mcq2" value="A"> A) Iron-oxide crystals in the beak act as a physical compass.</label>
+<label class="opt-row" data-val="B"><input type="radio" name="mcq2" value="B"> B) A light-sensitive protein in the retina reacts to the magnetic field angle.</label>
+<label class="opt-row" data-val="C"><input type="radio" name="mcq2" value="C"> C) Birds cannot detect magnetic fields under any circumstances.</label>
+<label class="opt-row" data-val="D"><input type="radio" name="mcq2" value="D"> D) Magnetic sensing only occurs in nocturnal migratory species.</label>
+</div></div>
+<div class="q-block" id="mcq3"><div style="margin-bottom:8px;font-size:15px;">3. What did planetarium experiments reveal about the star compass?</div><div class="opts">
+<label class="opt-row" data-val="A"><input type="radio" name="mcq3" value="A"> A) It is entirely instinctive and requires no early experience.</label>
+<label class="opt-row" data-val="B"><input type="radio" name="mcq3" value="B"> B) Young birds raised without a stable night sky fail to develop it normally.</label>
+<label class="opt-row" data-val="C"><input type="radio" name="mcq3" value="C"> C) It only functions correctly during daylight hours.</label>
+<label class="opt-row" data-val="D"><input type="radio" name="mcq3" value="D"> D) It is unrelated to the position of the stars.</label>
+</div></div>
+<div class="q-block" id="mcq4"><div style="margin-bottom:8px;font-size:15px;">4. What do disruption experiments involving artificial magnetic fields demonstrate?</div><div class="opts">
+<label class="opt-row" data-val="A"><input type="radio" name="mcq4" value="A"> A) Magnetoreception has no measurable effect on bird behaviour.</label>
+<label class="opt-row" data-val="B"><input type="radio" name="mcq4" value="B"> B) Birds reorient according to the artificial field, showing disorientation.</label>
+<label class="opt-row" data-val="C"><input type="radio" name="mcq4" value="C"> C) Birds always ignore magnetic fields in favour of star patterns.</label>
+<label class="opt-row" data-val="D"><input type="radio" name="mcq4" value="D"> D) Artificial magnetic fields improve navigational accuracy.</label>
+</div></div>
+
+<h3 style="margin-top:24px;">Section 3 — Summary Completion</h3>
+<p style="font-size:14px;color:var(--mu);margin-bottom:12px;">Choose <strong>NO MORE THAN TWO WORDS</strong> from the article for each answer.</p>
+<p style="font-size:15px;line-height:2.2;">Migratory birds appear to rely on several navigational systems working together. One leading explanation for magnetic sensing involves a protein called <input class="fill" id="sq5" placeholder="answer…"> located in the retina. Daytime migrants calibrate an internal sun compass using patterns of <input class="fill" id="sq6" placeholder="answer…">, while nocturnal migrants rely on a star compass. Naturally occurring magnetic <input class="fill" id="sq7" placeholder="answer…"> have been shown to disrupt migratory behaviour in the wild.</p>
+
+<button class="btn" onclick="checkArticleQs()">Check all answers</button>
+<details class="answer-key" id="artKey"><summary>Answer key</summary>
+<div class="answer-key-body">
+<b>Section 1:</b> 1. magnetoreception &nbsp;•&nbsp; 2. calibrate &nbsp;•&nbsp; 3. anomaly &nbsp;•&nbsp; 4. disorientation<br><br>
+<b>Section 2:</b> 1.B &nbsp;•&nbsp; 2.B &nbsp;•&nbsp; 3.B &nbsp;•&nbsp; 4.B<br><br>
+<b>Section 3:</b> 5. cryptochrome &nbsp;•&nbsp; 6. polarized light &nbsp;•&nbsp; 7. anomalies
+</div></details>
+</div>
+</div>
+<script>
+function revealQs(){if(document.getElementById("readCheck").checked)document.getElementById("comprehension").style.display="block";}
+var artMcqAns={mcq1:"B",mcq2:"B",mcq3:"B",mcq4:"B"};
+var artVocabAns={vq1:"magnetoreception",vq2:"calibrate",vq3:"anomaly",vq4:"disorientation"};
+var artSumAns={sq5:"cryptochrome",sq6:"polarized",sq7:"anomal"};
+function checkArticleQs(){var r=0,t=11;Object.keys(artVocabAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(artVocabAns[id])>=0;if(ok)r++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});Object.keys(artMcqAns).forEach(function(n){var chosen=document.querySelector("input[name=\""+n+"\"]:checked");var ok=chosen&&chosen.value===artMcqAns[n];if(ok)r++;var block=document.getElementById(n);if(block){block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===artMcqAns[n])row.classList.add("correct");else if(chosen&&row.dataset.val===chosen.value)row.classList.add("wrong");});}});Object.keys(artSumAns).forEach(function(id){var el=document.getElementById(id);if(!el)return;var ok=el.value.trim().toLowerCase().indexOf(artSumAns[id])>=0;if(ok)r++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("You got "+r+" / "+t+" correct.");document.getElementById("artKey").classList.add("show");}
+(function(){var HL_KEY="sprint4_hl_art24";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+</script>
+</body>
+</html>
