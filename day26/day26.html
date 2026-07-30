@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IELTS Sprint4 — Day 26</title>
+<style>
+:root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+*{box-sizing:border-box;}html,body{margin:0;height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+.brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+.daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+.teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+.dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+.content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+.task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+.task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+.task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+.card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+.instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+.wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+.passage-text{line-height:1.85;font-size:15.5px;}
+input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+input.fill.short{width:90px;}input.fill.med{width:200px;}input.fill.wide{width:260px;}
+input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+.q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+.q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+.opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+.tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+.btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+.btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+.check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+.answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+.answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";}.answer-key[open] summary::before{content:"▾";}
+.answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+.status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+.confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+.wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}.wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}.wf-table th{background:var(--accent-light);font-weight:700;}
+.navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+.nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+.completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+.completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+.big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+.completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+.hl{background:#ffe45c;border-radius:2px;}
+.hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+.hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+.video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 26</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+<div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+<div class="card"><h3>Word list</h3><div class="wordbank">
+<span class="chip">cryptography</span><span class="chip">cipher</span><span class="chip">encrypt</span><span class="chip">decrypt</span><span class="chip">plaintext</span><span class="chip">ciphertext</span><span class="chip">algorithm</span><span class="chip">intercept</span><span class="chip">decipher</span><span class="chip">classified</span><span class="chip">vulnerability</span><span class="chip">covert</span><span class="chip">systematic</span><span class="chip">arbitrary</span><span class="chip">rigorous</span><span class="chip">elaborate</span><span class="chip">ambiguous</span><span class="chip">compromise</span><span class="chip">authenticate</span><span class="chip">obfuscate</span>
+</div></div>
+<div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+<div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+<details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+<div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+<div class="card"><h3>From hand ciphers to public-key encryption</h3>
+<div class="passage-text">Cryptography has evolved dramatically since the earliest hand ciphers were used to conceal military messages. Simple substitution ciphers, in which each letter of the plaintext was systematically replaced to produce ciphertext, proved vulnerable because certain letters occur more frequently than others in any language, allowing an intercepted message to be deciphered through statistical analysis. The German Enigma machine represented a major leap in complexity, using rotating wheels to generate a different substitution for every letter typed, a system German commanders believed to be genuinely unbreakable. A classified, systematic codebreaking effort at Bletchley Park ultimately succeeded in breaking Enigma. Modern cryptography relies instead on public-key algorithms, exploiting a mathematical asymmetry between multiplying large prime numbers, which is fast, and factoring the resulting product, which is extraordinarily difficult without the correct private key. Even so, no cryptographic system is considered permanently secure; practical vulnerabilities more often arise from ambiguous code or poorly authenticated users than from the underlying mathematics itself.</div>
+</div>
+<div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+<div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+<details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+<div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+<div class="card"><h3>Secrets and Signals: The History and Science of Cryptography</h3><p class="instr">Advanced reading on substitution ciphers, the Enigma machine, and public-key encryption — with full vocabulary glossary and comprehension questions inside.</p><a class="btn link-out" href="article-day-26.html" target="_blank" rel="noopener">📄 Open article</a></div>
+<div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+<div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+<div class="card"><a class="btn link-out" href="passage_day_26.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+<div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+<div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the passage, then answer all questions below.</p></div>
+<div class="card"><h3>The Women Codebreakers of Bletchley Park</h3>
+<div class="passage-text">While the mathematician Alan Turing has become the most widely recognised figure associated with the Allied codebreaking effort during the Second World War, a substantial proportion of the workforce at Bletchley Park — estimates suggest as much as three-quarters — consisted of women, many of whom performed technically demanding roles that have only recently received the historical recognition they deserve. Recruited from universities, the civil service, and the armed forces, these women worked as codebreakers, translators, and operators of the enormous electromechanical machines used to test possible Enigma settings systematically.<br><br>
+For decades, the wartime work of Bletchley Park remained officially classified, and many veterans, women and men alike, were legally bound by strict secrecy obligations that prevented them from discussing their contributions even with close family members. This enforced silence meant that the specific contributions of individual codebreakers, and women in particular, went largely unrecorded and unacknowledged in early historical accounts of the war, which tended to focus disproportionately on a small number of prominent male figures.<br><br>
+Only with the declassification of substantial archival material beginning in the 1970s, and continuing in stages over subsequent decades, did historians gain sufficient access to reconstruct a more complete and accurate picture of the codebreaking effort. This ongoing process of historical reassessment has gradually revealed the essential, and previously underappreciated, contributions of the women who operated the codebreaking machinery, developed procedural shortcuts, and in some documented cases made genuine cryptographic breakthroughs of their own.<br><br>
+Historians studying this period now generally agree that the popular narrative crediting codebreaking success to a small handful of individual geniuses considerably oversimplifies what was, in practice, an enormous and highly systematic collaborative effort involving thousands of people working in tightly coordinated teams.</div>
+</div>
+<div class="card"><h4>Section 1 — True / False / Not Given (5 questions)</h4>
+<p class="instr">Write True, False, or Not Given based on the passage above.</p>
+<div id="t5TFList"></div>
+</div>
+<div class="card"><h4>Section 2 — Short answer (3 questions)</h4>
+<p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+<div class="passage-text">
+<p>6. Approximately what proportion of the Bletchley Park workforce were women, according to the passage?<br><input class="fill med" id="t5s6"></p>
+<p>7. When did the declassification of archival material begin?<br><input class="fill med" id="t5s7"></p>
+<p>8. What does the passage say the popular narrative of codebreaking oversimplifies?<br><input class="fill med" id="t5s8"></p>
+</div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+<details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+<div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage carefully and answer the comprehension questions.</p></div>
+<div class="card"><h3>Passage A — The One-Time Pad: A Theoretically Unbreakable Cipher</h3>
+<div class="passage-text">Among all known encryption methods, only one has been mathematically proven to be theoretically unbreakable when used correctly: the one-time pad. The method requires a truly random key, exactly as long as the message itself, used only once and never reused for any subsequent communication. Provided these strict conditions are met, a one-time pad produces ciphertext that offers an attacker absolutely no statistical information whatsoever about the original plaintext, rendering even unlimited computational power theoretically useless against it. Despite this remarkable theoretical security, the one-time pad has seen limited practical use, primarily because securely generating, distributing, and storing a truly random key as long as every message ever sent presents an enormous logistical challenge, particularly for large-scale communication. Historical instances of one-time pad reuse, whether through operational error or resource shortages, have in fact provided codebreakers with rare and valuable opportunities to compromise otherwise theoretically unbreakable encrypted traffic.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+<div id="t6aMcqList"></div>
+</div>
+<div class="card"><h3>Passage B — Quantum Computing and the Future of Encryption</h3>
+<div class="passage-text">The eventual development of sufficiently powerful quantum computers poses a potentially serious threat to much of the public-key cryptography currently securing digital communication worldwide. Unlike conventional computers, which test possibilities largely one at a time, a sufficiently advanced quantum computer could, in principle, factor the large prime numbers underlying current encryption algorithms far more rapidly, potentially rendering widely deployed systems vulnerable within a practical timeframe rather than requiring longer than the age of the universe. In anticipation of this threat, cryptography researchers have already begun developing and standardising so-called post-quantum algorithms, designed specifically to remain secure even against an adversary equipped with a functioning quantum computer. Critics caution, however, that migrating the enormous existing infrastructure of digital communication to new cryptographic standards is a slow, complex, and expensive undertaking, and that organisations delaying this transition risk having historically encrypted data retroactively compromised once sufficiently powerful quantum computers eventually become available.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+<div id="t6bMcqList"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+<details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+<div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+<div class="card"><h3>Passage 1 — The Caesar Cipher</h3>
+<div class="passage-text">One of the earliest documented ciphers is attributed to Julius Caesar, who reportedly used a simple substitution method to protect military correspondence from being understood if intercepted by an enemy. Each letter of the plaintext was shifted a fixed number of positions through the alphabet, producing a ciphertext that appeared meaningless to anyone unaware of the specific shift used. Although trivially easy to break using modern techniques, requiring only twenty-five possible shifts to test systematically, the Caesar cipher is historically significant as one of the first documented examples of using a formal, repeatable algorithm to protect written communication.</div>
+<div id="t7p1List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 2 — The Navajo Code Talkers</h3>
+<div class="passage-text">During the Second World War, the United States military recruited Navajo speakers to develop and transmit coded messages based on their native language, an approach that proved remarkably effective largely because Navajo was an unwritten language with an extremely complex grammatical structure unfamiliar to Japanese cryptanalysts. Unlike a mathematical cipher, the Navajo code relied on a specialised vocabulary of substitute terms for military concepts, memorised by trained code talkers rather than encoded through any systematic algorithm. Japanese codebreakers never succeeded in deciphering the Navajo-based code throughout the entire war, making it one of the few wartime codes never confirmed to have been broken by an adversary.</div>
+<div id="t7p2List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 3 — Steganography: Hiding the Message Itself</h3>
+<div class="passage-text">Distinct from cryptography, which conceals the meaning of a message while leaving its existence obvious, steganography instead conceals the very existence of a hidden message within an apparently innocent carrier, such as an image, an audio file, or ordinary text. A classic historical example involved concealing a message within the pattern of stitches in a piece of needlework, while modern digital steganography can hide encrypted data within the least significant bits of a digital photograph, altering the image in a way imperceptible to the human eye. Security researchers note that cryptography and steganography are frequently combined, since concealing the existence of an encrypted message provides an additional layer of protection beyond encryption alone.</div>
+<div id="t7p3List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 4 — Password Hashing and Everyday Cryptography</h3>
+<div class="passage-text">Most people encounter practical applications of cryptography daily without necessarily recognising it as such, particularly through the process of password hashing used by nearly every secure online service. Rather than storing a user's password directly, which would create a serious vulnerability if a database were ever compromised, a website instead stores the output of a one-way mathematical function called a hash, applied to the original password. Because a properly designed hash function is computationally impractical to reverse, an attacker who obtains a database of hashed passwords cannot straightforwardly recover the original plaintext passwords, although weak or commonly used passwords remain vulnerable to systematic guessing attacks that compare hashed guesses against the stolen data.</div>
+<div id="t7p4List" style="margin-top:12px;"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+<details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 (FULL LISTENING TEST) -->
+<section class="task" id="task8" data-task="8">
+<div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening test</h2><p class="task-sub">Open the test in a new tab, complete it, then come back and enter your score. The walkthrough video will appear below.</p></div>
+<div class="card"><a class="btn link-out" href="Listening-26.html" target="_blank" rel="noopener">🎧 Open full listening test</a></div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t8check" onchange="revealListeningWalkthrough()"><label for="t8check">I have completed the full listening test</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After finishing, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
+<div id="listeningWalkthrough" style="display:none;margin-top:18px;">
+<div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
+<div class="video-wrap"><iframe id="t8WalkFrame" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+</div></div>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 26 of 30</div>
+  <h1>Congratulations — Day 26 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 27.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=26,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day26_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+
+var LS_ANS="sprint4_day26_ans";
+function saveAns(id,val){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");a[id]=val;localStorage.setItem(LS_ANS,JSON.stringify(a));}catch(e){}}
+function restoreAnswersFromLS(){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");Object.keys(a).forEach(function(id){if(id.startsWith("radio_")){var name=id.replace("radio_","");var el=document.querySelector("input[name=\""+name+"\"][value=\""+a[id]+"\"]");if(el)el.checked=true;}else{var el=document.getElementById(id);if(el)el.value=a[id];}});}catch(e){}}
+
+var isLocked=false;
+function makeRO(){
+  isLocked=true;
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll(".btn.secondary").forEach(function(btn){if(btn.textContent.trim().startsWith("Check"))btn.style.display="none";});
+  document.querySelectorAll(".answer-key").forEach(function(el){el.classList.add("show");});
+  var db=document.getElementById("doneBtn");db.disabled=false;db.textContent="Next \u2192";db.style.background="#475569";
+  var banner=document.createElement("div");
+  banner.style.cssText="position:fixed;top:0;left:0;right:0;background:#1f9d55;color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:700;z-index:200;";
+  banner.textContent="Review mode \u2014 Day 26 is complete. Your answers are saved and locked.";
+  document.body.insertBefore(banner,document.body.firstChild);
+}
+
+var debTimers={};
+function autosave(id,val){saveAns(id,val);if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(id==="t8score"||id==="t8check")return 8;return 1;}
+function hookAutosave(){
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("input",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});el.addEventListener("change",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("change",function(){if(el.checked){saveAns("radio_"+el.name,el.value);autosave("radio_"+el.name,el.value);}});});
+}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day26_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){if(isLocked){if(current<TOTAL_TASKS){current++;saveState();showTask(current);}return;}taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");makeRO();fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isLocked||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode||isLocked)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);if(n===8){var c8=document.getElementById("t8check");return c8&&c8.checked;}var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="\u2705 Passage submitted \u2014 score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
+var TASK8_WALKTHROUGH_ID="";
+function revealListeningWalkthrough(){var cb=document.getElementById("t8check");var wt=document.getElementById("listeningWalkthrough");if(cb&&cb.checked&&wt){wt.style.display="block";var frame=document.getElementById("t8WalkFrame");if(frame&&TASK8_WALKTHROUGH_ID)frame.src="https://www.youtube.com/embed/"+TASK8_WALKTHROUGH_ID;}refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var VA_segs=["For centuries, ", "/*1*/", " has been used to protect sensitive messages from prying eyes. The earliest methods relied on a simple ", "/*2*/", ", in which each letter of the ", "/*3*/", " was replaced to produce an unreadable ", "/*4*/", ". Because certain letters appear more often than others in any language, this ", "/*5*/", " substitution could often be broken if an enemy managed to ", "/*6*/", " the message and ", "/*7*/", " it through careful frequency analysis. Modern cryptography instead relies on a mathematical ", "/*8*/", " that is comparatively fast to ", "/*9*/", " a message with, yet extraordinarily difficult to ", "/*10*/", " without the correct private key. No system is considered permanently secure, however, since every method carries some ", "/*11*/", " waiting to be discovered. During the Second World War, Britain ran a ", "/*12*/", " codebreaking operation at Bletchley Park, applying ", "/*13*/", " mathematical analysis to an ", "/*14*/", " German cipher machine. Some wartime code systems relied on ", "/*15*/", " methods, such as coded radio transmissions never publicly acknowledged at the time. Today's encryption keys are drawn from an ", "/*16*/", " vast space of possibilities, making brute-force attacks impractical. Security failures more often stem from ", "/*17*/", " instructions in software code than from flawed mathematics; a single careless mistake can ", "/*18*/", " an otherwise secure system. Reliable systems must properly ", "/*19*/", " every user before granting access, rather than attempting to simply ", "/*20*/", " a known weakness instead of fixing it."];
+var VA_ans={"1": "cryptography", "2": "cipher", "3": "plaintext", "4": "ciphertext", "5": "systematic", "6": "intercept", "7": "decipher", "8": "algorithm", "9": "encrypt", "10": "decrypt", "11": "vulnerability", "12": "classified", "13": "rigorous", "14": "elaborate", "15": "covert", "16": "arbitrary", "17": "ambiguous", "18": "compromise", "19": "authenticate", "20": "obfuscate"};
+
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){var m=s.match(/^\/\*(\d+)\*\/$/);if(m){var w=VA_ans[m[1]];var cl=w.length>11?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+m[1]+"\"> ";}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_words=["cryptography","cipher","encrypt","decrypt","plaintext","ciphertext","algorithm","intercept","decipher","classified","vulnerability","covert","systematic","arbitrary","rigorous"];
+var VB_defs={A:"The practice of transforming information to conceal its meaning",B:"A system of writing that disguises a message according to a set method",C:"To convert information into a coded form to prevent unauthorised access",D:"To convert encoded information back into its original, readable form",E:"The original, readable form of a message before encryption",F:"The unreadable output produced once a message has been encrypted",G:"A precise set of steps or rules used to solve a problem",H:"To stop or seize a message while it is being transmitted",I:"To succeed in understanding or interpreting a coded message",J:"Officially designated as secret and restricted to authorised individuals",K:"A weakness that can be exploited to compromise security",L:"Not openly acknowledged or displayed; secret or hidden",M:"Done according to a fixed plan or method",N:"Based on random choice rather than any fixed reason or pattern",O:"Extremely thorough, careful, and precise"};
+var VB_ans={1:"A",2:"B",3:"C",4:"D",5:"E",6:"F",7:"G",8:"H",9:"I",10:"J",11:"K",12:"L",13:"M",14:"N",15:"O"};
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var letters=Object.keys(VB_defs).sort();var optHtml="<option value=\"\">--</option>"+letters.map(function(l){return "<option value=\""+l+"\">"+l+"</option>";}).join("");var html="<p class=\"instr\" style=\"margin-bottom:12px;\">";letters.forEach(function(l){html+="<b>"+l+".</b> "+VB_defs[l]+"<br>";});html+="</p>";VB_words.forEach(function(w,idx){var n=idx+1;html+="<div class=\"q-text\" style=\"margin-bottom:8px;\">"+n+". "+w+" &rarr; <select class=\"fill\" id=\"vb"+n+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById("vb"+j);if(sel&&sel.value===VB_ans[j])rB++;}alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/15");document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" &nbsp;\u2022&nbsp; ")+"<br><br><b>B:</b><br>"+VB_words.map(function(w,i){return (i+1)+". "+VB_ans[i+1];}).join(" &nbsp;\u2022&nbsp; ");document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[
+  {n:1,s:"Simple substitution ciphers were completely immune to being broken.",tf:"False"},
+  {n:2,s:"The German Enigma machine used rotating wheels to generate a complex cipher.",tf:"True"},
+  {n:3,s:"Bletchley Park's codebreaking effort was openly publicised at the time.",tf:"False"},
+  {n:4,s:"Public-key cryptography relies on the difficulty of factoring large numbers.",tf:"True"},
+  {n:5,s:"According to the passage, security failures never arise from software code.",tf:"False"}
+];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var c=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[
+  {n:1,s:"Alan Turing worked entirely alone with no other codebreakers at Bletchley Park.",tf:"False",opts:["True","False","Not Given"]},
+  {n:2,s:"As much as three-quarters of the Bletchley Park workforce may have consisted of women.",tf:"True",opts:["True","False","Not Given"]},
+  {n:3,s:"All Bletchley Park veterans were free to discuss their work immediately after the war.",tf:"False",opts:["True","False","Not Given"]},
+  {n:4,s:"Every individual codebreaker at Bletchley Park has now been fully identified by name.",tf:"Not Given",opts:["True","False","Not Given"]},
+  {n:5,s:"Historians now generally view codebreaking success as a large collaborative effort rather than the work of a few geniuses.",tf:"True",opts:["True","False","Not Given"]}
+];
+(function buildT5TF(){var wrap=document.getElementById("t5TFList");var html="";t5TFData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\">";q.opts.forEach(function(opt){html+="<label><input type=\"radio\" name=\"t5tf"+q.n+"\" value=\""+opt+"\"> "+opt+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkTask5(){var rTF=0,rS=0;t5TFData.forEach(function(q){var c=document.querySelector("input[name=\"t5tf"+q.n+"\"]:checked");if(c&&c.value===q.tf)rTF++;});["t5s6","t5s7","t5s8"].forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var v=el.value.trim().toLowerCase();var ok=(i===0&&v.indexOf("three-quarter")>=0)||(i===1&&v.indexOf("1970")>=0)||(i===2&&(v.indexOf("individual genius")>=0||v.indexOf("handful")>=0||v.indexOf("small number")>=0));if(ok)rS++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("T/F/NG: "+rTF+"/5\nShort answer: "+rS+"/3");document.getElementById("ansKey5Body").innerHTML="<b>T/F/NG:</b> 1.False 2.True 3.False 4.Not Given 5.True<br><br><b>Short answer:</b><br>6. Three-quarters<br>7. The 1970s<br>8. A small handful of individual geniuses";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[
+  {n:1,q:"What condition must be met for a one-time pad to be theoretically unbreakable?",opts:["The key must be reused for every message","The key must be truly random and used only once","The key must be shorter than the message","The key must be based on a mathematical formula"],ans:"B",id:"t6a1"},
+  {n:2,q:"What does correctly used one-time pad ciphertext offer an attacker?",opts:["Complete statistical information about the plaintext","No statistical information whatsoever about the plaintext","Partial information depending on message length","Full access to the private key"],ans:"B",id:"t6a2"},
+  {n:3,q:"Why has the one-time pad seen limited practical use?",opts:["It is mathematically weaker than modern ciphers","Securely generating and distributing a truly random key presents a huge logistical challenge","It can only encrypt very short messages","It requires expensive specialized hardware"],ans:"B",id:"t6a3"},
+  {n:4,q:"What has historically allowed codebreakers to compromise one-time pad traffic?",opts:["Advances in quantum computing","Instances of key reuse due to error or shortages","The invention of frequency analysis","Public disclosure of the encryption key"],ans:"B",id:"t6a4"},
+  {n:5,q:"According to the passage, is the one-time pad widely used today?",opts:["Yes, it is the most common encryption method in use","No, it has seen limited practical use","Yes, but only for short text messages","No, it was never proven secure"],ans:"B",id:"t6a5"}
+];
+var t6bData=[
+  {n:1,q:"What threat do quantum computers pose to current cryptography?",opts:["They could factor large primes far more rapidly, weakening public-key systems","They cannot be used for any computational tasks","They make one-time pads obsolete","They only affect steganography, not encryption"],ans:"A",id:"t6b1"},
+  {n:2,q:"How do quantum computers differ from conventional computers, according to the passage?",opts:["They test possibilities largely one at a time, like conventional computers","Conventional computers test one at a time; quantum computers work fundamentally differently","They are identical in every respect","They cannot process any mathematical operations"],ans:"B",id:"t6b2"},
+  {n:3,q:"What are researchers developing in anticipation of this threat?",opts:["Post-quantum algorithms designed to remain secure against quantum attacks","Entirely new computers that cannot be hacked","A complete ban on public-key cryptography","Faster versions of the Caesar cipher"],ans:"A",id:"t6b3"},
+  {n:4,q:"What do critics caution about migrating to new cryptographic standards?",opts:["It is quick, simple, and inexpensive","It is a slow, complex, and expensive undertaking","It requires no changes to existing infrastructure","It has already been completed worldwide"],ans:"B",id:"t6b4"},
+  {n:5,q:"What risk do organisations delaying this transition face, according to the passage?",opts:["No risk at all, since quantum computers do not yet exist","Historically encrypted data being retroactively compromised later","Immediate loss of all current data","Having to abandon digital communication entirely"],ans:"B",id:"t6b5"}
+];
+function buildMcqBlock(data,prefix){var html="";data.forEach(function(q){html+="<div class=\"q-block\" id=\""+prefix+q.n+"Block\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\""+q.id+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});return html;}
+document.getElementById("t6aMcqList").innerHTML=buildMcqBlock(t6aData,"t6a");
+document.getElementById("t6bMcqList").innerHTML=buildMcqBlock(t6bData,"t6b");
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");var ok=c&&c.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+"Block");if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(c&&row.dataset.val===c.value)row.classList.add("wrong");});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,"t6a");var rB=checkMcqSet(t6bData,"t6b");alert("Passage A: "+rA+"/5\nPassage B: "+rB+"/5");document.getElementById("ansKey6Body").innerHTML="<b>Passage A:</b> 1.B 2.B 3.B 4.B 5.B<br><b>Passage B:</b> 1.A 2.B 3.A 4.B 5.B";document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,qs:[{n:1,s:"Julius Caesar reportedly used a simple substitution cipher to protect military correspondence.",tf:"True"},{n:2,s:"The Caesar cipher requires testing thousands of possible shifts to break.",tf:"False"},{n:3,s:"The Caesar cipher is historically significant as an early example of a formal, repeatable algorithm.",tf:"True"}]},
+  {pid:2,qs:[{n:1,s:"The Navajo code relied on a mathematical algorithm rather than memorised vocabulary.",tf:"False"},{n:2,s:"Navajo was an unwritten language with a complex grammatical structure.",tf:"True"},{n:3,s:"Japanese codebreakers successfully deciphered the Navajo-based code during the war.",tf:"False"}]},
+  {pid:3,qs:[{n:1,s:"Steganography conceals the meaning of a message while leaving its existence obvious.",tf:"False"},{n:2,s:"Digital steganography can hide data within the least significant bits of a photograph.",tf:"True"},{n:3,s:"Cryptography and steganography are sometimes combined for additional protection.",tf:"True"}]},
+  {pid:4,qs:[{n:1,s:"Websites typically store a user's password directly rather than a hashed version.",tf:"False"},{n:2,s:"A properly designed hash function is computationally impractical to reverse.",tf:"True"},{n:3,s:"Weak or common passwords remain vulnerable to systematic guessing attacks.",tf:"True"}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById("t7p"+p.pid+"List");var html="<p class=\"instr\">True or False?</p>";p.qs.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.qs.forEach(function(q){total++;var c=document.querySelector("input[name=\"t7p"+p.pid+"q"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});});alert("You got "+right+"/"+total+" correct.");var key="";t7Data.forEach(function(p){key+="<b>Passage "+p.pid+":</b> ";key+=p.qs.map(function(q){return q.n+"."+q.tf;}).join(" ");key+="<br>";});document.getElementById("ansKey7Body").innerHTML=key;document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+restoreAnswersFromLS();
+var _allDone=Object.keys(taskDone).every(function(k){return taskDone[k];});
+if(_allDone)makeRO();
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day26";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
