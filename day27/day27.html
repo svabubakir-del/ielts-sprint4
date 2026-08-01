@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IELTS Sprint4 — Day 27</title>
+<style>
+:root{--accent:#0F5C6B;--accent-dark:#0c4a57;--accent-light:#e6eef0;--bg:#f7f8fa;--card:#fff;--border:#e2e4e8;--text:#1a1a1a;--muted:#6b7280;--success:#1f9d55;--success-bg:#e6f6ec;--danger:#d23a3a;--danger-bg:#fbeaea;}
+*{box-sizing:border-box;}html,body{margin:0;height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--border);}
+.brand{font-weight:800;font-size:18px;}.brand span{color:var(--accent);}
+.daylabel{color:var(--muted);font-weight:600;font-size:14px;}
+.teacher-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;display:none;}
+.dots{display:flex;gap:6px;margin-left:auto;}.dot{width:10px;height:10px;border-radius:50%;background:var(--border);}.dot.done{background:var(--success);}.dot.current{background:var(--accent);transform:scale(1.3);}
+.content{flex:1 1 auto;overflow-y:auto;padding:28px 22px 40px;}.wrap{max-width:900px;margin:0 auto;}
+.task{display:none;}.task.active{display:block;animation:fade .2s ease;}@keyframes fade{from{opacity:0}to{opacity:1}}
+.task-head{margin-bottom:18px;}.task-eyebrow{text-transform:uppercase;letter-spacing:1px;font-size:12px;font-weight:700;color:var(--accent);}
+.task-title{font-size:24px;font-weight:800;margin:4px 0 0;}.task-sub{color:var(--muted);font-size:14.5px;margin-top:4px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:18px;}
+.card h3{margin:0 0 10px;font-size:16.5px;}.card h4{margin:18px 0 8px;font-size:15px;color:var(--accent-dark);}
+.instr{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.5;}
+.wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}.chip{background:var(--accent-light);color:var(--accent-dark);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600;}
+.passage-text{line-height:1.85;font-size:15.5px;}
+input.fill{font:inherit;font-size:14.5px;padding:3px 7px;width:130px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+input.fill.short{width:90px;}input.fill.med{width:200px;}input.fill.wide{width:260px;}
+input.fill.ok{border-color:var(--success);background:var(--success-bg);color:var(--success);font-weight:700;}input.fill.no{border-color:var(--danger);background:var(--danger-bg);color:var(--danger);}
+select.fill{font:inherit;font-size:14px;padding:5px 8px;border:1px solid #aab2bb;border-radius:5px;background:#fff;}
+.q-block{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}.q-block:last-child{border-bottom:none;margin-bottom:0;}
+.q-text{font-size:15px;margin-bottom:8px;}.opts{display:flex;flex-direction:column;gap:6px;margin-left:4px;}
+.opt-row{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;}.opt-row input{width:16px;height:16px;}.opt-row.correct{color:var(--success);font-weight:700;}.opt-row.wrong{color:var(--danger);}
+.tf-toggle{display:flex;gap:10px;flex-wrap:wrap;}.tf-toggle label{display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer;}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:11px 20px;font-size:14.5px;font-weight:700;cursor:pointer;}.btn:hover{background:var(--accent-dark);}
+.btn.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent);}.btn.secondary:hover{background:var(--accent-light);}
+.btn.link-out{display:inline-flex;align-items:center;gap:8px;}
+.check-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.answer-key{margin-top:14px;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}.answer-key.show{display:block;}
+.answer-key summary{cursor:pointer;list-style:none;padding:12px 16px;background:var(--accent-light);color:var(--accent-dark);font-weight:700;font-size:14px;}
+.answer-key summary::-webkit-details-marker{display:none;}.answer-key summary::before{content:"▸";}.answer-key[open] summary::before{content:"▾";}
+.answer-key-body{padding:14px 18px;background:#fff;font-size:14px;line-height:1.7;}
+.status-line{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;color:var(--muted);}.status-line.complete{color:var(--success);font-weight:700;}
+.confirm-row{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-light);border-radius:8px;font-size:14.5px;font-weight:600;color:var(--accent-dark);}.confirm-row input{width:18px;height:18px;}
+.wf-table{width:100%;border-collapse:collapse;font-size:14.5px;}.wf-table th,.wf-table td{border:1px solid var(--border);padding:9px 12px;}.wf-table th{background:var(--accent-light);font-weight:700;}
+.navbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:var(--card);border-top:1px solid var(--border);}
+.nav-info{color:var(--muted);font-size:14px;font-weight:600;}.navbar .btn[disabled]{background:#cfd3d8;cursor:not-allowed;}
+.completion-screen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;z-index:50;}.completion-screen.show{display:flex;}
+.completion-screen .eyebrow{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.completion-screen h1{font-size:44px;margin:0 0 12px;font-weight:800;}.completion-screen p{color:var(--muted);font-size:16.5px;max-width:440px;margin:0 0 28px;}
+.big-check{width:88px;height:88px;border-radius:50%;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:22px;}
+.completion-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}.completion-actions .btn{padding:13px 26px;font-size:15px;}
+#confettiCanvas{position:fixed;inset:0;pointer-events:none;z-index:51;}
+.hl{background:#ffe45c;border-radius:2px;}
+.hl-tools{position:fixed;z-index:9999;display:none;gap:2px;background:#2b2b2b;border-radius:6px;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.hl-tools button{background:none;border:0;color:#fff;cursor:pointer;font-size:13px;padding:6px 10px;border-radius:4px;}.hl-tools button:hover{background:#444;}
+.hl-sw{display:inline-block;width:12px;height:12px;background:#ffe45c;border-radius:3px;margin-right:5px;vertical-align:middle;}
+.video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;margin-bottom:18px;}.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+</style>
+</head>
+<body>
+<div class="hl-tools" id="hlTools"><button id="hlBtn"><span class="hl-sw"></span>Highlight</button><button id="hlClear">Clear</button></div>
+<header class="topbar">
+  <a href="../student-dashboard.html" style="color:var(--accent);text-decoration:none;font-weight:700;font-size:14px;">← Dashboard</a>
+  <div class="brand">IELTS <span>Sprint4</span></div>
+  <div class="daylabel">Day 27</div>
+  <span class="teacher-badge" id="teacherBadge">Teacher Mode</span>
+  <div class="dots" id="dots"></div>
+</header>
+<main class="content"><div class="wrap">
+
+<!-- TASK 1 -->
+<section class="task" id="task1" data-task="1">
+<div class="task-head"><div class="task-eyebrow">Task 1 of 8</div><h2 class="task-title">Vocabulary</h2><p class="task-sub">Learn the 20 words, then complete both exercises.</p></div>
+<div class="card"><h3>Word list</h3><div class="wordbank">
+<span class="chip">pathogen</span><span class="chip">immunity</span><span class="chip">antibody</span><span class="chip">vaccine</span><span class="chip">inoculate</span><span class="chip">epidemic</span><span class="chip">eradicate</span><span class="chip">contagious</span><span class="chip">virulent</span><span class="chip">mutate</span><span class="chip">antigen</span><span class="chip">susceptible</span><span class="chip">outbreak</span><span class="chip">dormant</span><span class="chip">mitigate</span><span class="chip">transmit</span><span class="chip">prophylactic</span><span class="chip">immunize</span><span class="chip">resistant</span><span class="chip">incubation</span>
+</div></div>
+<div class="card"><h4>Exercise A — Complete the text</h4><p class="instr">Fill each gap with the correct word from the box above.</p><div class="passage-text" id="vocabA-text"></div></div>
+<div class="card"><h4>Exercise B — Vocabulary matching</h4><p class="instr">Match each word (1–15) to the correct definition (A–O).</p><div id="vocabB-list"></div></div>
+<div class="check-row"><button class="btn secondary" onclick="checkVocab()">Check answers</button></div>
+<details class="answer-key" id="ansKey1"><summary>Answer key</summary><div class="answer-key-body" id="ansKey1Body"></div></details>
+</section>
+
+<!-- TASK 2 -->
+<section class="task" id="task2" data-task="2">
+<div class="task-head"><div class="task-eyebrow">Task 2 of 8</div><h2 class="task-title">Mini reading</h2><p class="task-sub">Read the passage, then decide if each statement is True or False.</p></div>
+<div class="card"><h3>How vaccines train the immune system</h3>
+<div class="passage-text">Vaccination works by exposing the immune system to a harmless version of a pathogen's antigen, training the body to recognise and respond to it without causing the genuine disease. Edward Jenner's original discovery relied on the observation that people who had contracted the mild cowpox virus appeared resistant to the far more virulent smallpox. When the immune system encounters an antigen, specialised cells produce antibodies to neutralise it, and a subset of these cells remain dormant afterward, ready to respond far more quickly if the same pathogen is encountered again. Once enough of a population becomes immune through vaccination, a contagious disease struggles to find susceptible hosts, producing herd immunity that indirectly protects even unvaccinated individuals. This protection can be complicated when a virus mutates, altering the antigens that existing antibodies were trained to recognise, which is why some vaccines must be periodically updated to mitigate the effects of new variants. Smallpox remains the only human disease to have been fully eradicated through a sustained global vaccination campaign.</div>
+</div>
+<div class="card" id="miniReadingQs"><p class="instr">Decide True or False for each statement.</p></div>
+<div class="check-row"><button class="btn secondary" onclick="checkMiniReading()">Check answers</button></div>
+<details class="answer-key" id="ansKey2"><summary>Answer key</summary><div class="answer-key-body" id="ansKey2Body"></div></details>
+</section>
+
+<!-- TASK 3 -->
+<section class="task" id="task3" data-task="3">
+<div class="task-head"><div class="task-eyebrow">Task 3 of 8</div><h2 class="task-title">Article</h2><p class="task-sub">Read the article and complete all comprehension questions inside.</p></div>
+<div class="card"><h3>Training the Body's Defenses: The Science and History of Vaccination</h3><p class="instr">Advanced reading on Edward Jenner, immune memory, herd immunity, and disease eradication — with full vocabulary glossary and comprehension questions inside.</p><a class="btn link-out" href="article-day-27.html" target="_blank" rel="noopener">📄 Open article</a></div>
+<div class="confirm-row"><input type="checkbox" id="t3check"><label for="t3check">I have read the article and completed the questions inside</label></div>
+</section>
+
+<!-- TASK 4 -->
+<section class="task" id="task4" data-task="4">
+<div class="task-head"><div class="task-eyebrow">Task 4 of 8</div><h2 class="task-title">Main reading passage</h2><p class="task-sub">Open the test in a new tab, complete it, then come back here.</p></div>
+<div class="card"><a class="btn link-out" href="passage_day_27.html" target="_blank" onclick="openTask4()">📖 Open main reading passage</a></div>
+<div class="status-line" id="task4Status">⏳ Waiting for you to submit the test in the new tab…</div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t4check"><label for="t4check">I have completed the main reading passage</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t4score" placeholder="e.g. 11"><span style="font-size:14px;color:var(--muted);">/ 13 questions</span></div></div>
+</section>
+
+<!-- TASK 5 -->
+<section class="task" id="task5" data-task="5">
+<div class="task-head"><div class="task-eyebrow">Task 5 of 8</div><h2 class="task-title">Extended reading</h2><p class="task-sub">Read the passage, then answer all questions below.</p></div>
+<div class="card"><h3>The Long Road to a Polio-Free World</h3>
+<div class="passage-text">Poliomyelitis, commonly known as polio, was once among the most feared contagious diseases of the twentieth century, capable of causing permanent paralysis or death, particularly among young children. The introduction of an effective vaccine in the 1950s, developed independently by Jonas Salk and later Albert Sabin using different approaches, transformed the disease from a widespread annual epidemic into a rare and increasingly geographically confined threat, offering a compelling case study in what a coordinated, sustained vaccination effort can achieve.<br><br>
+Unlike smallpox, however, polio has proven considerably more difficult to eradicate entirely, despite a global eradication initiative launched in 1988 that has already reduced case numbers by more than ninety-nine percent worldwide. Several factors complicate the final stages of eradication. The virus can transmit through contaminated water in regions lacking adequate sanitation infrastructure, and a significant proportion of infections produce no visible symptoms at all, allowing the pathogen to continue circulating undetected within a population even as visible case numbers decline.<br><br>
+Political instability and armed conflict in certain remaining endemic regions have further complicated vaccination efforts, as health workers attempting to administer vaccines have occasionally faced serious security risks, and disrupted infrastructure has made sustaining the very high vaccination coverage required to interrupt transmission entirely difficult to achieve and maintain. Even a temporary lapse in vaccination coverage within a susceptible population can allow a dormant outbreak to resurface with alarming speed.<br><br>
+Public health researchers studying the polio eradication campaign note that the final stages of eradicating any disease tend to be disproportionately difficult and costly compared to the earlier stages of reducing overall case numbers, since eliminating the last remaining pockets of transmission requires reaching precisely the populations that have historically proven hardest to access through conventional public health infrastructure.</div>
+</div>
+<div class="card"><h4>Section 1 — True / False / Not Given (5 questions)</h4>
+<p class="instr">Write True, False, or Not Given based on the passage above.</p>
+<div id="t5TFList"></div>
+</div>
+<div class="card"><h4>Section 2 — Short answer (3 questions)</h4>
+<p class="instr">Answer using NO MORE THAN THREE WORDS from the passage.</p>
+<div class="passage-text">
+<p>6. Who developed an effective polio vaccine in the 1950s, alongside Albert Sabin?<br><input class="fill med" id="t5s6"></p>
+<p>7. In what year was the global polio eradication initiative launched?<br><input class="fill med" id="t5s7"></p>
+<p>8. What can polio spread through in regions lacking adequate sanitation infrastructure?<br><input class="fill med" id="t5s8"></p>
+</div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask5()">Check answers</button></div>
+<details class="answer-key" id="ansKey5"><summary>Answer key</summary><div class="answer-key-body" id="ansKey5Body"></div></details>
+</section>
+
+<!-- TASK 6 -->
+<section class="task" id="task6" data-task="6">
+<div class="task-head"><div class="task-eyebrow">Task 6 of 8</div><h2 class="task-title">Two mini passages</h2><p class="task-sub">Read each passage carefully and answer the comprehension questions.</p></div>
+<div class="card"><h3>Passage A — mRNA Vaccines: A New Approach</h3>
+<div class="passage-text">Traditional vaccines typically introduce a weakened, inactivated, or partial version of a pathogen directly into the body to trigger an immune response. Messenger RNA, or mRNA, vaccines take a fundamentally different approach: rather than delivering pathogen material directly, they deliver genetic instructions that direct the body's own cells to temporarily produce a harmless antigen fragment, which the immune system then recognises and responds to as though encountering the actual pathogen. Because mRNA vaccines do not require growing large quantities of live virus during manufacturing, a process traditionally required for many conventional vaccines, they can in principle be developed and produced considerably faster once a pathogen's genetic sequence becomes available. Once the antigen fragment has been produced and the immune response triggered, the introduced mRNA is rapidly broken down by the body's normal cellular processes, meaning it does not persist or integrate into the recipient's own genetic material.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+<div id="t6aMcqList"></div>
+</div>
+<div class="card"><h3>Passage B — Cold Chains and Vaccine Distribution</h3>
+<div class="passage-text">Developing an effective vaccine represents only part of the challenge in achieving widespread immunization; successfully distributing that vaccine to the populations who need it presents a substantial logistical challenge in its own right. Many vaccines require storage within a narrow temperature range throughout their entire journey from manufacturing facility to the point of administration, a requirement known within public health circles as maintaining an unbroken cold chain. A single significant break in this cold chain, whether caused by equipment failure, extended power outages, or transportation delays, can render an entire shipment of vaccine doses ineffective, even when the vaccine appears physically unchanged and shows no obvious visible signs of having been compromised. This logistical requirement poses particular difficulties in remote or under-resourced regions lacking reliable electricity infrastructure, sometimes requiring specialised solar-powered refrigeration units or careful advance route planning to ensure vaccines remain within their required temperature range throughout transport and storage.</div>
+<h4 style="margin-top:16px;">Questions — choose the correct answer (A, B, C or D)</h4>
+<div id="t6bMcqList"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask6()">Check answers</button></div>
+<details class="answer-key" id="ansKey6"><summary>Answer key</summary><div class="answer-key-body" id="ansKey6Body"></div></details>
+</section>
+
+<!-- TASK 7 -->
+<section class="task" id="task7" data-task="7">
+<div class="task-head"><div class="task-eyebrow">Task 7 of 8</div><h2 class="task-title">Four mini passages</h2><p class="task-sub">Read each short passage, then answer the True / False questions below it.</p></div>
+<div class="card"><h3>Passage 1 — Louis Pasteur and the Rabies Vaccine</h3>
+<div class="passage-text">Nearly a century after Edward Jenner's original smallpox work, the French scientist Louis Pasteur developed a vaccine against rabies, a virtually always fatal disease once symptoms appear, using a weakened form of the virus grown in laboratory conditions. In 1885, Pasteur controversially administered this experimental vaccine directly to a young boy who had been severely bitten by a rabid dog, despite Pasteur himself lacking formal medical qualifications to treat patients directly. The boy survived, providing a dramatic public demonstration of vaccination's potential and establishing Pasteur's broader germ theory of disease as a legitimate and increasingly influential scientific framework, considerably advancing the field of immunology beyond Jenner's earlier, more empirically-driven approach.</div>
+<div id="t7p1List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 2 — Vaccine Hesitancy: A Public Health Challenge</h3>
+<div class="passage-text">Despite the well-documented effectiveness of vaccination programmes, public health researchers consistently identify vaccine hesitancy — reluctance or refusal to vaccinate despite vaccine availability — as a persistent challenge to achieving the population coverage required for herd immunity. Researchers studying this phenomenon note that hesitancy stems from a wide range of factors, including concerns about vaccine safety, distrust of public health institutions, and the influence of misinformation circulating through social networks. Public health communication strategies aimed at addressing hesitancy have shown mixed effectiveness, with researchers generally agreeing that approaches tailored to a community's specific underlying concerns tend to prove more successful than broad, generic public awareness campaigns.</div>
+<div id="t7p2List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 3 — Vaccines for Diseases That Do Not Exist Yet</h3>
+<div class="passage-text">In recent years, some researchers have begun developing what are sometimes termed prototype vaccines against entire families of viruses believed to pose a significant future pandemic risk, rather than waiting for a specific novel pathogen to emerge before beginning vaccine development. This approach, sometimes called prototype pathogen preparedness, aims to substantially compress the historically lengthy vaccine development timeline by completing much of the foundational research in advance, so that a vaccine against a genuinely novel but related pathogen could, in principle, be rapidly adapted from existing research once the new threat is identified, rather than requiring development to begin entirely from scratch.</div>
+<div id="t7p3List" style="margin-top:12px;"></div>
+</div>
+<div class="card"><h3>Passage 4 — Veterinary Vaccination and Zoonotic Disease</h3>
+<div class="passage-text">Vaccination programmes are not limited to human populations; veterinary vaccination plays a significant role in preventing zoonotic diseases, meaning diseases capable of transmitting between animals and humans. Rabies vaccination campaigns targeting domestic dog populations, for instance, have proven highly effective at reducing human rabies cases in regions where the disease was historically transmitted primarily through dog bites, since interrupting transmission within the animal reservoir population indirectly protects human populations without requiring universal human vaccination. Public health researchers increasingly advocate for a coordinated approach, sometimes termed "one health," that considers human, animal, and environmental health as interconnected when designing disease prevention strategies rather than addressing each in isolation.</div>
+<div id="t7p4List" style="margin-top:12px;"></div>
+</div>
+<div class="check-row"><button class="btn secondary" onclick="checkTask7()">Check answers</button></div>
+<details class="answer-key" id="ansKey7"><summary>Answer key</summary><div class="answer-key-body" id="ansKey7Body"></div></details>
+</section>
+
+<!-- TASK 8 (FULL LISTENING TEST) -->
+<section class="task" id="task8" data-task="8">
+<div class="task-head"><div class="task-eyebrow">Task 8 of 8</div><h2 class="task-title">Full listening test</h2><p class="task-sub">Open the test in a new tab, complete it, then come back and enter your score. The walkthrough video will appear below.</p></div>
+<div class="card"><a class="btn link-out" href="Listening-27.html" target="_blank" rel="noopener">🎧 Open full listening test</a></div>
+<div class="confirm-row" style="margin-top:14px;"><input type="checkbox" id="t8check" onchange="revealListeningWalkthrough()"><label for="t8check">I have completed the full listening test</label></div>
+<div class="card" style="margin-top:14px;"><h3 style="margin:0 0 8px;font-size:15px;">📝 Enter your score</h3><p class="instr">After finishing, record your score here.</p><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="font-weight:700;font-size:14px;">My score:</label><input class="fill short" id="t8score" placeholder="e.g. 30"><span style="font-size:14px;color:var(--muted);">/ 40 questions</span></div></div>
+<div id="listeningWalkthrough" style="display:none;margin-top:18px;">
+<div class="card"><h3 style="margin:0 0 10px;">Walkthrough</h3><p class="instr">Watch this walkthrough of the listening test and answers.</p>
+<div class="video-wrap"><iframe id="t8WalkFrame" title="Full listening walkthrough" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
+</div></div>
+</section>
+
+</div></main>
+<footer class="navbar">
+  <button class="btn secondary" id="prevBtn" onclick="goPrev()">← Previous</button>
+  <span class="nav-info" id="navInfo">Task 1 of 8</span>
+  <button class="btn" id="doneBtn" onclick="goDone()" disabled>Done →</button>
+</footer>
+<div class="completion-screen" id="completionScreen">
+  <div class="big-check">✓</div><div class="eyebrow">Day 27 of 30</div>
+  <h1>Congratulations — Day 27 complete! 🎉</h1>
+  <p>All 8 tasks done. Come back tomorrow for Day 28.</p>
+  <div class="completion-actions"><a href="../student-dashboard.html" class="btn">← Back to dashboard</a><button class="btn secondary" onclick="reviewDay()">Review my work</button></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<script src="../supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+var DAY=27,TOTAL_TASKS=8,current=1;
+var teacherMode=new URLSearchParams(window.location.search).get("teacher")==="true";
+var taskDone={1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false};
+var checkedTasks={};
+if(teacherMode)document.getElementById("teacherBadge").style.display="inline-block";
+var STATE_KEY="sprint4_day27_state";
+function saveState(){try{sessionStorage.setItem(STATE_KEY,JSON.stringify({current:current,taskDone:taskDone}));}catch(e){}}
+function restoreState(){try{var r=sessionStorage.getItem(STATE_KEY);if(!r)return;var s=JSON.parse(r);if(s&&s.taskDone)taskDone=s.taskDone;if(s&&s.current)current=s.current;}catch(e){}}
+restoreState();
+var _sb=null;
+function getSB(){if(!_sb&&window.supabase&&typeof SUPABASE_URL!=="undefined")_sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);return _sb;}
+var studentSession=null;
+try{var _r=sessionStorage.getItem("sprint4_session");if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==="student")studentSession=_p;}}catch(e){}
+
+var LS_ANS="sprint4_day27_ans";
+function saveAns(id,val){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");a[id]=val;localStorage.setItem(LS_ANS,JSON.stringify(a));}catch(e){}}
+function restoreAnswersFromLS(){try{var a=JSON.parse(localStorage.getItem(LS_ANS)||"{}");Object.keys(a).forEach(function(id){if(id.startsWith("radio_")){var name=id.replace("radio_","");var el=document.querySelector("input[name=\""+name+"\"][value=\""+a[id]+"\"]");if(el)el.checked=true;}else{var el=document.getElementById(id);if(el)el.value=a[id];}});}catch(e){}}
+
+var isLocked=false;
+function makeRO(){
+  isLocked=true;
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){el.disabled=true;});
+  document.querySelectorAll(".btn.secondary").forEach(function(btn){if(btn.textContent.trim().startsWith("Check"))btn.style.display="none";});
+  document.querySelectorAll(".answer-key").forEach(function(el){el.classList.add("show");});
+  var db=document.getElementById("doneBtn");db.disabled=false;db.textContent="Next \u2192";db.style.background="#475569";
+  var banner=document.createElement("div");
+  banner.style.cssText="position:fixed;top:0;left:0;right:0;background:#1f9d55;color:#fff;text-align:center;padding:8px 16px;font-size:13px;font-weight:700;z-index:200;";
+  banner.textContent="Review mode \u2014 Day 27 is complete. Your answers are saved and locked.";
+  document.body.insertBefore(banner,document.body.firstChild);
+}
+
+var debTimers={};
+function autosave(id,val){saveAns(id,val);if(!studentSession)return;clearTimeout(debTimers[id]);debTimers[id]=setTimeout(function(){var db=getSB();if(!db)return;db.from("answers").upsert({student_id:studentSession.id,day:DAY,task:taskForField(id),field_id:id,value:String(val),saved_at:new Date().toISOString()},{onConflict:"student_id,day,field_id"}).then(function(){});},600);}
+function taskForField(id){if(/^va|^vb/.test(id))return 1;if(/^radio_mr/.test(id))return 2;if(id==="t4score"||id==="t4check")return 4;if(/^t5/.test(id))return 5;if(/^t6/.test(id))return 6;if(/^t7/.test(id))return 7;if(id==="t8score"||id==="t8check")return 8;return 1;}
+function hookAutosave(){
+  document.querySelectorAll("input.fill,select.fill").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("input",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});el.addEventListener("change",function(){saveAns(el.id,el.value);autosave(el.id,el.value);});});
+  document.querySelectorAll("input[type=radio]").forEach(function(el){if(el.dataset.hooked)return;el.dataset.hooked="1";el.addEventListener("change",function(){if(el.checked){saveAns("radio_"+el.name,el.value);autosave("radio_"+el.name,el.value);}});});
+}
+async function restoreAnswers(){if(!studentSession)return;var db=getSB();if(!db)return;var res=await db.from("answers").select("field_id,value").eq("student_id",studentSession.id).eq("day",DAY);(res.data||[]).forEach(function(row){var el=document.getElementById(row.field_id);if(el){el.value=row.value;return;}if(row.field_id.startsWith("radio_")){var n=row.field_id.replace("radio_","");var r=document.querySelector("input[name=\""+n+"\"][value=\""+row.value+"\"]");if(r)r.checked=true;}});}
+function saveProgress(t,c){try{var k="sprint4_day27_progress";var d=JSON.parse(localStorage.getItem(k)||"{}");d[t]=c;localStorage.setItem(k,JSON.stringify(d));}catch(e){}if(!studentSession)return;var db=getSB();if(!db)return;db.from("progress").upsert({student_id:studentSession.id,day:DAY,task:t,completed:c,completed_at:c?new Date().toISOString():null},{onConflict:"student_id,day,task"}).then(function(){});}
+var dotsWrap=document.getElementById("dots");for(var i=1;i<=TOTAL_TASKS;i++){var d=document.createElement("div");d.className="dot";d.dataset.dot=i;dotsWrap.appendChild(d);}
+function refreshDots(){document.querySelectorAll(".dot").forEach(function(d){var n=+d.dataset.dot;d.classList.toggle("done",!!taskDone[n]);d.classList.toggle("current",n===current);});}
+function showTask(n){document.querySelectorAll(".task").forEach(function(t){t.classList.remove("active");});document.getElementById("task"+n).classList.add("active");document.getElementById("navInfo").textContent="Task "+n+" of "+TOTAL_TASKS;document.getElementById("prevBtn").disabled=(n===1);refreshDots();refreshDoneButton();window.scrollTo(0,0);}
+function goPrev(){if(current>1){current--;saveState();showTask(current);}}window.goPrev=goPrev;
+function goDone(){if(isLocked){if(current<TOTAL_TASKS){current++;saveState();showTask(current);}return;}taskDone[current]=true;saveProgress(current,true);saveState();refreshDots();if(current<TOTAL_TASKS){current++;saveState();showTask(current);}else{document.getElementById("completionScreen").classList.add("show");makeRO();fireConfetti();}}window.goDone=goDone;
+function reviewDay(){document.getElementById("completionScreen").classList.remove("show");current=1;saveState();showTask(1);}window.reviewDay=reviewDay;
+function refreshDoneButton(){document.getElementById("doneBtn").disabled=!(teacherMode||isLocked||isTaskComplete(current));}
+function isTaskComplete(n){if(teacherMode||isLocked)return true;if(checkedTasks[n])return true;if(n===3){var cb=document.getElementById("t3check");return cb&&cb.checked;}if(n===4)return taskDone[4]||t4msg||(document.getElementById("t4check")&&document.getElementById("t4check").checked);if(n===8){var c8=document.getElementById("t8check");return c8&&c8.checked;}var container=document.getElementById("task"+n);var texts=container.querySelectorAll("input.fill");for(var i=0;i<texts.length;i++){if(texts[i].value.trim()==="")return false;}var selects=container.querySelectorAll("select");for(var s=0;s<selects.length;s++){if(selects[s].value==="")return false;}var rn={};container.querySelectorAll("input[type=radio]").forEach(function(r){if(!(r.name in rn))rn[r.name]=false;if(r.checked)rn[r.name]=true;});for(var g in rn){if(!rn[g])return false;}return true;}
+document.addEventListener("input",refreshDoneButton);document.addEventListener("change",refreshDoneButton);
+var t4msg=false;
+window.addEventListener("message",function(e){if(e.data&&e.data.type==="sprint4-task-done"&&e.data.task===4){t4msg=true;taskDone[4]=true;saveState();var s=document.getElementById("task4Status");s.textContent="\u2705 Passage submitted \u2014 score "+e.data.score+" / "+e.data.total+".";s.classList.add("complete");refreshDoneButton();refreshDots();}});
+function openTask4(){if(!t4msg)document.getElementById("task4Status").textContent="\ud83d\udcd6 Passage opened \u2014 submit there, then come back here.";}window.openTask4=openTask4;
+var TASK8_WALKTHROUGH_ID="I1_yBfHxXZw";
+function revealListeningWalkthrough(){var cb=document.getElementById("t8check");var wt=document.getElementById("listeningWalkthrough");if(cb&&cb.checked&&wt){wt.style.display="block";var frame=document.getElementById("t8WalkFrame");if(frame&&TASK8_WALKTHROUGH_ID)frame.src="https://www.youtube.com/embed/"+TASK8_WALKTHROUGH_ID;}refreshDoneButton();}window.revealListeningWalkthrough=revealListeningWalkthrough;
+function fireConfetti(){var canvas=document.getElementById("confettiCanvas");var ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;var colors=["#E8542D","#1F9D55","#1A2238","#F2B705","#0F5C6B"];var pieces=[];for(var i=0;i<140;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:8+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],speed:2+Math.random()*3,drift:-1.5+Math.random()*3,rotation:Math.random()*360,spin:-6+Math.random()*12});var start=Date.now();function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(function(p){p.y+=p.speed;p.x+=p.drift;p.rotation+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(Date.now()-start<3200)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);}requestAnimationFrame(frame);}
+
+/* ===== TASK 1 VOCAB ===== */
+var VA_segs=["When a ", "/*1*/", " enters the body, the immune system must learn to recognise it before it can produce lasting ", "/*2*/", ". Edward Jenner first tested this principle when he chose to ", "/*3*/", " a young boy with cowpox material, later exposing him to the far more ", "/*4*/", " smallpox virus. The body responds to a specific ", "/*5*/", " on the pathogen's surface by producing ", "/*6*/", "s shaped precisely to neutralise it, and a portion of these immune cells then remain ", "/*7*/", " for years, ready to respond quickly if the same threat reappears. A modern ", "/*8*/", " exploits this exact mechanism to ", "/*9*/", " a person safely, leaving them ", "/*10*/", " to the disease without ever causing the illness itself. Because many diseases are highly ", "/*11*/", ", protecting enough of a population reduces the number of ", "/*12*/", " hosts available for a pathogen to ", "/*13*/", " itself between. Without sufficient vaccination coverage, a localised ", "/*14*/", " can rapidly expand into a full ", "/*15*/", ". Viruses frequently ", "/*16*/", ", altering their antigens in ways that can ", "/*17*/", " the effectiveness of existing immunity, which is why some vaccines are considered a purely ", "/*18*/", " measure requiring periodic updates rather than a permanent, one-time solution. Only one human disease has ever been fully ", "/*19*/", ", and even tracking a disease's typical ", "/*20*/", " period remains essential for understanding how quickly it can spread undetected."];
+var VA_ans={"1": "pathogen", "2": "immunity", "3": "inoculate", "4": "virulent", "5": "antigen", "6": "antibody", "7": "dormant", "8": "vaccine", "9": "immunize", "10": "resistant", "11": "contagious", "12": "susceptible", "13": "transmit", "14": "outbreak", "15": "epidemic", "16": "mutate", "17": "mitigate", "18": "prophylactic", "19": "eradicate", "20": "incubation"};
+
+(function buildVA(){var el=document.getElementById("vocabA-text");var html="<p>";var g=1;VA_segs.forEach(function(s){var m=s.match(/^\/\*(\d+)\*\/$/);if(m){var w=VA_ans[m[1]];var cl=w.length>11?"med":"short";html+=" <input class=\"fill "+cl+"\" id=\"va"+m[1]+"\"> ";}else{html+=s;}});html+="</p>";el.innerHTML=html;})();
+
+var VB_words=["pathogen","immunity","antibody","vaccine","inoculate","epidemic","eradicate","contagious","virulent","mutate","antigen","susceptible","outbreak","dormant","mitigate"];
+var VB_defs={A:"A microorganism capable of causing disease in its host",B:"The body's ability to resist a particular infection",C:"A protein produced by the immune system to neutralise a specific antigen",D:"A substance used to stimulate immunity against a disease",E:"To introduce a substance into the body to produce immunity",F:"A widespread occurrence of an infectious disease within a community",G:"To completely eliminate something, especially a disease",H:"Capable of being transmitted from one person to another",I:"Extremely severe, harmful, or dangerous in its effects",J:"To undergo a change in genetic structure",K:"A molecule that triggers an immune response",L:"Likely to be influenced or harmed; vulnerable to infection",M:"A sudden occurrence or increase in the incidence of a disease",N:"Temporarily inactive but capable of becoming active again",O:"To make something less severe, serious, or harmful"};
+var VB_ans={1:"A",2:"B",3:"C",4:"D",5:"E",6:"F",7:"G",8:"H",9:"I",10:"J",11:"K",12:"L",13:"M",14:"N",15:"O"};
+(function buildVB(){var wrap=document.getElementById("vocabB-list");var letters=Object.keys(VB_defs).sort();var optHtml="<option value=\"\">--</option>"+letters.map(function(l){return "<option value=\""+l+"\">"+l+"</option>";}).join("");var html="<p class=\"instr\" style=\"margin-bottom:12px;\">";letters.forEach(function(l){html+="<b>"+l+".</b> "+VB_defs[l]+"<br>";});html+="</p>";VB_words.forEach(function(w,idx){var n=idx+1;html+="<div class=\"q-text\" style=\"margin-bottom:8px;\">"+n+". "+w+" &rarr; <select class=\"fill\" id=\"vb"+n+"\">"+optHtml+"</select></div>";});wrap.innerHTML=html;})();
+
+function checkVocab(){var rA=0;for(var i=1;i<=20;i++){var inp=document.getElementById("va"+i);if(!inp)continue;var ok=inp.value.trim().toLowerCase()===VA_ans[i].toLowerCase();if(ok)rA++;inp.classList.toggle("ok",ok);inp.classList.toggle("no",!ok&&inp.value.trim()!=="");}var rB=0;for(var j=1;j<=15;j++){var sel=document.getElementById("vb"+j);if(sel&&sel.value===VB_ans[j])rB++;}alert("Exercise A: "+rA+"/20\nExercise B: "+rB+"/15");document.getElementById("ansKey1Body").innerHTML="<b>A:</b><br>"+Object.keys(VA_ans).map(function(n){return n+". "+VA_ans[n];}).join(" &nbsp;\u2022&nbsp; ")+"<br><br><b>B:</b><br>"+VB_words.map(function(w,i){return (i+1)+". "+VB_ans[i+1];}).join(" &nbsp;\u2022&nbsp; ");document.getElementById("ansKey1").classList.add("show");checkedTasks[1]=true;refreshDoneButton();}window.checkVocab=checkVocab;
+
+/* ===== TASK 2 ===== */
+var mrData=[
+  {n:1,s:"Vaccination causes the genuine disease in order to build immunity.",tf:"False"},
+  {n:2,s:"Edward Jenner's discovery relied on the observation that cowpox exposure prevented smallpox.",tf:"True"},
+  {n:3,s:"Memory immune cells remain permanently active at full strength after first exposure.",tf:"False"},
+  {n:4,s:"Herd immunity can indirectly protect unvaccinated individuals within a population.",tf:"True"},
+  {n:5,s:"Every human disease has now been fully eradicated through vaccination.",tf:"False"}
+];
+(function buildMR(){var wrap=document.getElementById("miniReadingQs");var html="";mrData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"mr"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML+=html;})();
+function checkMiniReading(){var right=0;mrData.forEach(function(q){var c=document.querySelector("input[name=\"mr"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});alert("You got "+right+"/5 correct.");document.getElementById("ansKey2Body").innerHTML=mrData.map(function(q){return q.n+". <b>"+q.tf+"</b>";}).join("<br>");document.getElementById("ansKey2").classList.add("show");checkedTasks[2]=true;refreshDoneButton();}window.checkMiniReading=checkMiniReading;
+
+/* ===== TASK 5 ===== */
+var t5TFData=[
+  {n:1,s:"Polio was among the most feared contagious diseases of the twentieth century.",tf:"True",opts:["True","False","Not Given"]},
+  {n:2,s:"Jonas Salk and Albert Sabin developed identical vaccines using the exact same method.",tf:"False",opts:["True","False","Not Given"]},
+  {n:3,s:"The global polio eradication initiative has reduced cases by more than ninety-nine percent.",tf:"True",opts:["True","False","Not Given"]},
+  {n:4,s:"Every polio infection produces clearly visible symptoms in the infected individual.",tf:"False",opts:["True","False","Not Given"]},
+  {n:5,s:"Political instability has never affected any vaccination campaign worldwide.",tf:"False",opts:["True","False","Not Given"]}
+];
+(function buildT5TF(){var wrap=document.getElementById("t5TFList");var html="";t5TFData.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\">";q.opts.forEach(function(opt){html+="<label><input type=\"radio\" name=\"t5tf"+q.n+"\" value=\""+opt+"\"> "+opt+"</label>";});html+="</div></div>";});wrap.innerHTML=html;})();
+function checkTask5(){var rTF=0,rS=0;t5TFData.forEach(function(q){var c=document.querySelector("input[name=\"t5tf"+q.n+"\"]:checked");if(c&&c.value===q.tf)rTF++;});["t5s6","t5s7","t5s8"].forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var v=el.value.trim().toLowerCase();var ok=(i===0&&v.indexOf("jonas salk")>=0)||(i===1&&v.indexOf("1988")>=0)||(i===2&&v.indexOf("contaminated water")>=0);if(ok)rS++;el.classList.toggle("ok",ok);el.classList.toggle("no",!ok&&el.value.trim()!=="");});alert("T/F/NG: "+rTF+"/5\nShort answer: "+rS+"/3");document.getElementById("ansKey5Body").innerHTML="<b>T/F/NG:</b> 1.True 2.False 3.True 4.False 5.False<br><br><b>Short answer:</b><br>6. Jonas Salk<br>7. 1988<br>8. Contaminated water";document.getElementById("ansKey5").classList.add("show");checkedTasks[5]=true;refreshDoneButton();}window.checkTask5=checkTask5;
+
+/* ===== TASK 6 ===== */
+var t6aData=[
+  {n:1,q:"How do mRNA vaccines differ from traditional vaccines?",opts:["They deliver pathogen material directly rather than genetic instructions","They deliver genetic instructions that direct cells to produce a harmless antigen fragment","They require growing large quantities of live virus","They cannot trigger any immune response at all"],ans:"B",id:"t6a1"},
+  {n:2,q:"What advantage does the passage attribute to mRNA vaccine manufacturing?",opts:["It requires more time than traditional methods","It does not require growing large quantities of live virus, allowing faster development","It requires no knowledge of a pathogen's genetic sequence","It produces vaccines that never need updating"],ans:"B",id:"t6a2"},
+  {n:3,q:"What happens to the mRNA after the immune response is triggered?",opts:["It permanently integrates into the recipient's genetic material","It is rapidly broken down by the body's normal cellular processes","It remains active indefinitely within the body","It transforms into a live virus"],ans:"B",id:"t6a3"},
+  {n:4,q:"According to the passage, what does the immune system do with the antigen fragment produced?",opts:["It ignores the fragment entirely","It recognises and responds to it as though encountering the actual pathogen","It destroys the body's own cells producing it","It transmits the fragment to other people"],ans:"B",id:"t6a4"},
+  {n:5,q:"What must be available before mRNA vaccine development can begin, according to the passage?",opts:["A live sample of the virus grown in a laboratory","The pathogen's genetic sequence","A traditional inactivated vaccine already in use","Approval from an international regulatory body"],ans:"B",id:"t6a5"}
+];
+var t6bData=[
+  {n:1,q:"What is a 'cold chain' in the context of vaccine distribution?",opts:["A chain of hospitals administering vaccines","Maintaining vaccines within a narrow temperature range throughout distribution","A method of transporting vaccines by refrigerated ship only","A network of scientists studying vaccine effectiveness"],ans:"B",id:"t6b1"},
+  {n:2,q:"What can happen if the cold chain is broken?",opts:["The vaccine becomes more effective","An entire shipment of doses can become ineffective, even without visible changes","The vaccine changes color to indicate spoilage","Nothing, as vaccines are unaffected by temperature"],ans:"B",id:"t6b2"},
+  {n:3,q:"Why does the cold chain pose particular difficulties in certain regions?",opts:["Because vaccines are never needed in those regions","Because remote or under-resourced regions may lack reliable electricity infrastructure","Because those regions have no interest in vaccination","Because vaccines are illegal in some countries"],ans:"B",id:"t6b3"},
+  {n:4,q:"What solution does the passage mention for regions lacking reliable electricity?",opts:["Abandoning vaccination programmes entirely","Specialised solar-powered refrigeration units","Storing vaccines at room temperature instead","Using only oral vaccines that require no refrigeration"],ans:"B",id:"t6b4"},
+  {n:5,q:"What does the passage suggest is only part of the overall vaccination challenge?",opts:["Developing an effective vaccine","Naming a vaccine after its inventor","Testing a vaccine on animals","Publishing vaccine research in journals"],ans:"A",id:"t6b5"}
+];
+function buildMcqBlock(data,prefix){var html="";data.forEach(function(q){html+="<div class=\"q-block\" id=\""+prefix+q.n+"Block\"><div class=\"q-text\">"+q.n+". "+q.q+"</div><div class=\"opts\">";var letters=["A","B","C","D"];q.opts.forEach(function(o,idx){html+="<label class=\"opt-row\" data-val=\""+letters[idx]+"\"><input type=\"radio\" name=\""+q.id+"\" value=\""+letters[idx]+"\"> "+letters[idx]+") "+o+"</label>";});html+="</div></div>";});return html;}
+document.getElementById("t6aMcqList").innerHTML=buildMcqBlock(t6aData,"t6a");
+document.getElementById("t6bMcqList").innerHTML=buildMcqBlock(t6bData,"t6b");
+function checkMcqSet(data,prefix){var right=0;data.forEach(function(q){var c=document.querySelector("input[name=\""+q.id+"\"]:checked");var ok=c&&c.value===q.ans;if(ok)right++;var block=document.getElementById(prefix+q.n+"Block");if(block){block.querySelectorAll("input[type=radio]").forEach(function(r){r.disabled=true;});block.querySelectorAll(".opt-row").forEach(function(row){if(row.dataset.val===q.ans)row.classList.add("correct");else if(c&&row.dataset.val===c.value)row.classList.add("wrong");});}});return right;}
+function checkTask6(){var rA=checkMcqSet(t6aData,"t6a");var rB=checkMcqSet(t6bData,"t6b");alert("Passage A: "+rA+"/5\nPassage B: "+rB+"/5");document.getElementById("ansKey6Body").innerHTML="<b>Passage A:</b> 1.B 2.B 3.B 4.B 5.B<br><b>Passage B:</b> 1.B 2.B 3.B 4.B 5.A";document.getElementById("ansKey6").classList.add("show");checkedTasks[6]=true;refreshDoneButton();}window.checkTask6=checkTask6;
+
+/* ===== TASK 7 ===== */
+var t7Data=[
+  {pid:1,qs:[{n:1,s:"Louis Pasteur developed a vaccine against rabies using a weakened form of the virus.",tf:"True"},{n:2,s:"Pasteur held formal medical qualifications to treat patients directly.",tf:"False"},{n:3,s:"The boy Pasteur treated with the experimental rabies vaccine did not survive.",tf:"False"}]},
+  {pid:2,qs:[{n:1,s:"Vaccine hesitancy refers to reluctance or refusal to vaccinate despite vaccine availability.",tf:"True"},{n:2,s:"All vaccine hesitancy stems from a single identical cause in every community.",tf:"False"},{n:3,s:"Tailored communication approaches tend to prove more successful than generic campaigns.",tf:"True"}]},
+  {pid:3,qs:[{n:1,s:"Prototype pathogen preparedness waits for a novel pathogen to emerge before beginning any research.",tf:"False"},{n:2,s:"This approach aims to compress the historically lengthy vaccine development timeline.",tf:"True"},{n:3,s:"A prototype vaccine could in principle be rapidly adapted once a related novel pathogen is identified.",tf:"True"}]},
+  {pid:4,qs:[{n:1,s:"Zoonotic diseases can transmit between animals and humans.",tf:"True"},{n:2,s:"Rabies vaccination of domestic dogs has had no effect on human rabies cases.",tf:"False"},{n:3,s:"The 'one health' approach considers human, animal, and environmental health as interconnected.",tf:"True"}]}
+];
+(function buildT7(){t7Data.forEach(function(p){var wrap=document.getElementById("t7p"+p.pid+"List");var html="<p class=\"instr\">True or False?</p>";p.qs.forEach(function(q){html+="<div class=\"q-block\"><div class=\"q-text\">"+q.n+". "+q.s+"</div><div class=\"tf-toggle\"><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"True\"> True</label><label><input type=\"radio\" name=\"t7p"+p.pid+"q"+q.n+"\" value=\"False\"> False</label></div></div>";});wrap.innerHTML=html;});})();
+function checkTask7(){var right=0,total=0;t7Data.forEach(function(p){p.qs.forEach(function(q){total++;var c=document.querySelector("input[name=\"t7p"+p.pid+"q"+q.n+"\"]:checked");if(c&&c.value===q.tf)right++;});});alert("You got "+right+"/"+total+" correct.");var key="";t7Data.forEach(function(p){key+="<b>Passage "+p.pid+":</b> ";key+=p.qs.map(function(q){return q.n+"."+q.tf;}).join(" ");key+="<br>";});document.getElementById("ansKey7Body").innerHTML=key;document.getElementById("ansKey7").classList.add("show");checkedTasks[7]=true;refreshDoneButton();}window.checkTask7=checkTask7;
+
+/* ===== INIT ===== */
+if(taskDone[4]&&document.getElementById("t4check"))document.getElementById("t4check").checked=true;
+if(taskDone[4])t4msg=true;
+restoreAnswersFromLS();
+var _allDone=Object.keys(taskDone).every(function(k){return taskDone[k];});
+if(_allDone)makeRO();
+(function waitSdk(){if(window.supabase){restoreAnswers().then(function(){hookAutosave();refreshDoneButton();});}else{setTimeout(waitSdk,100);}})();
+showTask(current);
+
+/* ===== HIGHLIGHT ===== */
+(function(){var HL_KEY="sprint4_hl_day27";var tools=document.getElementById("hlTools");function save(){var texts=[];document.querySelectorAll(".hl").forEach(function(el){texts.push(el.textContent);});try{localStorage.setItem(HL_KEY,JSON.stringify(texts));}catch(e){}}function apply(t){if(!t.trim())return;var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;while(p){if((p.tagName||"")==="SCRIPT"||(p.tagName||"")==="STYLE"||(p.tagName||"")==="BUTTON"||p.className==="hl")return NodeFilter.FILTER_REJECT;p=p.parentNode;}return n.textContent.indexOf(t)>=0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});var node,found=false;while((node=w.nextNode())&&!found){var idx=node.textContent.indexOf(t);if(idx>=0){var r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+t.length);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);found=true;}catch(e){}}}}function restore(){try{JSON.parse(localStorage.getItem(HL_KEY)||"[]").forEach(apply);}catch(e){}}document.addEventListener("mouseup",function(e){if(tools.contains(e.target))return;setTimeout(function(){var s=getSelection();if(!s||s.isCollapsed){tools.style.display="none";return;}var r=s.getRangeAt(0);if(!r.toString().trim()){tools.style.display="none";return;}var rc=r.getBoundingClientRect();tools.style.display="flex";tools.style.left=Math.max(8,rc.left+scrollX+rc.width/2-tools.offsetWidth/2)+"px";tools.style.top=Math.max(8,rc.top+scrollY-tools.offsetHeight-8)+"px";},1);});document.addEventListener("mousedown",function(e){if(!tools.contains(e.target))tools.style.display="none";});document.getElementById("hlBtn").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);try{var sp=document.createElement("span");sp.className="hl";r.surroundContents(sp);}catch(_){}s.removeAllRanges();tools.style.display="none";save();};document.getElementById("hlClear").onclick=function(){var s=getSelection();if(!s||!s.rangeCount)return;var r=s.getRangeAt(0);document.querySelectorAll(".hl").forEach(function(x){if(r.intersectsNode(x)){var p=x.parentNode;while(x.firstChild)p.insertBefore(x.firstChild,x);p.removeChild(x);p.normalize();}});s.removeAllRanges();tools.style.display="none";save();};restore();})();
+})();
+</script>
+</body>
+</html>
