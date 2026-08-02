@@ -106,7 +106,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
 </div>
 
 <div class="main">
-  <div class="page-title">&#127775; Mock Exam Results</div>
+  <div class="page-title">&#127775; Mock Exam Results <span id="mockDayBadge" style="font-size:16px;font-weight:700;color:#0F5C6B;background:#e6eef0;border-radius:999px;padding:4px 14px;margin-left:10px;vertical-align:middle;"></span></div>
   <div class="page-sub" id="pageSubTitle">Loading your students&#39; mock exam results&#8230;</div>
 
   <div id="errorBox" class="error-box" style="display:none;"></div>
@@ -245,8 +245,11 @@ async function loadAll(){
       myStudentIds.push(s.id);
     });
 
-    // 4. Get mock_exams for these students
-    var examQuery = db.from('mock_exams').select('*').order('submitted_at', {ascending: false});
+    // 4. Get mock_exams for these students, filtered to the selected mock round
+    var mockDayParam = parseInt(new URLSearchParams(window.location.search).get('day'), 10) || 21;
+    document.getElementById('mockDayBadge').textContent = 'Day ' + mockDayParam;
+
+    var examQuery = db.from('mock_exams').select('*').eq('mock_day', mockDayParam).order('submitted_at', {ascending: false});
     if(session.role !== 'admin' && myStudentIds.length > 0){
       examQuery = examQuery.in('student_id', myStudentIds);
     } else if(session.role !== 'admin' && myStudentIds.length === 0){
