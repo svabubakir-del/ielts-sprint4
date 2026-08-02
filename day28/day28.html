@@ -2,134 +2,298 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>IELTS Sprint4 &#8212; Mock Exam Results</title>
+<title>IELTS Sprint4 &#8212; Mock Exam</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f7f8fa;color:#1a1a1a;min-height:100vh;}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;}
+body{background:#f7f8fa;color:#1a1a1a;display:flex;flex-direction:column;min-height:100vh;}
 
-/* ── header ── */
-.header{background:#fff;border-bottom:1px solid #e2e4e8;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
-.brand{font-weight:800;font-size:18px;}.brand span{color:#0F5C6B;}
-.teacher-info{display:flex;align-items:center;gap:12px;}
-.teacher-name{font-size:14px;font-weight:700;color:#475569;}
-.back-btn{color:#0F5C6B;text-decoration:none;font-weight:700;font-size:14px;border:1px solid #0F5C6B;border-radius:7px;padding:7px 14px;}
-.back-btn:hover{background:#e6eef0;}
+/* header */
+.exam-header{background:#fff;border-bottom:1px solid #e2e4e8;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.exam-brand{font-weight:800;font-size:18px;color:#1a1a1a;}.exam-brand span{color:#0F5C6B;}
+.exam-section-label{font-size:13px;font-weight:700;color:#6b7280;letter-spacing:.3px;}
+.timer-display{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:#0F5C6B;background:#e6eef0;border-radius:8px;padding:6px 14px;min-width:90px;text-align:center;}
+.timer-display.warning{color:#d97706;background:#fef3c7;animation:pulse 1s infinite;}
+.timer-display.danger{color:#d23a3a;background:#fbeaea;animation:pulse .5s infinite;}
+@keyframes pulse{50%{opacity:.6;}}
 
-/* ── main layout ── */
-.main{max-width:1200px;margin:0 auto;padding:28px 24px;}
-.page-title{font-size:26px;font-weight:800;margin-bottom:6px;}
-.page-sub{color:#6b7280;font-size:14px;margin-bottom:24px;}
+/* progress strip */
+.progress-strip{background:#fff;border-bottom:1px solid #e2e4e8;padding:10px 24px;display:flex;gap:8px;align-items:center;}
+.prog-step{height:6px;flex:1;border-radius:999px;background:#e2e4e8;transition:background .3s;}
+.prog-step.done{background:#1f9d55;}.prog-step.active{background:#0F5C6B;}
+.prog-label{font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.5px;text-transform:uppercase;min-width:70px;}
 
-/* ── filter bar ── */
-.filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
-.filter-bar label{font-size:13px;font-weight:700;color:#475569;}
-.filter-bar select{font:inherit;font-size:14px;padding:8px 12px;border:1px solid #e2e4e8;border-radius:7px;background:#fff;cursor:pointer;}
-.search-input{font:inherit;font-size:14px;padding:8px 12px;border:1px solid #e2e4e8;border-radius:7px;background:#fff;width:220px;}
-.search-input:focus{outline:none;border-color:#0F5C6B;}
-.count-badge{margin-left:auto;font-size:13px;color:#6b7280;font-weight:600;}
+/* screens */
+.screen{display:none;flex:1;flex-direction:column;}
+.screen.active{display:flex;}
 
-/* ── student cards grid ── */
-.students-grid{display:flex;flex-direction:column;gap:16px;}
-.student-card{background:#fff;border:1px solid #e2e4e8;border-radius:12px;overflow:hidden;}
-.student-card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none;}
-.student-card-header:hover{background:#f7f8fa;}
-.student-info{display:flex;align-items:center;gap:14px;}
-.student-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0F5C6B,#6366f1);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;flex-shrink:0;}
-.student-name{font-weight:700;font-size:16px;}
-.student-meta{font-size:12px;color:#6b7280;margin-top:2px;}
-.score-pills{display:flex;gap:8px;flex-wrap:wrap;}
-.pill{border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;white-space:nowrap;}
-.pill.listen{background:#dbeafe;color:#1e40af;}
-.pill.read{background:#dcfce7;color:#166534;}
-.pill.write{background:#fef3c7;color:#92400e;}
-.pill.pending{background:#f1f5f9;color:#94a3b8;}
-.expand-icon{font-size:18px;color:#94a3b8;transition:transform .2s;margin-left:12px;flex-shrink:0;}
-.expand-icon.open{transform:rotate(180deg);}
+/* intro */
+.intro-wrap{max-width:680px;margin:auto;padding:40px 24px;text-align:center;}
+.intro-badge{display:inline-block;background:#e6eef0;border-radius:999px;padding:6px 16px;font-size:12px;font-weight:700;color:#0F5C6B;letter-spacing:.5px;text-transform:uppercase;margin-bottom:20px;}
+.intro-wrap h1{font-size:32px;font-weight:800;margin-bottom:10px;color:#1a1a1a;}
+.intro-wrap p{color:#6b7280;font-size:15.5px;line-height:1.7;margin-bottom:24px;}
+.section-list{background:#fff;border:1px solid #e2e4e8;border-radius:12px;padding:4px 0;text-align:left;margin-bottom:24px;}
+.section-row{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid #e2e4e8;font-size:14.5px;}
+.section-row:last-child{border-bottom:none;}
+.section-row .name{font-weight:600;color:#1a1a1a;}
+.section-row .time{color:#0F5C6B;font-weight:700;font-size:13px;}
+.warn-box{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 18px;color:#92400e;font-size:14px;line-height:1.6;margin-bottom:24px;text-align:left;}
+.start-btn{background:#0F5C6B;color:#fff;border:none;border-radius:10px;padding:14px 36px;font-size:16px;font-weight:800;cursor:pointer;width:100%;max-width:320px;}
+.start-btn:hover{background:#0c4a57;}
 
-/* ── expanded detail ── */
-.student-detail{display:none;border-top:1px solid #e2e4e8;padding:20px;}
-.student-detail.show{display:block;}
-.detail-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #e2e4e8;padding-bottom:0;}
-.detail-tab{padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#6b7280;}
-.detail-tab.active{color:#0F5C6B;border-bottom-color:#0F5C6B;}
-.tab-pane{display:none;}.tab-pane.active{display:block;}
+/* iframe section */
+.iframe-wrap{flex:1;display:flex;flex-direction:column;background:#f7f8fa;}
+.iframe-wrap iframe{flex:1;border:none;width:100%;min-height:0;}
+.section-footer{background:#fff;border-top:1px solid #e2e4e8;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.section-status{font-size:14px;color:#6b7280;font-weight:600;}
+.section-status.done{color:#1f9d55;font-weight:700;}
+.next-btn{background:#1f9d55;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14.5px;font-weight:700;cursor:pointer;display:none;}
+.next-btn.show{display:inline-block;}
+.next-btn:hover{background:#16a34a;}
+.skip-btn{background:#fff;border:1px solid #e2e4e8;color:#6b7280;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;}
+.skip-btn:hover{border-color:#94a3b8;color:#1a1a1a;}
 
-/* ── score overview ── */
-.score-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px;}
-.score-box{background:#f7f8fa;border:1px solid #e2e4e8;border-radius:10px;padding:14px;text-align:center;}
-.score-box .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:6px;}
-.score-box .value{font-size:28px;font-weight:800;color:#0F5C6B;}
-.score-box .band{font-size:13px;color:#6b7280;margin-top:2px;}
+/* writing section */
+.writing-wrap{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px;background:#f7f8fa;}
+.writing-inner{max-width:860px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:20px;}
+.writing-card{background:#fff;border:1px solid #e2e4e8;border-radius:12px;padding:22px;}
+.writing-card h3{font-size:15px;font-weight:800;color:#0F5C6B;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;}
+.writing-card p{color:#374151;font-size:15px;line-height:1.7;}
+.chart-img{max-width:100%;border-radius:8px;border:1px solid #e2e4e8;display:block;margin-top:12px;}
+.writing-area{width:100%;min-height:280px;background:#f7f8fa;border:2px solid #e2e4e8;border-radius:8px;padding:14px;font:15.5px/1.75 Georgia,serif;color:#1a1a1a;resize:vertical;}
+.writing-area:focus{outline:none;border-color:#0F5C6B;}
+.writing-meta{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#6b7280;margin-top:8px;}
+.word-count{font-weight:700;color:#0F5C6B;}
+.word-count.low{color:#d97706;}.word-count.ok{color:#1f9d55;}
+.submit-writing-btn{background:#0F5C6B;color:#fff;border:none;border-radius:8px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;align-self:flex-end;}
+.submit-writing-btn:hover{background:#0c4a57;}
 
-/* ── answer table ── */
-.answer-table{width:100%;border-collapse:collapse;font-size:13.5px;}
-.answer-table th{background:#f0f4f5;font-weight:700;padding:9px 12px;text-align:left;border-bottom:2px solid #e2e4e8;}
-.answer-table td{padding:8px 12px;border-bottom:1px solid #f0f2f4;vertical-align:top;}
-.answer-table tr:last-child td{border-bottom:none;}
-.correct-cell{color:#1f9d55;font-weight:700;}
-.wrong-cell{color:#d23a3a;font-weight:700;}
-.ans-key{color:#6b7280;font-size:12px;}
-
-/* ── writing section ── */
-.essay-box{background:#f7f8fa;border:1px solid #e2e4e8;border-radius:8px;padding:16px;font-size:14.5px;line-height:1.8;white-space:pre-wrap;max-height:400px;overflow-y:auto;font-family:Georgia,serif;color:#1a1a1a;}
-.feedback-area{margin-top:16px;}
-.feedback-label{font-size:13px;font-weight:700;color:#475569;margin-bottom:8px;display:block;}
-.feedback-textarea{width:100%;font:inherit;font-size:14px;padding:12px;border:1px solid #e2e4e8;border-radius:8px;resize:vertical;min-height:100px;line-height:1.6;}
-.feedback-textarea:focus{outline:none;border-color:#0F5C6B;}
-.band-row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap;}
-.band-select{font:inherit;font-size:14px;padding:8px 12px;border:1px solid #e2e4e8;border-radius:7px;background:#fff;}
-.save-feedback-btn{background:#0F5C6B;color:#fff;border:none;border-radius:7px;padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;}
-.save-feedback-btn:hover{background:#0c4a57;}
-.save-feedback-btn.saved{background:#1f9d55;}
-.word-badge{display:inline-block;background:#e6eef0;color:#0F5C6B;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;margin-bottom:10px;}
-
-/* ── empty states ── */
-.empty{text-align:center;padding:60px 20px;color:#94a3b8;}
-.empty h3{font-size:20px;margin-bottom:8px;color:#475569;}
-.loading{text-align:center;padding:40px;color:#6b7280;}
-.loading .spinner{width:32px;height:32px;border:3px solid #e2e4e8;border-top-color:#0F5C6B;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.error-box{background:#fbeaea;border:1px solid #f5c6cb;border-radius:8px;padding:14px 18px;color:#d23a3a;font-size:14px;margin-bottom:16px;}
-
-/* ── responsive ── */
-@media(max-width:600px){.score-pills{display:none;}.filter-bar{gap:8px;}}
+/* complete screen */
+.complete-wrap{max-width:580px;margin:auto;padding:40px 24px;text-align:center;}
+.complete-icon{font-size:60px;margin-bottom:18px;}
+.complete-wrap h1{font-size:30px;font-weight:800;color:#1a1a1a;margin-bottom:10px;}
+.complete-wrap p{color:#6b7280;font-size:15.5px;margin-bottom:24px;}
+.next-steps{background:#fff;border:1px solid #e2e4e8;border-radius:12px;padding:20px;text-align:left;margin-bottom:20px;}
+.next-steps .label{font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;}
+.next-step-row{display:flex;align-items:center;gap:10px;font-size:14.5px;color:#374151;margin-bottom:10px;}
+.next-step-row:last-child{margin-bottom:0;}
+.wc-row{background:#e6eef0;border-radius:10px;padding:12px 20px;display:flex;gap:28px;justify-content:center;font-size:14px;color:#6b7280;margin-bottom:20px;}
+.wc-row strong{color:#0F5C6B;}
+.saving-notice{background:#e6f6ec;border:1px solid #6ee7b7;border-radius:8px;padding:10px 16px;color:#1f9d55;font-size:13px;font-weight:700;margin-bottom:16px;display:none;}
+.saving-notice.show{display:block;}
+.save-error-box{background:#fbeaea;border:1px solid #fca5a5;border-radius:8px;padding:12px 16px;color:#d23a3a;font-size:13px;margin-bottom:16px;display:none;}
+.dashboard-btn{background:#0F5C6B;color:#fff;border:none;border-radius:10px;padding:13px 28px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.dashboard-btn:hover{background:#0c4a57;}
+.summary-card{background:#f7f8fa;border:1px solid #e2e4e8;border-radius:10px;padding:14px 10px;text-align:center;}
+.summary-card .sc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:#6b7280;margin-bottom:6px;}
+.summary-card .sc-value{font-size:22px;font-weight:800;color:#0F5C6B;}
+.summary-card.overall{background:#e6eef0;border-color:#0F5C6B;}
+.summary-card.overall .sc-value{font-size:26px;}
+.rtab{padding:9px 16px;font-size:13.5px;font-weight:700;color:#6b7280;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;}
+.rtab.active{color:#0F5C6B;border-bottom-color:#0F5C6B;}
+.ans-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.ans-table th{background:#f0f4f5;padding:8px 10px;text-align:left;font-weight:700;border-bottom:2px solid #e2e4e8;}
+.ans-table td{padding:7px 10px;border-bottom:1px solid #f0f2f4;}
+.ans-correct{color:#1f9d55;font-weight:700;}
+.ans-wrong{color:#d23a3a;font-weight:700;}
+.essay-view{background:#f7f8fa;border:1px solid #e2e4e8;border-radius:8px;padding:16px;font-family:Georgia,serif;font-size:14.5px;line-height:1.8;white-space:pre-wrap;max-height:340px;overflow-y:auto;margin-bottom:14px;}
+.feedback-view{background:#e6eef0;border:1px solid #cbd5e1;border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.7;}
+.feedback-view .fv-label{font-size:12px;font-weight:700;color:#0F5C6B;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="brand">IELTS <span>Sprint4</span> &#8212; Mock Results</div>
-  <div class="teacher-info">
-    <span class="teacher-name" id="teacherNameDisplay"></span>
-    <a href="teacher-dashboard.html" class="back-btn">&#8592; Dashboard</a>
+<!-- HEADER -->
+<header class="exam-header">
+  <div class="exam-brand">IELTS <span>Sprint4</span> &mdash; Mock Exam</div>
+  <div class="exam-section-label" id="headerLabel">Introduction</div>
+  <div class="timer-display" id="timerDisplay" style="display:none;">00:00</div>
+</header>
+
+<!-- PROGRESS STRIP -->
+<div class="progress-strip">
+  <div class="prog-label">Progress</div>
+  <div class="prog-step active" id="prog1"></div>
+  <div class="prog-step" id="prog2"></div>
+  <div class="prog-step" id="prog3"></div>
+  <div class="prog-step" id="prog4"></div>
+  <div class="prog-step" id="prog5"></div>
+</div>
+
+<!-- SCREEN: RESULTS READY (announcement before viewing) -->
+<div class="screen" id="screen-ready">
+  <div class="intro-wrap">
+    <div style="font-size:60px;margin-bottom:18px;">&#127881;</div>
+    <h1 style="color:#1f9d55;">Great! Your results are ready</h1>
+    <p>Your mentor has finished reviewing your mock exam. You can now see your scores, band estimates, and detailed feedback.</p>
+    <div id="readySubmittedDate" style="font-size:13px;color:#6b7280;margin-bottom:28px;"></div>
+    <button class="start-btn" onclick="showResultsDetail()">See My Results &#8594;</button>
   </div>
 </div>
 
-<div class="main">
-  <div class="page-title">&#127775; Mock Exam Results <span id="mockDayBadge" style="font-size:16px;font-weight:700;color:#0F5C6B;background:#e6eef0;border-radius:999px;padding:4px 14px;margin-left:10px;vertical-align:middle;"></span></div>
-  <div class="page-sub" id="pageSubTitle">Loading your students&#39; mock exam results&#8230;</div>
+<!-- SCREEN: RESULTS DETAIL -->
+<div class="screen" id="screen-results">
+  <div class="writing-wrap">
+    <div class="writing-inner">
 
-  <div id="errorBox" class="error-box" style="display:none;"></div>
+      <div class="writing-card">
+        <h3>Overall summary</h3>
+        <div id="summaryCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin-top:6px;"></div>
+      </div>
 
-  <div class="filter-bar" id="filterBar" style="display:none;">
-    <label>Group:</label>
-    <select id="groupFilter" onchange="applyFilters()">
-      <option value="">All groups</option>
-    </select>
-    <input class="search-input" id="searchInput" placeholder="Search student name&#8230;" oninput="applyFilters()">
-    <span class="count-badge" id="countBadge"></span>
+      <div class="writing-card">
+        <div class="detail-tabs-student" id="resultsTabs" style="display:flex;gap:4px;border-bottom:2px solid #e2e4e8;margin-bottom:16px;flex-wrap:wrap;">
+          <div class="rtab active" data-tab="listening" onclick="switchResultsTab('listening',this)">&#127911; Listening</div>
+          <div class="rtab" data-tab="reading" onclick="switchResultsTab('reading',this)">&#128214; Reading</div>
+          <div class="rtab" data-tab="writing1" onclick="switchResultsTab('writing1',this)">&#9999;&#65039; Writing T1</div>
+          <div class="rtab" data-tab="writing2" onclick="switchResultsTab('writing2',this)">&#9999;&#65039; Writing T2</div>
+          <div class="rtab" data-tab="speaking" onclick="switchResultsTab('speaking',this)">&#127908; Speaking</div>
+        </div>
+        <div id="resultsTabContent"></div>
+      </div>
+
+      <div style="text-align:center;padding:10px 0 30px;">
+        <a href="../student-dashboard.html" class="dashboard-btn">&#8592; Back to Dashboard</a>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div id="loadingState" class="loading">
-    <div class="spinner"></div>
-    <div>Loading results&#8230;</div>
+<!-- SCREEN 1: INTRO -->
+<!-- SCREEN 0: ALREADY SUBMITTED -->
+<div class="screen" id="screen-done">
+  <div class="intro-wrap">
+    <div style="font-size:60px;margin-bottom:18px;">&#10003;</div>
+    <h1 style="color:#1f9d55;">Mock Exam Submitted</h1>
+    <p style="margin-bottom:24px;">You have already completed and submitted your mock exam. Your mentor is reviewing your results and will provide feedback on your writing shortly.</p>
+    <div class="next-steps" style="margin-bottom:24px;">
+      <div class="label">What happens next</div>
+      <div class="next-step-row">&#128221; Your mentor will review your writing essays</div>
+      <div class="next-step-row">&#127775; Band scores will be added to your profile</div>
+      <div class="next-step-row">&#128337; Check back in a day or two for feedback</div>
+    </div>
+    <div id="submittedDate" style="font-size:13px;color:#6b7280;margin-bottom:24px;"></div>
+    <a href="../student-dashboard.html" class="dashboard-btn">&#8592; Back to Dashboard</a>
   </div>
+</div>
 
-  <div class="students-grid" id="studentsGrid"></div>
+<div class="screen active" id="screen-intro">
+  <div class="intro-wrap">
+    <div class="intro-badge">&#127775; Official Mock Exam</div>
+    <h1>IELTS Academic<br>Full Practice Test</h1>
+    <p>This is a timed, full-length IELTS Academic practice exam. Complete all four sections in one sitting. Your results will be automatically sent to your assigned teacher.</p>
+    <div class="section-list">
+      <div class="section-row"><span class="name">&#127911; Section 1 &mdash; Listening</span><span class="time">~30 min</span></div>
+      <div class="section-row"><span class="name">&#128214; Section 2 &mdash; Reading</span><span class="time">60 min</span></div>
+      <div class="section-row"><span class="name">&#9999;&#65039; Section 3 &mdash; Writing Task 1</span><span class="time">20 min</span></div>
+      <div class="section-row"><span class="name">&#9999;&#65039; Section 4 &mdash; Writing Task 2</span><span class="time">40 min</span></div>
+    </div>
+    <div class="warn-box">
+      &#9888;&#65039; <strong>Important:</strong> You must complete all sections in one sitting. If you close or refresh this tab, all progress will be lost and your results will not be saved. Make sure you have at least <strong>2.5 hours</strong> of uninterrupted time before starting.
+    </div>
+    <button class="start-btn" onclick="startExam()">I&#39;m ready &mdash; Start Exam &#8594;</button>
+  </div>
+</div>
 
-  <div id="emptyState" class="empty" style="display:none;">
-    <h3>No mock exam results yet</h3>
-    <p>Results will appear here once students complete the mock exam on Sunday.</p>
+<!-- SCREEN 2: LISTENING -->
+<div class="screen" id="screen-listening">
+  <div class="iframe-wrap">
+    <iframe id="listeningFrame" src="" title="Listening test"></iframe>
+  </div>
+  <div class="section-footer">
+    <div class="section-status" id="listenStatus">&#9654; Complete the listening test above, then click "Deliver" inside it.</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="skip-btn" onclick="confirmSkip('listening')">Skip section</button>
+      <button class="next-btn" id="listenNext" onclick="goToSection('reading')">Next: Reading &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: READING -->
+<div class="screen" id="screen-reading">
+  <div class="iframe-wrap">
+    <iframe id="readingFrame" src="" title="Reading test"></iframe>
+  </div>
+  <div class="section-footer">
+    <div class="section-status" id="readStatus">&#9654; Complete the reading test above, then click "Deliver" inside it.</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="skip-btn" onclick="confirmSkip('reading')">Skip section</button>
+      <button class="next-btn" id="readNext" onclick="goToSection('writing1')">Next: Writing Task 1 &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4: WRITING TASK 1 -->
+<div class="screen" id="screen-writing1">
+  <div class="writing-wrap">
+    <div class="writing-inner">
+      <div class="writing-card">
+        <h3>Writing Task 1 &mdash; Academic Report</h3>
+        <p><strong>You should spend about 20 minutes on this task.</strong></p>
+        <p style="margin-top:10px;">The chart below shows the percentage of the population in the UK who consumed the recommended daily amount of fruit and vegetables in 2002, 2006 and 2010.</p>
+        <p style="margin-top:8px;color:#94a3b8;font-size:14px;">Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
+        <p style="margin-top:8px;color:#38bdf8;font-size:13px;font-weight:700;">Write at least 150 words.</p>
+        <img id="chartImg" class="chart-img" src="mockimage.png" alt="Chart: UK fruit and vegetable consumption 2002-2010" onerror="this.src='mockimage.jpeg';this.onerror=null;">
+      </div>
+      <div class="writing-card">
+        <h3>Your response</h3>
+        <textarea class="writing-area" id="wt1-text" placeholder="Write your Task 1 response here..." oninput="updateWordCount('wt1')"></textarea>
+        <div class="writing-meta">
+          <div>Minimum: 150 words</div>
+          <div class="word-count" id="wt1-count">0 words</div>
+        </div>
+        <button class="submit-writing-btn" id="wt1-submit" onclick="submitWriting1()">Submit Task 1 &amp; Continue &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 5: WRITING TASK 2 -->
+<div class="screen" id="screen-writing2">
+  <div class="writing-wrap">
+    <div class="writing-inner">
+      <div class="writing-card">
+        <h3>Writing Task 2 &mdash; Essay</h3>
+        <p><strong>You should spend about 40 minutes on this task.</strong></p>
+        <p style="margin-top:10px;">Some people think young people should be free to choose jobs to do in their future working lives. Others believe they should be realistic and choose a job that&#39;s possible to do in the future.</p>
+        <p style="margin-top:8px;font-style:italic;color:#cbd5e1;">Discuss both views and give your own opinion.</p>
+        <p style="margin-top:8px;color:#38bdf8;font-size:13px;font-weight:700;">Write at least 250 words. Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p>
+      </div>
+      <div class="writing-card">
+        <h3>Your response</h3>
+        <textarea class="writing-area" id="wt2-text" placeholder="Write your Task 2 essay here..." oninput="updateWordCount('wt2')"></textarea>
+        <div class="writing-meta">
+          <div>Minimum: 250 words</div>
+          <div class="word-count" id="wt2-count">0 words</div>
+        </div>
+        <button class="submit-writing-btn" id="wt2-submit" onclick="submitWriting2()">Submit &amp; Finish Exam &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6: COMPLETE -->
+<div class="screen" id="screen-complete">
+  <div class="complete-wrap">
+    <div class="complete-icon">&#127881;</div>
+    <h1>Well done!</h1>
+    <p id="completeMsg">You have completed the IELTS mock exam. Your responses have been submitted to your mentor for review.</p>
+    <div class="next-steps">
+      <div class="label">What happens next</div>
+      <div >
+        <div class="next-step-row">&#9989; Your writing essays have been saved and sent to your mentor</div>
+        <div class="next-step-row">&#128221; Your mentor will read both essays and provide written feedback</div>
+        <div class="next-step-row">&#127775; Band scores for Writing Tasks 1 and 2 will be added to your profile</div>
+        <div class="next-step-row">&#128337; Check back in a day or two for your results</div>
+      </div>
+    </div>
+    <div id="writingWordCounts" class="wc-row">
+      <span>Writing T1: <strong id="wc1" >&#8212;</strong> words</span>
+      <span>Writing T2: <strong id="wc2" >&#8212;</strong> words</span>
+    </div>
+    <div class="saving-notice" id="savingNotice">&#10003; Results saved to your mentor&#39;s dashboard.</div>
+    <div id="saveError" class="save-error-box">&#9888; Results could not be saved automatically. Please take a screenshot and send it to your mentor.</div>
+    <a href="../student-dashboard.html" class="dashboard-btn">&#8592; Back to Dashboard</a>
   </div>
 </div>
 
@@ -139,525 +303,512 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;ba
 (function(){
 "use strict";
 
-var LISTENING_KEY = {
-  'q1': ['central'],'q2': ['address'],'q3': ['pool'],'q4': ['reception'],'q5': ['view'],
-  'q6': ['price', 'prices'],'q7': ['spanish'],'q8': ['july'],'q9': ['903036602'],'q10': ['cliffton'],
-  'q11': 'A','q12': 'C','q13': 'C','q14': 'B','q15': 'C','q16': 'F','q17': 'B','q18': 'A','q19': 'E','q20': 'D',
-  'q21': 'C','q22': 'A','q23': 'A','q24': 'A','q25': 'E','q26': 'G','q27': 'C','q28': 'A','q29': 'B','q30': 'H',
-  'q31': ['temperature'],'q32': ['movements'],'q33': ['bones'],'q34': ['bushes'],'q35': ['roots'],
-  'q36': ['sharks'],'q37': ['chicks'],'q38': ['feathers'],'q39': ['space', 'spaces'],'q40': ['diversity']
+// ── STATE ──────────────────────────────────────────────────────────────────
+var examData = {
+  listening_score: null, listening_total: 40, listening_band: null, listening_answers: {},
+  reading_score:   null, reading_total:   40, reading_band:   null, reading_answers:   {},
+  writing_t1_text: '', writing_t1_words: 0,
+  writing_t2_text: '', writing_t2_words: 0,
+  completed_sections: [],
+  exam_date: new Date().toISOString().slice(0,10)
 };
-var READING_KEY = {
-  '1': 'FALSE','2': 'NOT GIVEN','3': 'TRUE','4': 'FALSE','5': 'NOT GIVEN','6': 'FALSE',
-  '7': 'His diaries','8': '3/Three years','9': 'Chains','10': 'Governor Philip','11': 'June 1789','12': 'China','13': 'Botany Bay',
-  '14': 'A','15': 'D','16': 'B','17': 'D','18': 'C','19': 'B','20': 'D','21': 'A',
-  '22': 'workplace injury','23': '16.6 weeks','24': '7%','25': 'golf','26': 'massage',
-  '27': 'C','28': 'D','29': 'B','30': 'A','31': 'D','32': 'C',
-  '33': 'marketing teams','34': 'external designers','35': 'consumers','36': 'in-house designers','37': 'design engineers',
-  '38': 'B','39': 'B','40': 'A'
-};
+var currentSection = 'intro';
+var timerInterval = null;
+var timerSeconds = 0;
 
+// ── ANSWER KEYS (for results detail view) ────────────────────────────────────
+var LISTENING_KEY = {
+            /* --- Part 1 --- */
+            'q1': ['Anthony'],
+            'q2': ['1st June', '1 June', 'June 1st', 'June 1', 'first June'],
+            'q3': ['University Hall', 'university hall'],
+            'q4': ['Health for Life', 'health for life'],
+            'q5': ['September 2006'],
+            'q6': ['in the distance', 'distance'],
+            'q7': [ 'driving'],
+            'q8': ['full frame', 'full-frame'],
+            'q9': ['strong'],
+            'q10': ['in cash', 'by cash', 'cash'],
+
+            /* --- Part 2 --- */
+            'q11': 'C',
+            'q12': 'C',
+            'q13': 'A',
+            'q14': 'B',
+            'q15': ['first year'],
+            'q16': ['right balance', 'balance'],
+            'q17': ['international', 'foreign', 'international students', 'foreign students'],
+            'q18': ['relaxation'],
+            'q19': ['motivation'],
+            'q20': ['research', 'advanced'],
+
+            /* --- Part 3 --- */
+            'q21': 'B',
+            'q22': 'A',
+            'q23': 'A',
+            'q24': 'C',
+            'q25': 'B',
+            'q26': 'B',
+            'q27': 'A',
+            'q28': 'C',
+            'q29': 'E',
+            'q30': 'F',
+
+            /* --- Part 4 --- */
+            'q31': ['the Atlantic', 'Atlantic', 'the Atlantic Ocean', 'Atlantic Ocean'],
+            'q32': ['luxury food', 'food', 'luxury food source', 'food source'],
+            'q33': ['gardens', 'in gardens' ],
+            'q34': ['earthworm', 'earth worm'],
+            'q35': ['soil', 'soil condition'],
+            'q36': ['Northwest', 'North-west', 'northwest', 'north-west'],
+            'q37': ['plant pots'],
+            'q38': ['seaweed', 'seaweeds', 'sea weed', 'sea weeds'],
+            'q39': ['the United States', 'the USA'],
+            'q40': ['new competitors', 'competitors']
+        };
+var READING_KEY = {
+  '1': 'NOT GIVEN','2': 'FALSE','3': 'NOT GIVEN','4': 'TRUE','5': 'evergreen','6': 'natural pesticides','7': 'powder','8': 'overnight','9': 'neem cake','10': 'doubles','11': 'nitrogen','12': 'In 2000','13': 'Neem seeds','14': 'hunting','15': 'overkill model','16': 'disease','17': 'empirical evidence','18': 'climatic instability','19': 'geographical ranges','20': 'Younger Dryas event','21': 'A','22': 'B','23': 'A','24': 'B','25': 'B','26': 'C','27': 'B','28': 'F','29': 'A','30': 'C','31': 'L','32': 'D','33': 'personnel development','34': 'the first luxury','35': 'a model','36': 'strategic solution','37': '6 stages','38': '90 hours','39': 'three years','40': 'C'
+};
 function checkIsCorrect(studentAns, correctAns){
-  if(studentAns === undefined || studentAns === null || String(studentAns).trim()==='') return null; // not answered
+  if(studentAns === undefined || studentAns === null || String(studentAns).trim()==='') return null;
   var sa = String(studentAns).trim().toLowerCase();
-  if(Array.isArray(correctAns)){
-    return correctAns.some(function(c){ return String(c).trim().toLowerCase() === sa; });
-  }
+  if(Array.isArray(correctAns)) return correctAns.some(function(c){ return String(c).trim().toLowerCase() === sa; });
   return String(correctAns).trim().toLowerCase() === sa;
 }
-
-// ── AUTH ────────────────────────────────────────────────────────────────────
-var session = null;
-try {
-  var raw = sessionStorage.getItem('sprint4_session');
-  if(raw) session = JSON.parse(raw);
-} catch(e){}
-
-if(!session || (session.role !== 'teacher' && session.role !== 'mentor' && session.role !== 'admin')){
-  // try teacher password fallback
-  window.location.href = 'teacher-dashboard.html';
-  return;
+function bandNum(b){ var n = parseFloat(b); return isNaN(n) ? null : n; }
+function roundToIELTSBand(avg){
+  var whole = Math.floor(avg);
+  var frac = avg - whole;
+  if(frac < 0.25) return whole;
+  if(frac < 0.75) return whole + 0.5;
+  return whole + 1;
 }
-
-document.getElementById('teacherNameDisplay').textContent =
-  session.name || session.username || (session.role === 'admin' ? 'Admin' : 'Teacher');
+function calcWritingBand(t1, t2){
+  // returns raw (unrounded) writing band contribution; 0 if neither task graded
+  if(t1===null && t2===null) return 0;
+  if(t1!==null && t2!==null) return (t1 + 2*t2)/3; // T2 counts double per IELTS convention
+  return t2!==null ? t2 : t1;
+}
+function calcOverallBand(rec){
+  // Missing / ungraded skills count as 0 and are still divided by 4 —
+  // an incomplete section should visibly lower the overall band, not be excluded.
+  var l = bandNum(rec.listening_band); if(l===null) l = 0;
+  var r = bandNum(rec.reading_band);   if(r===null) r = 0;
+  var t1 = bandNum(rec.t1_band);
+  var t2 = bandNum(rec.t2_band);
+  var w = calcWritingBand(t1, t2);
+  var s = bandNum(rec.speaking_band);  if(s===null) s = 0;
+  var sum = l + r + w + s;
+  var avg = sum / 4;
+  return roundToIELTSBand(avg);
+}
 
 // ── SUPABASE ────────────────────────────────────────────────────────────────
-var sb = null;
+var _sb = null;
 function getSB(){
-  if(!sb && window.supabase && typeof SUPABASE_URL !== "undefined")
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  return sb;
+  if(!_sb&&window.supabase&&typeof SUPABASE_URL!=='undefined')
+    _sb = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  return _sb;
+}
+var studentSession = null;
+try{var _r=sessionStorage.getItem('sprint4_session');if(_r){var _p=JSON.parse(_r);if(_p&&_p.role==='student')studentSession=_p;}}catch(e){}
+
+// ── WARN ON UNLOAD ──────────────────────────────────────────────────────────
+window.addEventListener('beforeunload', function(e){
+  if(currentSection !== 'intro' && currentSection !== 'complete'){
+    e.preventDefault(); e.returnValue='';
+  }
+});
+
+// ── SECTION FLOW ────────────────────────────────────────────────────────────
+function startExam(){
+  currentSection = 'listening';
+  showScreen('listening');
+  updateProgress(1);
+  setHeaderLabel('Section 1 of 4 &#8212; Listening');
+  startTimer(30*60, false); // 30 min display timer
+  // load iframe
+  document.getElementById('listeningFrame').src = 'mock_listening.html';
+}
+window.startExam = startExam;
+
+function goToSection(name){
+  stopTimer();
+  currentSection = name;
+  if(name === 'reading'){
+    showScreen('reading');
+    updateProgress(2);
+    setHeaderLabel('Section 2 of 4 &#8212; Reading');
+    startTimer(60*60, true); // 60 min enforced
+    document.getElementById('readingFrame').src = 'mock_reading.html';
+  } else if(name === 'writing1'){
+    showScreen('writing1');
+    updateProgress(3);
+    setHeaderLabel('Section 3 of 4 &#8212; Writing Task 1');
+    startTimer(20*60, false);
+  } else if(name === 'writing2'){
+    showScreen('writing2');
+    updateProgress(4);
+    setHeaderLabel('Section 4 of 4 &#8212; Writing Task 2');
+    startTimer(40*60, false);
+  } else if(name === 'complete'){
+    showScreen('complete');
+    updateProgress(5);
+    setHeaderLabel('Exam Complete');
+    document.getElementById('timerDisplay').style.display='none';
+    saveToSupabase();
+  }
+}
+window.goToSection = goToSection;
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el = document.getElementById('screen-'+name);
+  if(el) el.classList.add('active');
 }
 
-// ── STATE ───────────────────────────────────────────────────────────────────
-var allExams = [];     // raw mock_exams rows
-var allStudents = {};  // id -> {name, group_id, group_name}
-var myStudentIds = []; // filtered to this teacher's students
-var groupMap = {};     // group_id -> group_name
+function setHeaderLabel(html){
+  document.getElementById('headerLabel').innerHTML = html;
+}
 
-// ── LOAD DATA ────────────────────────────────────────────────────────────────
-async function loadAll(){
-  var db = getSB();
-  if(!db){ showError('Could not connect to database.'); return; }
+function updateProgress(step){
+  for(var i=1;i<=5;i++){
+    var el = document.getElementById('prog'+i);
+    if(!el) continue;
+    el.className = 'prog-step';
+    if(i < step) el.classList.add('done');
+    else if(i === step) el.classList.add('active');
+  }
+}
 
+// ── TIMER ───────────────────────────────────────────────────────────────────
+function startTimer(seconds, enforced){
+  timerSeconds = seconds;
+  var display = document.getElementById('timerDisplay');
+  display.style.display = 'block';
+  display.className = 'timer-display';
+  updateTimerDisplay();
+  timerInterval = setInterval(function(){
+    timerSeconds--;
+    updateTimerDisplay();
+    if(timerSeconds <= 300) display.className = 'timer-display warning'; // 5 min
+    if(timerSeconds <= 60)  display.className = 'timer-display danger';  // 1 min
+    if(timerSeconds <= 0){
+      stopTimer();
+      display.textContent = '00:00';
+    }
+  }, 1000);
+}
+
+function stopTimer(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function updateTimerDisplay(){
+  var m = Math.floor(Math.max(0,timerSeconds)/60);
+  var s = Math.max(0,timerSeconds)%60;
+  document.getElementById('timerDisplay').textContent =
+    (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+
+// ── POSTMESSAGE HANDLER ─────────────────────────────────────────────────────
+window.addEventListener('message', function(e){
+  if(!e.data || e.data.type !== 'mock-section-done') return;
+  var d = e.data;
+
+  if(d.section === 'listening'){
+    examData.listening_score   = d.score;
+    examData.listening_total   = d.total || 40;
+    examData.listening_band    = d.band;
+    examData.listening_answers = d.answers || {};
+    if(examData.completed_sections.indexOf('listening')<0)
+      examData.completed_sections.push('listening');
+    // update UI
+    document.getElementById('listenStatus').textContent =
+      '✅ Listening complete — Score: '+d.score+' / 40  (Band '+d.band+')';
+    document.getElementById('listenStatus').classList.add('done');
+    var btn = document.getElementById('listenNext');
+    btn.classList.add('show');
+
+  } else if(d.section === 'reading'){
+    examData.reading_score   = d.score;
+    examData.reading_total   = d.total || 40;
+    examData.reading_band    = d.band;
+    examData.reading_answers = d.answers || {};
+    if(examData.completed_sections.indexOf('reading')<0)
+      examData.completed_sections.push('reading');
+    document.getElementById('readStatus').textContent =
+      '✅ Reading complete — Score: '+d.score+' / 40  (Band '+d.band+')';
+    document.getElementById('readStatus').classList.add('done');
+    document.getElementById('readNext').classList.add('show');
+    stopTimer();
+  }
+});
+
+// ── SKIP ────────────────────────────────────────────────────────────────────
+function confirmSkip(section){
+  if(confirm('Skip this section? It will be recorded as 0 / 40. Your teacher will see this.')){
+    if(section === 'listening'){
+      examData.completed_sections.push('listening_skipped');
+      goToSection('reading');
+    } else if(section === 'reading'){
+      examData.completed_sections.push('reading_skipped');
+      goToSection('writing1');
+    }
+  }
+}
+window.confirmSkip = confirmSkip;
+
+// ── WORD COUNT ───────────────────────────────────────────────────────────────
+function updateWordCount(task){
+  var ta = document.getElementById(task+'-text');
+  var words = ta.value.trim().split(/\s+/).filter(function(w){return w.length>0;}).length;
+  var el = document.getElementById(task+'-count');
+  el.textContent = words + ' words';
+  var min = task==='wt1' ? 150 : 250;
+  el.className = 'word-count' + (words >= min ? ' ok' : words >= min*0.8 ? '' : ' low');
+}
+window.updateWordCount = updateWordCount;
+
+// ── WRITING SUBMIT ───────────────────────────────────────────────────────────
+function submitWriting1(){
+  var text = document.getElementById('wt1-text').value.trim();
+  var words = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
+  if(words < 50){
+    if(!confirm('Your response is very short ('+words+' words). Submit anyway?')) return;
+  }
+  examData.writing_t1_text  = text;
+  examData.writing_t1_words = words;
+  if(examData.completed_sections.indexOf('writing_t1')<0)
+    examData.completed_sections.push('writing_t1');
+  goToSection('writing2');
+}
+window.submitWriting1 = submitWriting1;
+
+function submitWriting2(){
+  var text = document.getElementById('wt2-text').value.trim();
+  var words = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
+  if(words < 100){
+    if(!confirm('Your response is very short ('+words+' words). Submit anyway?')) return;
+  }
+  examData.writing_t2_text  = text;
+  examData.writing_t2_words = words;
+  if(examData.completed_sections.indexOf('writing_t2')<0)
+    examData.completed_sections.push('writing_t2');
+  goToSection('complete');
+}
+window.submitWriting2 = submitWriting2;
+
+// ── RESULTS DISPLAY ──────────────────────────────────────────────────────────
+function showResults(){
+  var wc1 = document.getElementById('wc1');
+  var wc2 = document.getElementById('wc2');
+  if(wc1) wc1.textContent = examData.writing_t1_words || 0;
+  if(wc2) wc2.textContent = examData.writing_t2_words || 0;
+}
+
+// ── SUPABASE SAVE ────────────────────────────────────────────────────────────
+async function saveToSupabase(){
+  showResults();
+  if(!studentSession){ console.warn('No student session'); return; }
+  var db = getSB(); if(!db) return;
+
+  // Mark Day 28 as complete in the standard progress table (so the dashboard shows it)
   try {
-    // 1. Get this mentor/teacher's groups
-    var myGroupIds = [];
-    if(session.role !== 'admin'){
-      var mgRes = await db.from('mentor_groups')
-        .select('group_id')
-        .eq('mentor_id', session.id);
-      if(!mgRes.error && mgRes.data){
-        myGroupIds = mgRes.data.map(function(r){ return r.group_id; });
-      }
-      // also try teacher_id on groups table directly (fallback)
-      if(myGroupIds.length === 0){
-        var tgRes = await db.from('groups')
-          .select('id')
-          .eq('teacher_id', session.id);
-        if(!tgRes.error && tgRes.data){
-          myGroupIds = tgRes.data.map(function(r){ return r.id; });
-        }
-      }
-    }
-
-    // 2. Get all groups for filter dropdown
-    var grpRes = await db.from('groups').select('id, name');
-    if(!grpRes.error && grpRes.data){
-      grpRes.data.forEach(function(g){ groupMap[g.id] = g.name; });
-    }
-
-    // 3. Get students (filtered to this teacher's groups or all if admin)
-    var studQuery = db.from('students').select('id, full_name, group_id');
-    if(session.role !== 'admin' && myGroupIds.length > 0){
-      studQuery = studQuery.in('group_id', myGroupIds);
-    }
-    var studRes = await studQuery;
-    if(studRes.error) throw studRes.error;
-
-    (studRes.data || []).forEach(function(s){
-      allStudents[s.id] = {
-        name: s.full_name || 'Student',
-        group_id: s.group_id,
-        group_name: groupMap[s.group_id] || 'Unassigned'
-      };
-      myStudentIds.push(s.id);
-    });
-
-    // 4. Get mock_exams for these students, filtered to the selected mock round
-    var mockDayParam = parseInt(new URLSearchParams(window.location.search).get('day'), 10) || 21;
-    document.getElementById('mockDayBadge').textContent = 'Day ' + mockDayParam;
-
-    var examQuery = db.from('mock_exams').select('*').eq('mock_day', mockDayParam).order('submitted_at', {ascending: false});
-    if(session.role !== 'admin' && myStudentIds.length > 0){
-      examQuery = examQuery.in('student_id', myStudentIds);
-    } else if(session.role !== 'admin' && myStudentIds.length === 0){
-      // no students assigned — show empty
-      showEmpty('No students are assigned to your groups yet.');
-      return;
-    }
-    var examRes = await examQuery;
-    if(examRes.error) throw examRes.error;
-
-    allExams = examRes.data || [];
-
-    // 5. Populate group filter
-    populateGroupFilter();
-
-    // 6. Render
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('filterBar').style.display = 'flex';
-    applyFilters();
-
-    var examDate = allExams.length > 0 ? (allExams[0].exam_date || '') : '';
-    document.getElementById('pageSubTitle').textContent =
-      allExams.length + ' result' + (allExams.length !== 1 ? 's' : '') +
-      (examDate ? ' — Exam date: ' + examDate : '') +
-      ' — ' + Object.keys(allStudents).length + ' student' +
-      (Object.keys(allStudents).length !== 1 ? 's' : '') + ' in your groups';
-
+    await db.from('progress').upsert({
+      student_id: studentSession.id,
+      day: 28,
+      task: 1,
+      completed: true,
+      completed_at: new Date().toISOString()
+    }, {onConflict: 'student_id,day,task'});
+  } catch(progErr){
+    console.warn('Progress table update failed (non-critical):', progErr);
+  }
+  var payload = {
+    student_id:          studentSession.id,
+    mock_day:             28,
+    exam_date:           examData.exam_date,
+    listening_score:     examData.listening_score,
+    listening_total:     examData.listening_total,
+    listening_band:      examData.listening_band,
+    listening_answers:   examData.listening_answers,
+    reading_score:       examData.reading_score,
+    reading_total:       examData.reading_total,
+    reading_band:        examData.reading_band,
+    reading_answers:     examData.reading_answers,
+    writing_t1_text:     examData.writing_t1_text,
+    writing_t1_words:    examData.writing_t1_words,
+    writing_t2_text:     examData.writing_t2_text,
+    writing_t2_words:    examData.writing_t2_words,
+    completed_sections:  examData.completed_sections.length > 0 ? examData.completed_sections : ['writing_t1','writing_t2'],
+    submitted_at:        new Date().toISOString()
+  };
+  try {
+    var res = await db.from('mock_exams').upsert(payload, {onConflict:'student_id,mock_day'});
+    if(res.error) throw res.error;
+    var notice = document.getElementById('savingNotice');
+    notice.classList.add('show');
   } catch(err){
-    console.error(err);
-    showError('Error loading results: ' + (err.message || JSON.stringify(err)));
-  }
-}
-
-function populateGroupFilter(){
-  var sel = document.getElementById('groupFilter');
-  var usedGroups = {};
-  Object.values(allStudents).forEach(function(s){
-    if(s.group_id && !usedGroups[s.group_id]){
-      usedGroups[s.group_id] = s.group_name;
+    console.error('MOCK EXAM SAVE FAILED — full error object:', err);
+    console.error('Payload attempted:', payload);
+    var errMsg = (err && (err.message || err.error_description || err.hint || err.details)) || JSON.stringify(err) || 'unknown error';
+    var errBox = document.getElementById('saveError');
+    if(errBox){
+      errBox.style.display = 'block';
+      errBox.textContent = '\u26a0\ufe0f Could not save automatically: ' + errMsg + '. Please screenshot this page and send it to your mentor.';
     }
-  });
-  Object.entries(usedGroups).forEach(function(kv){
-    var opt = document.createElement('option');
-    opt.value = kv[0];
-    opt.textContent = kv[1];
-    sel.appendChild(opt);
-  });
+  }
 }
 
-// ── FILTER ───────────────────────────────────────────────────────────────────
-function applyFilters(){
-  var groupFilter = document.getElementById('groupFilter').value;
-  var search = document.getElementById('searchInput').value.toLowerCase().trim();
-
-  // group exams by student, most recent per student
-  var byStudent = {};
-  allExams.forEach(function(exam){
-    if(!byStudent[exam.student_id]) byStudent[exam.student_id] = exam;
-  });
-
-  // also include students with NO exam yet
-  myStudentIds.forEach(function(sid){
-    if(!byStudent[sid]) byStudent[sid] = null;
-  });
-
-  var filtered = Object.entries(byStudent).filter(function(kv){
-    var sid = kv[0];
-    var info = allStudents[sid] || {};
-    if(groupFilter && info.group_id !== groupFilter) return false;
-    if(search && !(info.name || '').toLowerCase().includes(search)) return false;
-    return true;
-  });
-
-  // sort: exams first, then pending
-  filtered.sort(function(a, b){
-    var aHas = a[1] !== null ? 1 : 0;
-    var bHas = b[1] !== null ? 1 : 0;
-    if(bHas !== aHas) return bHas - aHas;
-    var aName = (allStudents[a[0]] || {}).name || '';
-    var bName = (allStudents[b[0]] || {}).name || '';
-    return aName.localeCompare(bName);
-  });
-
-  document.getElementById('countBadge').textContent = filtered.length + ' students';
-
-  var grid = document.getElementById('studentsGrid');
-  grid.innerHTML = '';
-  if(filtered.length === 0){
-    showEmpty(); return;
-  }
-  document.getElementById('emptyState').style.display = 'none';
-
-  filtered.forEach(function(kv){
-    var sid = kv[0];
-    var exam = kv[1];
-    var info = allStudents[sid] || {name: 'Student', group_name: ''};
-    grid.appendChild(buildCard(sid, info, exam));
-  });
+// ── INIT ─────────────────────────────────────────────────────────────────────
+// ── RESULTS DETAIL RENDERING ──────────────────────────────────────────────────
+function showResultsDetail(){
+  if(!loadedExamRecord) return;
+  showScreen('results');
+  document.getElementById('headerLabel').textContent = 'Your Mock Exam Results';
+  renderSummaryCards(loadedExamRecord);
+  switchResultsTab('listening', document.querySelector('.rtab[data-tab="listening"]'));
 }
+window.showResultsDetail = showResultsDetail;
 
-// ── BUILD CARD ────────────────────────────────────────────────────────────────
-function buildCard(sid, info, exam){
-  var el = document.createElement('div');
-  el.className = 'student-card';
-  el.dataset.sid = sid;
+function bandOrDash(b){ return (b !== null && b !== undefined && b !== '') ? b : '—'; }
 
-  var initials = (info.name || 'S').split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
-  var examDate = exam ? (exam.exam_date || exam.submitted_at || '').slice(0,10) : '';
-
-  var pillsHtml = '';
-  if(exam){
-    var ls = exam.listening_score !== null ? exam.listening_score + '/40' : '?/40';
-    var lb = exam.listening_band ? ' B' + exam.listening_band : '';
-    var rs = exam.reading_score !== null ? exam.reading_score + '/40' : '?/40';
-    var rb = exam.reading_band ? ' B' + exam.reading_band : '';
-    var wt1 = exam.writing_t1_words || 0;
-    var wt2 = exam.writing_t2_words || 0;
-    var sentBadge = exam.results_published ? '<span class="pill" style="background:#e6f6ec;color:#1f9d55;">&#10003; Sent</span>' : '<span class="pill" style="background:#fef3c7;color:#92400e;">&#9203; Pending review</span>';
-    pillsHtml = '<div class="score-pills">' +
-      '<span class="pill listen">&#127911; L: ' + ls + lb + '</span>' +
-      '<span class="pill read">&#128214; R: ' + rs + rb + '</span>' +
-      '<span class="pill write">&#9999;&#65039; W: T1:' + wt1 + 'w T2:' + wt2 + 'w</span>' +
-      sentBadge +
-      '</div>';
-  } else {
-    pillsHtml = '<div class="score-pills"><span class="pill pending">Not submitted</span></div>';
-  }
-
-  el.innerHTML =
-    '<div class="student-card-header" onclick="toggleCard(\'' + sid + '\')">' +
-      '<div class="student-info">' +
-        '<div class="student-avatar">' + initials + '</div>' +
-        '<div>' +
-          '<div class="student-name">' + esc(info.name) + '</div>' +
-          '<div class="student-meta">' + esc(info.group_name) + (examDate ? ' &nbsp;&bull;&nbsp; Exam: ' + examDate : ' &nbsp;&bull;&nbsp; No exam yet') + '</div>' +
-        '</div>' +
-      '</div>' +
-      pillsHtml +
-      '<div class="expand-icon" id="icon-' + sid + '">&#9660;</div>' +
-    '</div>' +
-    '<div class="student-detail" id="detail-' + sid + '">' +
-      (exam ? buildDetail(sid, exam) : '<p style="color:#94a3b8;padding:8px 0;">This student has not completed the mock exam yet.</p>') +
-    '</div>';
-
-  return el;
-}
-
-function buildDetail(sid, exam){
-  var liScore = exam.listening_score !== null ? exam.listening_score : '&#8212;';
-  var rScore  = exam.reading_score   !== null ? exam.reading_score   : '&#8212;';
-
-  // Score overview boxes
-  var overview = '<div class="score-overview">' +
-    '<div class="score-box"><div class="label">Listening</div><div class="value">' + liScore + '<small style="font-size:16px;">/40</small></div>' +
-      '<div class="band">' + (exam.listening_band ? 'Band ' + exam.listening_band : '') + '</div></div>' +
-    '<div class="score-box"><div class="label">Reading</div><div class="value">' + rScore + '<small style="font-size:16px;">/40</small></div>' +
-      '<div class="band">' + (exam.reading_band ? 'Band ' + exam.reading_band : '') + '</div></div>' +
-    '<div class="score-box"><div class="label">Writing T1</div><div class="value" style="font-size:18px;">' + (exam.writing_t1_words || 0) + '</div><div class="band">words</div></div>' +
-    '<div class="score-box"><div class="label">Writing T2</div><div class="value" style="font-size:18px;">' + (exam.writing_t2_words || 0) + '</div><div class="band">words</div></div>' +
-  '</div>';
-
-  // Tabs
-  var tabs = '<div class="detail-tabs">' +
-    '<div class="detail-tab active" onclick="switchTab(\'' + sid + '\',\'listening\',this)">&#127911; Listening Answers</div>' +
-    '<div class="detail-tab" onclick="switchTab(\'' + sid + '\',\'reading\',this)">&#128214; Reading Answers</div>' +
-    '<div class="detail-tab" onclick="switchTab(\'' + sid + '\',\'writing\',this)">&#9999;&#65039; Writing Essays</div>' +
-    '<div class="detail-tab" onclick="switchTab(\'' + sid + '\',\'speaking\',this)">&#127908; Speaking</div>' +
-  '</div>';
-
-  // Listening answers pane
-  var liAnswers = exam.listening_answers || {};
-  var liRows = '';
-  for(var i=1;i<=40;i++){
-    var key = 'q'+i;
-    var rawAns = liAnswers[String(i)];
-    var hasAns = rawAns !== undefined && rawAns !== null && String(rawAns).trim() !== '';
-    var ans = hasAns ? String(rawAns) : 'N/A';
-    var correct = LISTENING_KEY[key];
-    var isCorrect = hasAns ? checkIsCorrect(rawAns, correct) : null;
-    var cellClass = isCorrect === true ? 'correct-cell' : isCorrect === false ? 'wrong-cell' : '';
-    var correctDisplay = Array.isArray(correct) ? correct[0] : correct;
-    liRows += '<tr><td style="color:#6b7280;font-weight:700;">' + i + '</td>' +
-      '<td class="' + cellClass + '">' + esc(ans) + (isCorrect===true?' &#10003;':isCorrect===false?' &#10007;':'') + '</td>' +
-      '<td class="ans-key">' + (isCorrect===false ? esc(String(correctDisplay)) : '') + '</td></tr>';
-  }
-  var liPane = '<div class="tab-pane active" id="pane-' + sid + '-listening">' +
-    '<table class="answer-table"><thead><tr><th>#</th><th>Student Answer</th><th>Correct Answer</th></tr></thead><tbody>' + liRows + '</tbody></table>' +
-  '</div>';
-
-  // Reading answers pane
-  var rAnswers = exam.reading_answers || {};
-  var rRows = '';
-  for(var j=1;j<=40;j++){
-    var rkey = String(j);
-    var rawRAns = rAnswers[rkey];
-    var hasRAns = rawRAns !== undefined && rawRAns !== null && String(rawRAns).trim() !== '';
-    var rans = hasRAns ? String(rawRAns) : 'N/A';
-    var rCorrect = READING_KEY[rkey];
-    var rIsCorrect = hasRAns ? checkIsCorrect(rawRAns, rCorrect) : null;
-    var rCellClass = rIsCorrect === true ? 'correct-cell' : rIsCorrect === false ? 'wrong-cell' : '';
-    rRows += '<tr><td style="color:#6b7280;font-weight:700;">' + j + '</td>' +
-      '<td class="' + rCellClass + '">' + esc(rans) + (rIsCorrect===true?' &#10003;':rIsCorrect===false?' &#10007;':'') + '</td>' +
-      '<td class="ans-key">' + (rIsCorrect===false ? esc(String(rCorrect)) : '') + '</td></tr>';
-  }
-  var rPane = '<div class="tab-pane" id="pane-' + sid + '-reading">' +
-    '<table class="answer-table"><thead><tr><th>#</th><th>Student Answer</th><th>Correct Answer</th></tr></thead><tbody>' + rRows + '</tbody></table>' +
-  '</div>';
-
-  // Writing pane
-  var examId = exam.id;
-  var t1text = exam.writing_t1_text || '';
-  var t2text = exam.writing_t2_text || '';
-  var wPane = '<div class="tab-pane" id="pane-' + sid + '-writing">' +
-
-    '<h4 style="margin-bottom:8px;color:#0F5C6B;">Task 1 &#8212; Chart Description</h4>' +
-    '<span class="word-badge">' + (exam.writing_t1_words || 0) + ' words</span>' +
-    '<div class="essay-box">' + esc(t1text || '(not submitted)') + '</div>' +
-    '<div class="feedback-area">' +
-      '<label class="feedback-label">Feedback for Task 1:</label>' +
-      '<textarea class="feedback-textarea" id="fb-t1-' + sid + '" placeholder="Write your feedback here&#8230;">' + esc(exam.t1_feedback || '') + '</textarea>' +
-      '<div class="band-row">' +
-        '<label style="font-size:13px;font-weight:700;">Band:</label>' +
-        '<select class="band-select" id="band-t1-' + sid + '">' + bandOptions(exam.t1_band) + '</select>' +
-        '<button class="save-feedback-btn" id="savebtn-t1-' + sid + '" onclick="saveFeedback(\'' + examId + '\',\'' + sid + '\',\'t1\')">Save Feedback</button>' +
-      '</div>' +
-    '</div>' +
-
-    '<hr style="border:none;border-top:1px solid #e2e4e8;margin:22px 0;">' +
-
-    '<h4 style="margin-bottom:8px;color:#0F5C6B;">Task 2 &#8212; Essay</h4>' +
-    '<span class="word-badge">' + (exam.writing_t2_words || 0) + ' words</span>' +
-    '<div class="essay-box">' + esc(t2text || '(not submitted)') + '</div>' +
-    '<div class="feedback-area">' +
-      '<label class="feedback-label">Feedback for Task 2:</label>' +
-      '<textarea class="feedback-textarea" id="fb-t2-' + sid + '" placeholder="Write your feedback here&#8230;">' + esc(exam.t2_feedback || '') + '</textarea>' +
-      '<div class="band-row">' +
-        '<label style="font-size:13px;font-weight:700;">Band:</label>' +
-        '<select class="band-select" id="band-t2-' + sid + '">' + bandOptions(exam.t2_band) + '</select>' +
-        '<button class="save-feedback-btn" id="savebtn-t2-' + sid + '" onclick="saveFeedback(\'' + examId + '\',\'' + sid + '\',\'t2\')">Save Feedback</button>' +
-      '</div>' +
-    '</div>' +
-  '</div>';
-
-  // Speaking pane (no recording — manual band + feedback entry)
-  var sPane = '<div class="tab-pane" id="pane-' + sid + '-speaking">' +
-    '<div style="background:#f7f8fa;border:1px solid #e2e4e8;border-radius:8px;padding:16px;margin-bottom:16px;font-size:13.5px;color:#6b7280;">' +
-      '&#8505;&#65039; The platform does not record speaking. Conduct the speaking test separately with this student, then enter their band score and feedback below.' +
-    '</div>' +
-    '<div class="feedback-area" style="margin-top:0;">' +
-      '<label class="feedback-label">Feedback for Speaking:</label>' +
-      '<textarea class="feedback-textarea" id="fb-speaking-' + sid + '" placeholder="Write your feedback here&#8230;">' + esc(exam.speaking_feedback || '') + '</textarea>' +
-      '<div class="band-row">' +
-        '<label style="font-size:13px;font-weight:700;">Band:</label>' +
-        '<select class="band-select" id="band-speaking-' + sid + '">' + bandOptions(exam.speaking_band) + '</select>' +
-        '<button class="save-feedback-btn" id="savebtn-speaking-' + sid + '" onclick="saveFeedback(\'' + examId + '\',\'' + sid + '\',\'speaking\')">Save Feedback</button>' +
-      '</div>' +
-    '</div>' +
-  '</div>';
-
-  // Send Results section
-  var isPublished = !!exam.results_published;
-  var sendSection = '<div style="margin-top:24px;padding-top:20px;border-top:2px solid #e2e4e8;">';
-  if(isPublished){
-    sendSection += '<div style="background:#e6f6ec;border:1px solid #6ee7b7;border-radius:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">' +
-      '<span style="color:#1f9d55;font-weight:700;font-size:14px;">&#10003; Results sent to student</span>' +
-      '<button class="save-feedback-btn" style="background:#fff;color:#0F5C6B;border:1px solid #0F5C6B;" onclick="sendResults(\'' + examId + '\',\'' + sid + '\')">Re-send / Update</button>' +
-    '</div>';
-  } else {
-    sendSection += '<button class="save-feedback-btn" style="background:#1f9d55;padding:12px 24px;font-size:15px;" onclick="sendResults(\'' + examId + '\',\'' + sid + '\')">&#128228; Send Results to Student</button>' +
-    '<p style="font-size:12.5px;color:#94a3b8;margin-top:8px;">The student will not see any scores or feedback until you click this button.</p>';
-  }
-  sendSection += '</div>';
-
-  return overview + tabs + liPane + rPane + wPane + sPane + sendSection;
-}
-
-function bandOptions(selected){
-  var bands = [''];
-  for(var i=1; i<=9; i+=0.5){ bands.push(i.toFixed(1)); }
-  return bands.map(function(b){
-    return '<option value="' + b + '"' + (b === String(selected || '') ? ' selected' : '') + '>' + (b || '&#8212; Select band') + '</option>';
+function renderSummaryCards(rec){
+  var overall = calcOverallBand(rec);
+  var t1raw = bandNum(rec.t1_band), t2raw = bandNum(rec.t2_band);
+  var wBand = (t1raw===null && t2raw===null) ? null : roundToIELTSBand(calcWritingBand(t1raw, t2raw));
+  var cards = [
+    {label:'Listening', val: rec.listening_score!==null&&rec.listening_score!==undefined ? rec.listening_score+'/40' : '—', sub: rec.listening_band?'Band '+rec.listening_band:''},
+    {label:'Reading', val: rec.reading_score!==null&&rec.reading_score!==undefined ? rec.reading_score+'/40' : '—', sub: rec.reading_band?'Band '+rec.reading_band:''},
+    {label:'Writing', val: wBand!==null ? 'Band '+wBand : '—', sub: ''},
+    {label:'Speaking', val: rec.speaking_band ? 'Band '+rec.speaking_band : '—', sub: ''}
+  ];
+  var html = cards.map(function(c){
+    return '<div class="summary-card"><div class="sc-label">'+c.label+'</div><div class="sc-value">'+c.val+'</div>'+(c.sub?'<div style="font-size:12px;color:#6b7280;margin-top:2px;">'+c.sub+'</div>':'')+'</div>';
   }).join('');
+  html += '<div class="summary-card overall"><div class="sc-label">Overall</div><div class="sc-value">'+(overall!==null?overall:'—')+'</div></div>';
+  document.getElementById('summaryCards').innerHTML = html;
 }
 
-// ── INTERACTIONS ──────────────────────────────────────────────────────────────
-function toggleCard(sid){
-  var detail = document.getElementById('detail-' + sid);
-  var icon = document.getElementById('icon-' + sid);
-  if(!detail || !icon) return;
-  var isOpen = detail.classList.contains('show');
-  detail.classList.toggle('show', !isOpen);
-  icon.classList.toggle('open', !isOpen);
-}
-window.toggleCard = toggleCard;
+function switchResultsTab(tab, el){
+  document.querySelectorAll('.rtab').forEach(function(t){t.classList.remove('active');});
+  if(el) el.classList.add('active');
+  var rec = loadedExamRecord;
+  var content = document.getElementById('resultsTabContent');
+  if(!rec){ content.innerHTML=''; return; }
 
-function switchTab(sid, tabName, el){
-  // deactivate all tabs and panes for this card
-  var card = el.closest('.student-card');
-  card.querySelectorAll('.detail-tab').forEach(function(t){t.classList.remove('active');});
-  card.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('active');});
-  el.classList.add('active');
-  var pane = document.getElementById('pane-' + sid + '-' + tabName);
-  if(pane) pane.classList.add('active');
-}
-window.switchTab = switchTab;
-
-// ── SAVE FEEDBACK ─────────────────────────────────────────────────────────────
-async function saveFeedback(examId, sid, task){
-  var db = getSB(); if(!db) return;
-  var fbEl   = document.getElementById('fb-' + task + '-' + sid);
-  var bandEl = document.getElementById('band-' + task + '-' + sid);
-  var btnEl  = document.getElementById('savebtn-' + task + '-' + sid);
-  if(!fbEl || !bandEl || !btnEl) return;
-
-  var patch = {};
-  patch[task + '_feedback'] = fbEl.value;
-  patch[task + '_band']     = bandEl.value || null;
-
-  btnEl.textContent = 'Saving&#8230;';
-  btnEl.disabled = true;
-
-  try {
-    var res = await db.from('mock_exams').update(patch).eq('id', examId);
-    if(res.error) throw res.error;
-    btnEl.textContent = 'Saved &#10003;';
-    btnEl.className = 'save-feedback-btn saved';
-    setTimeout(function(){
-      btnEl.textContent = 'Save Feedback';
-      btnEl.className = 'save-feedback-btn';
-      btnEl.disabled = false;
-    }, 2500);
-  } catch(err){
-    alert('Save failed: ' + (err.message || JSON.stringify(err)));
-    btnEl.textContent = 'Save Feedback';
-    btnEl.disabled = false;
+  if(tab === 'listening'){
+    content.innerHTML = buildAnswerTable(rec.listening_answers || {}, LISTENING_KEY, 40, true);
+  } else if(tab === 'reading'){
+    content.innerHTML = buildAnswerTable(rec.reading_answers || {}, READING_KEY, 40, false);
+  } else if(tab === 'writing1'){
+    content.innerHTML = buildEssayView(rec.writing_t1_text, rec.writing_t1_words, rec.t1_feedback, rec.t1_band);
+  } else if(tab === 'writing2'){
+    content.innerHTML = buildEssayView(rec.writing_t2_text, rec.writing_t2_words, rec.t2_feedback, rec.t2_band);
+  } else if(tab === 'speaking'){
+    content.innerHTML = buildSpeakingView(rec.speaking_feedback, rec.speaking_band);
   }
 }
-window.saveFeedback = saveFeedback;
+window.switchResultsTab = switchResultsTab;
 
-// ── SEND RESULTS TO STUDENT ────────────────────────────────────────────────
-async function sendResults(examId, sid){
-  var info = allStudents[sid] || {};
-  var msg = 'Send results to ' + (info.name || 'this student') + '? They will immediately be able to see their scores, essays, and your feedback.';
-  if(!confirm(msg)) return;
-
-  var db = getSB(); if(!db) return;
-  try {
-    var res = await db.from('mock_exams').update({
-      results_published: true,
-      results_published_at: new Date().toISOString()
-    }).eq('id', examId);
-    if(res.error) throw res.error;
-    // refresh this card's data
-    var examIdx = allExams.findIndex(function(e){ return e.id === examId; });
-    if(examIdx >= 0){
-      allExams[examIdx].results_published = true;
-    }
-    applyFilters();
-    // re-expand the card so mentor sees updated state
-    setTimeout(function(){
-      var card = document.querySelector('.student-card[data-sid="' + sid + '"]');
-      if(card){
-        toggleCard(sid);
-        card.scrollIntoView({behavior:'smooth', block:'center'});
-      }
-    }, 100);
-  } catch(err){
-    alert('Failed to send results: ' + (err.message || JSON.stringify(err)));
+function buildAnswerTable(answers, key, total, useQPrefix){
+  var rows = '';
+  for(var i=1; i<=total; i++){
+    var k = useQPrefix ? 'q'+i : String(i);
+    var raw = answers[String(i)];
+    var hasAns = raw !== undefined && raw !== null && String(raw).trim() !== '';
+    var studentVal = hasAns ? String(raw) : 'N/A';
+    var correct = key[k];
+    var isCorrect = hasAns ? checkIsCorrect(raw, correct) : null;
+    var cellClass = isCorrect === true ? 'ans-correct' : isCorrect === false ? 'ans-wrong' : '';
+    var correctDisplay = Array.isArray(correct) ? correct[0] : correct;
+    rows += '<tr><td style="color:#6b7280;font-weight:700;">'+i+'</td>'+
+      '<td class="'+cellClass+'">'+escHtml(studentVal)+(isCorrect===true?' ✓':isCorrect===false?' ✗':'')+'</td>'+
+      '<td style="color:#6b7280;">'+(isCorrect===false?escHtml(String(correctDisplay)):'')+'</td></tr>';
   }
-}
-window.sendResults = sendResults;
-
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function esc(str){
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function showError(msg){
-  document.getElementById('loadingState').style.display = 'none';
-  var box = document.getElementById('errorBox');
-  box.textContent = msg;
-  box.style.display = 'block';
-}
-function showEmpty(msg){
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('emptyState').style.display = 'block';
-  if(msg) document.getElementById('emptyState').querySelector('p').textContent = msg;
+  return '<table class="ans-table"><thead><tr><th>#</th><th>Your Answer</th><th>Correct Answer</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 
-// ── DEEP LINK: auto-expand a specific student ────────────────────────────────
-function autoExpandFromURL(){
-  var params = new URLSearchParams(window.location.search);
-  var targetId = params.get('student');
-  if(!targetId) return;
-  setTimeout(function(){
-    var card = document.querySelector('.student-card[data-sid="' + targetId + '"]');
-    if(card){
-      toggleCard(targetId);
-      card.scrollIntoView({behavior:'smooth', block:'start'});
-      card.style.boxShadow = '0 0 0 2px #0F5C6B';
-    }
-  }, 400);
+function buildEssayView(text, words, feedback, band){
+  var html = '<div style="margin-bottom:10px;font-size:13px;color:#6b7280;font-weight:700;">'+(words||0)+' words</div>';
+  html += '<div class="essay-view">'+escHtml(text || '(not submitted)')+'</div>';
+  if(feedback || band){
+    html += '<div class="feedback-view">';
+    html += '<div class="fv-label">Mentor Feedback'+(band?' — Band '+band:'')+'</div>';
+    html += '<div>'+escHtml(feedback || 'No written feedback provided.')+'</div>';
+    html += '</div>';
+  } else {
+    html += '<div style="color:#94a3b8;font-size:13px;font-style:italic;">Your mentor has not left feedback for this task yet.</div>';
+  }
+  return html;
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+function buildSpeakingView(feedback, band){
+  if(!feedback && !band){
+    return '<div style="color:#94a3b8;font-size:14px;">Your mentor has not recorded speaking feedback yet.</div>';
+  }
+  var html = '<div class="feedback-view">';
+  html += '<div class="fv-label">Mentor Feedback'+(band?' — Band '+band:'')+'</div>';
+  html += '<div>'+escHtml(feedback || 'No written feedback provided.')+'</div>';
+  html += '</div>';
+  return html;
+}
+
+function escHtml(str){
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 (function waitSdk(){
-  if(window.supabase) loadAll().then(autoExpandFromURL);
-  else setTimeout(waitSdk, 100);
+  if(window.supabase){
+    // Check if student already submitted mock exam
+    checkAlreadySubmitted();
+  } else {
+    setTimeout(waitSdk, 100);
+  }
 })();
+
+var loadedExamRecord = null;
+
+async function checkAlreadySubmitted(){
+  if(!studentSession){ return; } // no session = just show intro
+  var db = getSB(); if(!db) return;
+  try {
+    var res = await db.from('mock_exams')
+      .select('*')
+      .eq('student_id', studentSession.id)
+      .eq('mock_day', 28)
+      .not('submitted_at', 'is', null)
+      .order('submitted_at', {ascending:false})
+      .limit(1);
+    if(res.data && res.data.length > 0){
+      var rec = res.data[0];
+      loadedExamRecord = rec;
+      var dateStr = rec.submitted_at
+        ? new Date(rec.submitted_at).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
+        : (rec.exam_date || '');
+
+      document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+      document.getElementById('timerDisplay').style.display='none';
+
+      if(rec.results_published){
+        // Show "results ready" screen
+        var dateEl2 = document.getElementById('readySubmittedDate');
+        if(dateEl2 && dateStr) dateEl2.textContent = 'Submitted: ' + dateStr;
+        document.getElementById('screen-ready').classList.add('active');
+        document.getElementById('headerLabel').textContent='Mock Exam — Results Ready';
+      } else {
+        // Still waiting for mentor
+        var dateEl = document.getElementById('submittedDate');
+        if(dateEl && dateStr) dateEl.textContent = 'Submitted: ' + dateStr;
+        document.getElementById('screen-done').classList.add('active');
+        document.getElementById('headerLabel').textContent='Mock Exam — Submitted';
+      }
+    }
+    // else: normal intro is already shown
+  } catch(e){ console.warn('Could not check submission status:', e); }
+}
 
 })();
 </script>
