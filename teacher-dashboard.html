@@ -237,15 +237,15 @@
 
   /* ---- MATERIALS GRID ---- */
   (function buildMaterials(){
-    var RELAX=[7,14,28];
-    var MOCK_DAY=21;
+    var RELAX=[7,14];
+    var MOCK_DAYS=[21,28];
     var grid=document.getElementById('materialsGrid');
     var html='';
     for(var d=1;d<=30;d++){
       var isRelax=RELAX.includes(d);
       var padded=String(d).padStart(2,'0');
-      if(d===MOCK_DAY){
-        html+='<a href="mock-results.html" class="mat-card mock">'+
+      if(MOCK_DAYS.includes(d)){
+        html+='<a href="mock-results.html?day='+d+'" class="mat-card mock">'+
           '<div class="mat-num">'+padded+'</div>'+
           '<div class="mat-label">&#127919; Mock Exam</div>'+
         '</a>';
@@ -393,9 +393,9 @@
   }
 
   function showTaskBreakdown(day, studentId){
-    // Day 21 is the Mock Exam — show real exam data instead of task/answers table
-    if(day === 21){
-      showMockExamBreakdown(studentId);
+    // Mock exam days show real exam data instead of task/answers table
+    if(day === 21 || day === 28){
+      showMockExamBreakdown(day, studentId);
       return;
     }
     const prog = allProgress[studentId] || {};
@@ -445,15 +445,16 @@
   }
   window.showTaskBreakdown = showTaskBreakdown;
 
-  /* ---- MOCK EXAM BREAKDOWN (Day 21) ---- */
-  function showMockExamBreakdown(studentId){
-    document.getElementById('breakdownTitle').textContent = 'Day 21 — Mock Exam';
+  /* ---- MOCK EXAM BREAKDOWN (Day 21 / Day 28) ---- */
+  function showMockExamBreakdown(day, studentId){
+    document.getElementById('breakdownTitle').textContent = 'Day ' + day + ' — Mock Exam';
     document.getElementById('breakdownRows').innerHTML = '<div style="color:var(--muted);font-size:13px;">Loading mock exam results…</div>';
     document.getElementById('taskBreakdown').style.display = 'block';
 
     supabase.from('mock_exams')
       .select('*')
       .eq('student_id', studentId)
+      .eq('mock_day', day)
       .order('submitted_at', {ascending:false})
       .limit(1)
       .then(function(res){
@@ -478,7 +479,7 @@
         html += '<div class="task-row"><span class="task-name">&#9999;&#65039; Writing Task 1</span><span class="task-status ' + (w1>0?'done':'pending') + '">' + w1 + ' words' + (e.t1_band?' — Band '+e.t1_band:'') + '</span></div>';
         html += '<div class="task-row"><span class="task-name">&#9999;&#65039; Writing Task 2</span><span class="task-status ' + (w2>0?'done':'pending') + '">' + w2 + ' words' + (e.t2_band?' — Band '+e.t2_band:'') + '</span></div>';
         html += '<div style="font-size:12.5px;color:var(--muted);margin:10px 0 14px;">Submitted: ' + submittedDate + '</div>';
-        html += '<a href="mock-results.html?student=' + studentId + '" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:8px;">Open full answers &amp; leave feedback &#8594;</a>';
+        html += '<a href="mock-results.html?day=' + day + '&student=' + studentId + '" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:8px;">Open full answers &amp; leave feedback &#8594;</a>';
 
         document.getElementById('breakdownRows').innerHTML = html;
       });
