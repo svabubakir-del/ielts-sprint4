@@ -593,6 +593,7 @@ async function saveToSupabase(){
   }
   var payload = {
     student_id:          studentSession.id,
+    mock_day:             21,
     exam_date:           examData.exam_date,
     listening_score:     examData.listening_score,
     listening_total:     examData.listening_total,
@@ -610,7 +611,7 @@ async function saveToSupabase(){
     submitted_at:        new Date().toISOString()
   };
   try {
-    var res = await db.from('mock_exams').upsert(payload, {onConflict:'student_id,exam_date'});
+    var res = await db.from('mock_exams').upsert(payload, {onConflict:'student_id,mock_day'});
     if(res.error) throw res.error;
     var notice = document.getElementById('savingNotice');
     notice.classList.add('show');
@@ -742,6 +743,7 @@ async function checkAlreadySubmitted(){
     var res = await db.from('mock_exams')
       .select('*')
       .eq('student_id', studentSession.id)
+      .eq('mock_day', 21)
       .not('submitted_at', 'is', null)
       .order('submitted_at', {ascending:false})
       .limit(1);
